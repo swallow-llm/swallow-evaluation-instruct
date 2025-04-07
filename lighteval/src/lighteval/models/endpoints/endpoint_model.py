@@ -409,9 +409,8 @@ class InferenceEndpointModel(LightevalModel):
             decoder_input_details=True,
             grammar=grammar,
         )
-        generation_config_dict = {k: v for k, v in generation_config.__dict__.items() if v is not None}
 
-        generated_text = self.async_client.text_generation(prompt=context, **generation_config_dict)
+        generated_text = self.async_client.text_generation(prompt=context, generation_config=generation_config)
 
         return generated_text
 
@@ -432,11 +431,10 @@ class InferenceEndpointModel(LightevalModel):
             decoder_input_details=True,
             grammar=grammar,
         )
-        generation_config_dict = {k: v for k, v in generation_config.__dict__.items() if v is not None}
 
         generated_text = self.client.text_generation(
             prompt=context,
-            **generation_config_dict,
+            generation_config=generation_config,
         )
 
         return generated_text
