@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[requires]
+python_version = "3.12"
+
+[packages]
+requests = "*"
+numpy = "*"
+
+[dev-packages]
+lighteval = { path = "./", editable = true, extras = ["tests", "multilingual", "math", "extended_tasks"] }
+
+[scripts]
+test_unit = "python -m pytest tests/test_unit_*.py"
+test_extractive_match = "python -m pytest tests/metrics/test_extractive_match.py"
