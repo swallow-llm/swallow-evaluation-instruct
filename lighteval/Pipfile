@@ -3,12 +3,26 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
+# pytorch with CUDA 12.1
+[[source]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
+verify_ssl = true
+
+# pytorch with CUDA 12.4
+[[source]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+verify_ssl = true
+
 [requires]
-python_version = "3.12"
+python_version = "3.11"
 
 [packages]
-requests = "*"
-numpy = "*"
+vllm = "==0.8.3"
+transformers = "*"
+lighteval = { path = "./", editable = true, extras = ["multilingual", "math", "extended_tasks"] }
+torch = {version = "==2.6.0", index = "pytorch-cu121"}
 
 [dev-packages]
 lighteval = { path = "./", editable = true, extras = ["tests", "multilingual", "math", "extended_tasks"] }
