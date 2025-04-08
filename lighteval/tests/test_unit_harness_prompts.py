@@ -22,6 +22,7 @@
 
 import json
 import os
+import gzip
 
 import pytest
 
@@ -29,7 +30,7 @@ import lighteval.tasks.default_prompts as default_prompts
 from lighteval.tasks.requests import Doc
 
 
-PATH_TO_HARNESS_PROMPTS = os.path.join(os.path.dirname(__file__), "reference_scores/harness_prompts.json")
+PATH_TO_HARNESS_PROMPTS = os.path.join(os.path.dirname(__file__), "reference_scores/harness_prompts.json.gz")
 
 
 def pytest_generate_tests(metafunc: pytest.Metafunc):
@@ -45,7 +46,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc):
     # If model_input is a test function argument
     # (= the function requires a fixture)
     if "prompt_inputs" in metafunc.fixturenames:
-        with open(PATH_TO_HARNESS_PROMPTS) as f:
+        with gzip.open(PATH_TO_HARNESS_PROMPTS, mode="rb") as f:
             prompt_fn_to_examples = json.load(f)
 
             for prompt_fn_name, examples in prompt_fn_to_examples.items():

@@ -22,6 +22,7 @@
 
 import json
 import os
+import gzip
 
 import pytest
 
@@ -37,7 +38,7 @@ from lighteval.tasks.requests import Doc
 from lighteval.utils.utils import as_list
 
 
-PATH_TO_HARNESS_METRICS = os.path.join(os.path.dirname(__file__), "reference_scores/harness_metrics.json")
+PATH_TO_HARNESS_METRICS = os.path.join(os.path.dirname(__file__), "reference_scores/harness_metrics.json.gz")
 
 POSSIBLE_METRICS = Metrics.all_metrics()
 
@@ -55,7 +56,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc):
     # If model_input is a test function argument
     # (= the function requires a fixture)
     if "prompt_inputs" in metafunc.fixturenames:
-        with open(PATH_TO_HARNESS_METRICS) as f:
+        with gzip.open(PATH_TO_HARNESS_METRICS, mode="rb") as f:
             metric_to_examples = json.load(f)
 
             for metric, examples in metric_to_examples.items():
