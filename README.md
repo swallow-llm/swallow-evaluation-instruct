@@ -14,7 +14,7 @@ lighteval: [v0.8.0](https://github.com/huggingface/lighteval/releases/tag/v0.8.0
 ### コマンド
 `./lighteval/` にて
 
-* 開発環境の構築： `pipenv install --dev --skip-lock`
+* 仮想環境の構築： `pipenv install --dev --skip-lock`
     * 本来は `--skip-lock` を指定せずにモジュール間の依存関係を完全に管理すべきなんですが，vLLM, pytorch, cuda の3つが絡むと容易に依存関係のresolveに失敗するみたいです．
 * 仮想環境を有効化： `pipenv shell`
 * extractive_match_metric の単体テストを実行： `pipenv run test_extractive_match`
