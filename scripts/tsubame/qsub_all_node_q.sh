@@ -16,4 +16,4 @@ SCRIPTS_PATH="${REPO_PATH}/scripts/tsubame"
 # JMMLU
 JMMLU_RESULT_PATH="${RESULTS_PATH}/ja/jmmlu"
 mkdir -p "${JMMLU_RESULT_PATH}"
-qsub -g tga-okazaki -o "${JMMLU_RESULT_PATH}/" -e "${JMMLU_RESULT_PATH}/" -l node_q=1 -l h_rt=01:00:00 "${SCRIPTS_PATH}/evaluate_ja_jmmlu.sh" "${REPO_PATH}" "${HUGGINGFACE_CACHE}" "${JMMLU_RESULT_PATH}" "${MODEL_NAME}" "${SYSTEM_MESSAGE}" "${MAX_CONTEXT_WINDOW}"
+qsub -g tga-okazaki -o "${JMMLU_RESULT_PATH}/logs/" -e "${JMMLU_RESULT_PATH}/logs/" -l node_q=1 -l h_rt=01:00:00 "${SCRIPTS_PATH}/evaluate_ja_jmmlu.sh" "${REPO_PATH}" "${HUGGINGFACE_CACHE}" "${JMMLU_RESULT_PATH}" "${MODEL_NAME}" "${SYSTEM_MESSAGE}" "${MAX_CONTEXT_WINDOW}"
