@@ -1,4 +1,10 @@
+from lighteval.metrics.dynamic_metrics import (
+    IndicesExtractionConfig,
+    multilingual_extractive_match_metric,
+)
 from lighteval.tasks.lighteval_task import LightevalTaskConfig
+from lighteval.tasks.requests import Doc
+from lighteval.utils.language import Language
 
 
 # SWALLOW JMMLU SUBSETS consist of all JMMLU subsets
@@ -60,8 +66,9 @@ SWALLOW_JMMLU_SUBSETS = [
 ]
 
 
+# Query template
 SWALLOW_JMMLU_QUERY_TEMPLATE = """
-Answer the following multiple choice question. The last line of your response should be of the following format: 'Answer: $LETTER' (without quotes) where LETTER is one of ABCD. Think step by step before answering.
+次の選択問題に答えてください。出力の最後の行には「回答: $選択肢」（鉤括弧は書かない）という形でA、B、C、Dから選んだ選択肢を答えてください。ステップバイステップで考えてから回答してください。
 
 {Question}
 
@@ -72,7 +79,8 @@ D) {D}
 """.strip()
 
 
-def jmmlu_prompt_fn(line, task_name: str = None):
+# Prompt function
+def swallow_jmmlu_prompt_fn(line, task_name: str = None):
     answer_letter = line["answer"]
     gold_index = "A,B,C,D".split(",").index(answer_letter)
     choices = [line["A"], line["B"], line["C"], line["D"]]
@@ -88,6 +96,7 @@ def jmmlu_prompt_fn(line, task_name: str = None):
     )
 
 
+# Metric
 multi_choice_metric = multilingual_extractive_match_metric(
     language=Language.JAPANESE,
     gold_extraction_target=[IndicesExtractionConfig(prefix_for_extraction="NativeLetters")],
@@ -96,18 +105,19 @@ multi_choice_metric = multilingual_extractive_match_metric(
 )
 
 
-swallow_jmmlu_tasks = [
+# Task table
+TASKS_TABLE = [
     LightevalTaskConfig(
         name=f"swallow_jmmlu:{subset}",
-        prompt_function=jmmlu_prompt_fn,
-        suite=["swallow", "swallow_jmmlu"],
+        prompt_function=swallow_jmmlu_prompt_fn,
+        suite=["custom"],
         hf_repo="nlp-waseda/JMMLU",
         hf_subset=subset,
         evaluation_splits=["test"],
-        hf_avail_split=["test"],
+        hf_avail_splits=["test"],
         trust_dataset=True,
-        stop_sequence=[multi_choice_metric],
-        metric=[],
+        stop_sequence=[],
+        metric=[multi_choice_metric],
         version=0,
     )
     for subset in SWALLOW_JMMLU_SUBSETS
