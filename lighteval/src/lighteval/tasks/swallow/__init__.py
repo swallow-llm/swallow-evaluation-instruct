@@ -1,0 +1,13 @@
+# ベンチマークの追加について
+# 1. ./swallow/*.py を作成して LightevalTaskConfig のインスタンスを定義してください．
+# Config の suite に "swallow" を含めてください．
+# 2. # ./swallow/*.py から LightevalTaskConfig のインスタンスを import して SWALLOW_TASKS に追加してください．
+# (配列の場合は SWALLOW_TASKS.extend() で追加してください)
+
+# 以上の設定を行うと lighteval 実行時引数で `swallow|{ベンチマーク名}` が使えるようになります． `--custom-tasks` の指定は不要です．
+
+from .mclm_MATH_100_japanese import math_100_japanese
+
+SWALLOW_TASKS = [
+    math_100_japanese,
+]
