@@ -106,11 +106,11 @@ multi_choice_metric = multilingual_extractive_match_metric(
 
 
 # Task table
-TASKS_TABLE = [
+JMMLU_SUBSET_TASKS = [
     LightevalTaskConfig(
         name=f"swallow_jmmlu:{subset}",
         prompt_function=swallow_jmmlu_prompt_fn,
-        suite=["custom"],
+        suite=["swallow"],
         hf_repo="nlp-waseda/JMMLU",
         hf_subset=subset,
         evaluation_splits=["test"],
