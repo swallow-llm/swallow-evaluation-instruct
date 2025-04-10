@@ -558,6 +558,7 @@ TRANSLATION_LITERALS: dict[Language, TranslationLiterals] = {
         also="また",
         cause_word="なので",
         effect_word="なぜなら",
+        and_word="かつ",
         or_word="または",
         true="正解",
         false="不正解",
