@@ -26,7 +26,7 @@ GPU_MEMORY_UTILIZATION=0.9
 MODEL_ARGS_L="pretrained=$MODEL_NAME,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_CONTEXT_WINDOW,gpu_memory_utilization=$GPU_MEMORY_UTILIZATION,generation_parameters={max_new_tokens:$MAX_CONTEXT_WINDOW,temperature:$TEMPERATURE}"
 
 # task definition
-TASK_DEF="custom|swallow_jmmlu|0|0"
+TASK_DEF="swallow|swallow_jmmlu|0|0"
 
 # evaluate
 cd "${REPO_PATH}/lighteval"
