@@ -5,49 +5,7 @@ import glob
 from datetime import datetime
 from typing import Any
 
-from aggregate_utils.white_lists import (
-    JMMLU_SOCIAL_SCIENCES, JMMLU_HUMANITIES, JMMLU_STEM, JMMLU_OTHERS
-)
-from aggregate_utils.funcs import (
-    pick, micro_average
-)
-
-# Aggregate Config
-# - Each entry must have 'name', 'func', and 'target'. 'target' must have 'name' and 'is_category'.
-# - Each entry may have 'func_args' matching its 'func'.
-AGGREGATE_CONF = [
-    {
-        'name': 'jmmlu_social_sciences', 
-        'func': micro_average, 
-        'func_args': {'metric_key': 'extractive_match', 'white_list': JMMLU_SOCIAL_SCIENCES}, 
-        'target': {'name': 'swallow|swallow_jmmlu|0', 'is_category': True}
-    },
-    {
-        'name': 'jmmlu_humanities', 
-        'func': micro_average, 
-        'func_args': {'metric_key': 'extractive_match', 'white_list': JMMLU_HUMANITIES}, 
-        'target': {'name': 'swallow|swallow_jmmlu|0', 'is_category': True}
-    },
-    {
-        'name': 'jmmlu_stem', 
-        'func': micro_average, 
-        'func_args': {'metric_key': 'extractive_match', 'white_list': JMMLU_STEM}, 
-        'target': {'name': 'swallow|swallow_jmmlu|0', 'is_category': True}
-    },
-    {
-        'name': 'jmmlu_other', 
-        'func': micro_average, 
-        'func_args': {'metric_key': 'extractive_match', 'white_list': JMMLU_OTHERS}, 
-        'target': {'name': 'swallow|swallow_jmmlu|0', 'is_category': True}
-    },
-    {
-        'name': 'jmmlu', 
-        'func': micro_average, 
-        'func_args': {'metric_key': 'extractive_match'}, 
-        'target': {'name': 'swallow|swallow_jmmlu|0', 'is_category': True}
-    },
-]
-
+from aggregate_utils.conf import AGGREGATE_CONF
 
 def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
     # raw_outputs_dir 内のすべての JSON ファイルを取得する
@@ -92,7 +50,7 @@ def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
         # results 内の各タスク毎の情報を抽出
         config_tasks = data["config_tasks"]
         for task_key, metrics in data.get("results", {}).items():
-            # task_key の形式例: "custom|swallow_jmmlu:abstract_algebra|0"
+            # task_key の形式例: "swallow|swallow_jmmlu:abstract_algebra|0"
             # "|" で分割し、2 番目（subset）に "_average" が含まれるものや task_key=="all" はスキップする
             parts = task_key.split("|")
             if len(parts) >= 2:
@@ -140,18 +98,18 @@ def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
         "tasks": []
     }
     for conf in AGGREGATE_CONF:
-        name = conf['name']
+        display_name = conf['display_name']
         func = conf['func']
         func_args = conf['func_args']
         target = conf['target']
         try:
             value = func(latest_results, target, **func_args)
-            assert value is not None, f"Try calculating {name}, but received None."
+            assert value is not None, f"Try calculating {display_name}, but received None."
         except Exception as e:
-            print(f"Error processing {name}: {e}")
+            print(f"Error processing {display_name}: {e}")
             value = -1
-        aggregated_results["results"][name] = value
-        aggregated_results["tasks"].append(name)
+        aggregated_results["results"][display_name] = value
+        aggregated_results["tasks"].append(display_name)
     # overall: すべての結果の値をカンマ区切りの文字列として格納
     aggregated_results["overall"] = ",".join(str(v) for v in aggregated_results["results"].values())
 
