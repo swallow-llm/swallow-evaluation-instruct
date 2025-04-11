@@ -96,7 +96,10 @@ def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
             # "|" で分割し、2 番目（subset）に "_average" が含まれるものや task_key=="all" はスキップする
             parts = task_key.split("|")
             if len(parts) >= 2:
-                task_name, subset_name = parts[1].split(":")
+                if ":" in parts[1]:
+                    task_name, subset_name = parts[1].split(":")
+                else:
+                    task_name, subset_name = parts[1], ""
                 if subset_name == "_average":
                     continue
             else:

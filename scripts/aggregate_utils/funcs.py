@@ -29,6 +29,7 @@ def micro_average(latest_results: dict, target: dict, metric_key: str, white_lis
         if len(parts) < 3:
             continue
         # parts[1] を ":" で分割して先頭部分を抽出し，base_key を作る．
+        assert ":" in parts[1], f"{target_name} does not have subsets."
         base_second, subset_name = parts[1].split(":")
         base_key = f"{parts[0]}|{base_second}|{parts[2]}"
         if (base_key == target_name) and ((len(white_list)==0) or (subset_name in white_list)):
