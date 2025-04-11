@@ -1,7 +1,7 @@
-from white_lists import (
+from .white_lists import (
     JMMLU_SOCIAL_SCIENCES, JMMLU_HUMANITIES, JMMLU_STEM, JMMLU_OTHERS
 )
-from funcs import (
+from .funcs import (
     pick, micro_average
 )
 

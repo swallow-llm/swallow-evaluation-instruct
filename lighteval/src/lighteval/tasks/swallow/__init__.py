@@ -10,6 +10,6 @@ from .mclm_MATH_100_japanese import math_100_japanese
 from .jmmlu import JMMLU_SUBSET_TASKS
 
 SWALLOW_TASKS = [
-    math_100_japanese,,
+    math_100_japanese,
 ]
 SWALLOW_TASKS.extend(JMMLU_SUBSET_TASKS)
