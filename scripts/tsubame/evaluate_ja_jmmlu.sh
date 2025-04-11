@@ -10,14 +10,23 @@ module load cuda/12.1.0
 module load cudnn/9.0.0
 
 # receive args
-RAW_OUTPUTS_DIR=$1
-AGGREGATED_OUTPUTS_DIR=$2
-MODEL_NAME=$3
-SYSTEM_MESSAGE=$4
-MAX_CONTEXT_WINDOW=$5
+USER_CONFIG_PATH=$1
+RAW_OUTPUTS_DIR=$2
+AGGREGATED_OUTPUTS_DIR=$3
+MODEL_NAME=$4
+SYSTEM_MESSAGE=$5
+MAX_CONTEXT_WINDOW=$6
+
+# load and set env
+source $USER_CONFIG_PATH
+export REPO_PATH=$REPO_PATH
+export VLLM_WORKER_MULTIPROC_METHOD=spawn
+export HUGGINGFACE_HUB_CACHE=$HUGGINGFACE_CACHE
+export HF_HOME=$HUGGINGFACE_CACHE
+export HF_TOKEN=$HF_TOKEN
 
 # load venv
-source "${REPO_PATH}/.venv_jmmlu/bin/activate"
+source "$REPO_PATH/.venv_jmmlu/bin/activate"
 
 # model setting
 NUM_GPUS=1
