@@ -10,17 +10,11 @@ module load cuda/12.1.0
 module load cudnn/9.0.0
 
 # receive args
-REPO_PATH=$1
-HUGGINGFACE_CACHE=$2
-OUTPUT_DIR=$3
-MODEL_NAME=$4
-SYSTEM_MESSAGE=$5
-MAX_CONTEXT_WINDOW=$6
-
-# set env vars
-export VLLM_WORKER_MULTIPROC_METHOD=spawn
-export HUGGINGFACE_HUB_CACHE=$HUGGINGFACE_CACHE
-export HF_HOME=$HUGGINGFACE_CACHE
+RAW_OUTPUTS_DIR=$1
+AGGREGATED_OUTPUTS_DIR=$2
+MODEL_NAME=$3
+SYSTEM_MESSAGE=$4
+MAX_CONTEXT_WINDOW=$5
 
 # load venv
 source "${REPO_PATH}/.venv_jmmlu/bin/activate"
@@ -37,12 +31,12 @@ TASK_DEF="custom|swallow_jmmlu|0|0"
 # evaluate
 cd "${REPO_PATH}/lighteval"
 echo "Task: ${TASK_DEF}"
-start_time=$(date +%s)
 lighteval vllm $MODEL_ARGS_L $TASK_DEF \
     --system-prompt $SYSTEM_MESSAGE \
     --use-chat-template \
-    --output-dir $OUTPUT_DIR \
+    --output-dir $RAW_OUTPUTS_DIR \
     --save-details
-end_time=$(date +%s)
-execution_time=$((end_time - start_time))
-echo "Total Time: ${execution_time} seconds"
+
+# aggregate
+cd ${REPO_PATH}
+python scripts/aggregate_results.py $MODEL_NAME "${RAW_OUTPUTS_DIR}/results/${MODEL_NAME}" $AGGREGATED_OUTPUTS_DIR
