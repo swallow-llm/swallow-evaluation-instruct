@@ -8,8 +8,10 @@
 
 from .mclm_MATH_100_japanese import math_100_japanese
 from .jmmlu import JMMLU_SUBSET_TASKS
+from .gpqa_ja import gpqa_ja_instruct_lighteval
 
 SWALLOW_TASKS = [
     math_100_japanese,
+    gpqa_ja_instruct_lighteval,
 ]
 SWALLOW_TASKS.extend(JMMLU_SUBSET_TASKS)
