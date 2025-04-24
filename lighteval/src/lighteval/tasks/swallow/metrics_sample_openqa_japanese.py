@@ -327,8 +327,8 @@ class JapaneseOpenQAExactMatchSamplingFunc(object):
 
         formatted_doc.specific[attribute_name] = attribute_values
     
-    def compare_golds_and_preds(lst_lst_golds: List[List[str]], lst_lst_preds: List[List[str]], metric_function: Callable[[str, str], float],
-                                if_empty = 0.0) -> List[float]:
+    def cross_apply_metric_function(lst_lst_golds: List[List[str]], lst_lst_preds: List[List[str]], metric_function: Callable[[str, str], float],
+                                    if_empty = 0.0) -> List[float]:
         """
         1. golds / preds をそれぞれフラットにする
         2. 直積（cross product）を取り、「(gold_token, pred_token)」タプルを生成
@@ -377,15 +377,15 @@ class JapaneseOpenQAExactMatchSamplingFunc(object):
         
         _lst_lst_golds = dict_dict_golds_and_preds["exact_match"]["golds"]
         _lst_lst_preds = dict_dict_golds_and_preds["exact_match"]["preds"]
-        dict_metric_values["exact_match"] = self.compare_golds_and_preds(_lst_lst_golds, _lst_lst_preds, compute_match)
-        dict_metric_values["f1_score"] = self.compare_golds_and_preds(_lst_lst_golds, _lst_lst_preds, compute_char_f1)
-        dict_metric_values["llmjpeval_f1_score"] = self.compare_golds_and_preds(_lst_lst_golds, _lst_lst_preds, compute_char_f1_llmjpeval)
+        dict_metric_values["exact_match"] = self.cross_apply_metric_function(_lst_lst_golds, _lst_lst_preds, compute_match)
+        dict_metric_values["f1_score"] = self.cross_apply_metric_function(_lst_lst_golds, _lst_lst_preds, compute_char_f1)
+        dict_metric_values["llmjpeval_f1_score"] = self.cross_apply_metric_function(_lst_lst_golds, _lst_lst_preds, compute_char_f1_llmjpeval)
         
         _lst_lst_golds = dict_dict_golds_and_preds["quasi_exact_match"]["golds"]
         _lst_lst_preds = dict_dict_golds_and_preds["quasi_exact_match"]["preds"]
-        dict_metric_values["quasi_exact_match"] = self.compare_golds_and_preds(_lst_lst_golds, _lst_lst_preds, compute_match)
-        dict_metric_values["f1_score_quasi"] = self.compare_golds_and_preds(_lst_lst_golds, _lst_lst_preds, compute_char_f1)
-        dict_metric_values["llmjpeval_f1_score_quasi"] = self.compare_golds_and_preds(_lst_lst_golds, _lst_lst_preds, compute_char_f1_llmjpeval)
+        dict_metric_values["quasi_exact_match"] = self.cross_apply_metric_function(_lst_lst_golds, _lst_lst_preds, compute_match)
+        dict_metric_values["f1_score_quasi"] = self.cross_apply_metric_function(_lst_lst_golds, _lst_lst_preds, compute_char_f1)
+        dict_metric_values["llmjpeval_f1_score_quasi"] = self.cross_apply_metric_function(_lst_lst_golds, _lst_lst_preds, compute_char_f1_llmjpeval)
         
         # すべての (gold, pred) pair に対して計算した評価指標の値に集約関数を適用する
         for metric_name in dict_metric_values.keys():
