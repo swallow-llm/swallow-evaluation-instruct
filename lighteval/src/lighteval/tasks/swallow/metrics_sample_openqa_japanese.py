@@ -56,14 +56,16 @@ def compute_char_f1_llmjpeval(str_gold, str_pred) -> float:
         str_pred (_type_): 正解文字列
 
     Returns:
-        float: normalized indel similarity に基づく文字F1文字F1
+        float: normalized indel similarity に基づく文字F1
     """    
     return fuzz.token_sort_ratio(str_pred, str_gold) / 100
 
 def compute_match(str_gold, str_pred) -> float:
     return 1.0 if str_gold == str_pred else 0.0
 
-def _regex_extractor(obj_regex, text: str, extraction_mode: Literal["first_match", "last_match", "any_match"]) -> List[str]:
+def _regex_extractor(obj_regex, text: str, 
+                     match_group_name: str,
+                     extraction_mode: Literal["first_match", "last_match", "any_match"]) -> List[str]:
     """
     正規表現とテキストを渡すと extraction mode に従って抽出結果を返す関数．
     - extraction_mode="first_match": 最初のマッチのみを返す
@@ -71,9 +73,9 @@ def _regex_extractor(obj_regex, text: str, extraction_mode: Literal["first_match
     - extraction_mode="any_match": すべてのマッチを返す    
     """
     
-    lst_matches_with_positions = [(match.group("content"), match.start(), match.end()) for match in obj_regex.finditer(text)]
+    lst_matches_with_positions = [(match.group(match_group_name), match.start(), match.end()) for match in obj_regex.finditer(text)]
     # 出現箇所の昇順にソート．つまり最後に出現したものが配列の最後に入っている
-    lst_matches_with_positions = sorted(lst_matches_with_positions, key=lambda x: (x[2], -x[1]), reverse=True)
+    lst_matches_with_positions = sorted(lst_matches_with_positions, key=lambda x: (x[2], -x[1]), reverse=False)
     
     if len(lst_matches_with_positions) == 0:
         return []
@@ -98,8 +100,10 @@ def _boxed_match_extraction_function(text: str, extraction_mode: Literal["first_
     )
     boxed_match_regex = re.compile(str_boxed_match_regex, re.DOTALL|re.UNICODE)
     
-    return _regex_extractor(obj_regex=boxed_match_regex, text=text, extraction_mode=extraction_mode)
+    return _regex_extractor(obj_regex=boxed_match_regex, match_group_name="content",
+                            text=text, extraction_mode=extraction_mode)
 
+# ToDo: prefixなしのvariantを実装
 def _free_form_answer_extraction_function(text: str, extraction_mode: Literal["first_match", "last_match", "any_match"]) -> List[str]:
     """
     自由記述形式の応答文から回答スパンを抽出する正規表現。対応している応答文の例は以下の通り。
@@ -118,7 +122,8 @@ def _free_form_answer_extraction_function(text: str, extraction_mode: Literal["f
     """
     answer_regex = re.compile(str_answer_match, re.DOTALL | re.UNICODE)
 
-    return _regex_extractor(obj_regex=answer_regex, text=text, extraction_mode=extraction_mode)
+    return _regex_extractor(obj_regex=answer_regex, match_group_name="answer",
+                            text=text, extraction_mode=extraction_mode)
        
 def _neologd_normalize(text: str) -> str:
     """
@@ -218,7 +223,7 @@ class JapaneseOpenQAExtractor(object):
         self.do_strip  = remove_paren_and_quote
         self.do_bin    = canonicalize_binary_response
         self.do_lower  = lowercase
-        self.boxed_match_extraction_mode = boxed_match_extraction_mode,
+        self.boxed_match_extraction_mode = boxed_match_extraction_mode
         self.free_form_answer_match_extraction_mode = free_form_answer_match_extraction_mode
 
     def __call__(
@@ -242,7 +247,7 @@ class JapaneseOpenQAExtractor(object):
         if self.do_neologd:
             results = list(map(_neologd_normalize, results))
         if self.do_bin:
-            results = list(map(_canonicalize_binary_response))
+            results = list(map(_canonicalize_binary_response, results))
         if self.do_lower:
             results = [r.lower() for r in results]
         
@@ -325,7 +330,7 @@ class JapaneseOpenQAExactMatchSamplingFunc(object):
 
         formatted_doc.specific[attribute_name] = attribute_values
     
-    def cross_apply_metric_function(lst_lst_golds: List[List[str]], lst_lst_preds: List[List[str]], metric_function: Callable[[str, str], float],
+    def cross_apply_metric_function(self, lst_lst_golds: List[List[str]], lst_lst_preds: List[List[str]], metric_function: Callable[[str, str], float],
                                     if_empty = 0.0) -> List[float]:
         """
         1. golds / preds をそれぞれフラットにする
