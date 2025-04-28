@@ -8,8 +8,6 @@ import neologdn
 from fuzzywuzzy import fuzz
 
 from lighteval.tasks.requests import Doc
-from lighteval.metrics.metrics import Metric, MetricCategory, MetricUseCase
-from lighteval.metrics.utils.metric_utils import SampleLevelMetric, SampleLevelMetricGrouping
 
 logger = logging.getLogger(__name__)
 
@@ -283,7 +281,7 @@ class JapaneseOpenQAExactMatchSamplingFunc(object):
     使い方:
       インスタンス化後、sample_level_fnをSampleLevelMetric.sample_level_fnに渡して利用します。
       
-    sample_level_fnが返す指標は以下の通り．
+    sample_level_fnが返す指標は METRIC_NAMES() で定義されている通り．
       - exact_match: 完全一致 {0, 1}
       - f1_score: 文字F1 [0, 1]
       - llmjpeval_f1_score: llm-jp-eval と互換性のある，normalized indel similarity に基づく文字F1 [0, 1]
@@ -297,7 +295,7 @@ class JapaneseOpenQAExactMatchSamplingFunc(object):
         cfg_exact_match_pred_extractor: Optional[Dict[str, Any]] = None,
         cfg_quasi_exact_match_gold_extractor: Optional[Dict[str, Any]] = None,
         cfg_quasi_exact_match_pred_extractor: Optional[Dict[str, Any]] = None,
-        metric_values_aggregation_function: Callable[[List[float]], float] = max
+        instance_level_aggregation_function: Callable[[List[float]], float] = max
     ):        
         if isinstance(cfg_exact_match_gold_extractor, dict):
             self._em_gold_extractor = JapaneseOpenQAExtractor(**cfg_exact_match_gold_extractor)
@@ -319,7 +317,7 @@ class JapaneseOpenQAExactMatchSamplingFunc(object):
         else:
             self._quasi_em_pred_extractor = default_quasi_exact_match_pred_extractor
             
-        self._metric_values_agg_func = metric_values_aggregation_function
+        self._metric_values_agg_func = instance_level_aggregation_function
 
     def add_to_doc_specifics(self, formatted_doc: Doc, attribute_name: str, attribute_values: Any) -> None:
         if formatted_doc.specific is None:
@@ -392,3 +390,17 @@ class JapaneseOpenQAExactMatchSamplingFunc(object):
             dict_metric_values[metric_name] = self._metric_values_agg_func(dict_metric_values[metric_name])
             
         return dict_metric_values
+
+    @classmethod
+    def METRIC_NAMES(cls) -> List[str]:
+        lst_metric_names = [
+            "exact_match", "f1_score", "llmjpeval_f1_score",
+            "quasi_exact_match", "f1_score_quasi", "llmjpeval_f1_score_quasi",
+        ]
+        return lst_metric_names
+    
+    @classmethod
+    def METRICS_HIGHER_IS_BETTER(cls) -> Dict[str, bool]:
+        dict_ret = {metric_name:True for metric_name in cls.METRIC_NAMES()}
+        return dict_ret
+    
