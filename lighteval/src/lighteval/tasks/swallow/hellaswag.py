@@ -31,21 +31,16 @@ D: {D}
 """.strip()
 
 
-def remove_prefix_from_ending(text: str) -> str:
+def remove_separator_from_ending(text: str) -> str:
     """
-    It removes prefix strings such as [title], [step], and [substeps] from the HellaSwag completion.
+    It removes separator strings such as [title], [step], and [substeps] from the HellaSwag completion.
 
     Args:
         text (str): ending string. Specifically, `endings` column in the hellaswag dataset. Ref. https://huggingface.co/datasets/Rowan/hellaswag
-    """
-    text = text.lstrip()
-    
-    tup_prefixes = ("[substeps]", "[title]", "[step]")
-    for prefix in tup_prefixes:
-        if text.startswith(prefix):
-            # remove prefix from input text
-            text = text[len(prefix):].lstrip()
-            break
+    """    
+    tup_separators = ("[substeps]", "[title]", "[step]")
+    for separator in tup_separators:
+        text = text.replace(separator, "")
     
     return text
 
@@ -59,7 +54,7 @@ multi_choice_metric = multilingual_extractive_match_metric(
 
 def hellaswag_prompt_fn(line, task_name: str = None):
     question = f"{line['activity_label']}: {line['ctx_a']} {line['ctx_b'].capitalize()}"
-    choices = list(map(remove_prefix_from_ending, line["endings"]))
+    choices = list(map(remove_separator_from_ending, line["endings"]))
     assert len(choices) == 4, "length != 4."
     gold_index = int(line["label"])
     query = HELLASWAG_QUERY_TEMPLATE.format(
