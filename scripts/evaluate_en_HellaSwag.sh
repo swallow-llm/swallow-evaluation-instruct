@@ -14,5 +14,4 @@ OUTPUT_DIR=data/evals/$MODEL
 lighteval vllm $MODEL_ARGS "swallow|hellaswag|0|0" \
     --output-dir $OUTPUT_DIR \
     --use-chat-template \
-    --max-samples 10 \
     --save-details
