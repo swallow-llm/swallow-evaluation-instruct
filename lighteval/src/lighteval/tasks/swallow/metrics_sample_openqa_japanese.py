@@ -107,23 +107,47 @@ def _boxed_match_extraction_function(text: str, extraction_mode: Literal["first_
 def _free_form_answer_extraction_function(text: str, extraction_mode: Literal["first_match", "last_match", "any_match"]) -> List[str]:
     """
     自由記述形式の応答文から回答スパンを抽出する正規表現。対応している応答文の例は以下の通り。
-    正解: {回答スパン}, 正解は{回答スパン}。, 答えは{回答スパン}\n, ...
+    正解: {回答スパン}, 正解は{回答スパン}。, 答えは{回答スパン}\n, [BOS]{回答スパン}。，...
     """
     
-    str_answer_match = r"""(?x)
-    (?:                            # 前方一致
-        (?:回答|正解|答え|解答)は    # 〇〇は...
-      |                                           # または
-        (?:回答|正解|答え|解答|解|答|【回答】)\s*    # 回答{プレースホルダ}〇〇
-        (?:[:：]|→|->|=|＝|[．\.])\s*              # 区切り記号
+    str_answer_match = r"""(?x)    
+    (?:                                   # 前方一致
+        (?:回答|正解|答え|解答)は          # 「回答は…」のパターン
+      |                                  # または
+        (?:                              # プレースホルダ
+            (?:【|「|\[|\()?\s*             # (任意) 開括弧
+            (?:回答|正解|答え|解答|解|答)  # プレースホルダの表記ゆれ
+            (?:】|」|\]|\))?\s*          # 閉括弧
+        )
+        (?:[:：]|→|->|=|＝|[．.])\s*         # ②-2 区切り記号
     )
-    (?P<answer>.+?)                               
-    (?:です|だ|である|。|、|$|．|，|\s|\n)          # 後方一致
+    (?P<answer>.+?) # 最短一致
+    (?=             # 後方一致
+        (?:です|だ|である|でしょう|だろう)? # (任意)「です、だ、である」など
+        (?:。|．|$|\s|\n)  # (必須) 全角句点・行末・空白
+    )
     """
     answer_regex = re.compile(str_answer_match, re.DOTALL | re.UNICODE)
-
-    return _regex_extractor(obj_regex=answer_regex, match_group_name="answer",
+    lst_extracted_answers = _regex_extractor(obj_regex=answer_regex, match_group_name="answer",
                             text=text, extraction_mode=extraction_mode)
+    if len(lst_extracted_answers) > 0:
+        return lst_extracted_answers
+    
+    # Fallback: 文頭からすぐに回答が書かれているケース
+    str_answer_match = r"""(?x)
+    (?:\A|\n+) # 文字列先頭または改行直後
+    (?P<answer>.+?) # 最短一致
+    (?=             # 後方一致
+        (?:です|だ|である|でしょう|だろう)? # (任意)「です、だ、である」など
+        (?:。|．|$|\s|\n)  # (必須) 全角句点・行末・空白
+    )
+    """
+    answer_regex = re.compile(str_answer_match, re.DOTALL | re.UNICODE)    
+    lst_extracted_answers = _regex_extractor(obj_regex=answer_regex, match_group_name="answer",
+                            text=text, extraction_mode=extraction_mode)
+    
+    return lst_extracted_answers
+    
        
 def _neologd_normalize(text: str) -> str:
     """
