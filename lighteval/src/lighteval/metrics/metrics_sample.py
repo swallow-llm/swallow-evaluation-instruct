@@ -50,7 +50,7 @@ from lighteval.metrics.normalizations import (
     remove_braces_and_strip,
 )
 from lighteval.tasks.requests import Doc
-from lighteval.utils.utils import as_list, safe_divide
+from lighteval.utils.utils import as_list, safe_divide, extract_final_answer_from_reasoning
 
 
 logger = logging.getLogger(__name__)
@@ -976,27 +976,52 @@ class JudgeLLMMTBenchSwallow(JudgeLLM):
         """
         questions_1 = [formatted_doc.specific["multi_turn_queries"][0] for formatted_doc in formatted_docs]
         questions_2 = [(formatted_doc.specific["multi_turn_queries"][0], formatted_doc.specific["multi_turn_queries"][1]) for formatted_doc in formatted_docs]
-        predictions_1 = [response[0].result[0] for response in responses]
-        predictions_2 = [(response[0].result[0], response[0].result[1]) for response in responses]
         golds_1 = [formatted_doc.specific["reference"][0]["turns"][0] for formatted_doc in formatted_docs]
         golds_2 = [(formatted_doc.specific["reference"][0]["turns"][0], formatted_doc.specific["reference"][0]["turns"][1]) for formatted_doc in formatted_docs]
         categories = [formatted_doc.specific["category"] for formatted_doc in formatted_docs]
 
-        scores_turn_1, messages_turn_1, judgements_turn_1 = self.judge.evaluate_answer_batch(questions_1, predictions_1, categories, golds_1)
-        scores_turn_2, messages_turn_2, judgements_turn_2 = self.judge.evaluate_answer_batch(questions_2, predictions_2, categories, golds_2)
+        metrics = []
+        score_turn_1_list = []
+        score_turn_2_list = []
+        message_turn_1_list = []
+        message_turn_2_list = []
+        judgement_turn_1_list = []
+        judgement_turn_2_list = []
+        num_samples = len(responses[0][0].result[0])
+        for sample_idx in range(num_samples):
+            predictions_1 = [extract_final_answer_from_reasoning(response[0].result[0][sample_idx]) for response in responses]
+            predictions_2 = [(extract_final_answer_from_reasoning(response[0].result[0][sample_idx]), extract_final_answer_from_reasoning(response[0].result[1][sample_idx])) for response in responses]
+            scores_turn_1, messages_turn_1, judgements_turn_1 = self.judge.evaluate_answer_batch(questions_1, predictions_1, categories, golds_1)
+            scores_turn_2, messages_turn_2, judgements_turn_2 = self.judge.evaluate_answer_batch(questions_2, predictions_2, categories, golds_2)
+            score_turn_1_list.append(scores_turn_1)
+            score_turn_2_list.append(scores_turn_2)
+            message_turn_1_list.append(messages_turn_1)
+            message_turn_2_list.append(messages_turn_2)
+            judgement_turn_1_list.append(judgements_turn_1)
+            judgement_turn_2_list.append(judgements_turn_2)
 
         metrics = []
         for i in range(len(sample_ids)):
+            judge_score_turn_1 = [score_turn_1_list[j][i] for j in range(num_samples)]
+            judge_score_turn_2 = [score_turn_2_list[j][i] for j in range(num_samples)]
+            user_prompt_turn_1 = [message_turn_1_list[j][i] for j in range(num_samples)]
+            user_prompt_turn_2 = [message_turn_2_list[j][i] for j in range(num_samples)]
+            judgement_turn_1 = [judgement_turn_1_list[j][i] for j in range(num_samples)]
+            judgement_turn_2 = [judgement_turn_2_list[j][i] for j in range(num_samples)]
+            judge_score_turn_1_avg = np.mean(judge_score_turn_1)
+            judge_score_turn_2_avg = np.mean(judge_score_turn_2)
             metrics.append(
                 {
-                    "judge_score_overall_turn_1": scores_turn_1[i],
-                    "judge_score_overall_turn_2": scores_turn_2[i],
-                    "user_prompt_overall_turn_1": messages_turn_1[i],
-                    "user_prompt_overall_turn_2": messages_turn_2[i],
-                    "judgement_overall_turn_1": judgements_turn_1[i],
-                    "judgement_overall_turn_2": judgements_turn_2[i],
-                    f"judge_score_{categories[i]}_turn_1": scores_turn_1[i],
-                    f"judge_score_{categories[i]}_turn_2": scores_turn_2[i],
+                    "judge_score_overall_turn_1_avg": judge_score_turn_1_avg,
+                    "judge_score_overall_turn_2_avg": judge_score_turn_2_avg,
+                    "judge_score_overall_turn_1": judge_score_turn_1,
+                    "judge_score_overall_turn_2": judge_score_turn_2,
+                    "user_prompt_overall_turn_1": user_prompt_turn_1,
+                    "user_prompt_overall_turn_2": user_prompt_turn_2,
+                    "judgement_overall_turn_1": judgement_turn_1,
+                    "judgement_overall_turn_2": judgement_turn_2,
+                    f"judge_score_{categories[i]}_turn_1_avg": judge_score_turn_1_avg,
+                    f"judge_score_{categories[i]}_turn_2_avg": judge_score_turn_2_avg,
                 }
             )
 

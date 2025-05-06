@@ -34,16 +34,18 @@ from lighteval.data import GenerativeTaskDataset, LoglikelihoodDataset
 from lighteval.models.abstract_model import LightevalModel, ModelInfo
 from lighteval.models.model_input import GenerationParameters
 from lighteval.models.model_output import (
+    GenerativeMultiturnResponse,
     GenerativeResponse,
     LoglikelihoodResponse,
 )
 from lighteval.models.utils import _get_dtype, _simplify_name
 from lighteval.tasks.requests import (
+    GreedyUntilMultiTurnRequest,
     GreedyUntilRequest,
     LoglikelihoodRequest,
 )
 from lighteval.utils.imports import is_vllm_available
-from lighteval.utils.utils import EnvConfig, as_list
+from lighteval.utils.utils import EnvConfig, as_list, extract_final_answer_from_reasoning
 
 
 logger = logging.getLogger(__name__)
@@ -206,6 +208,119 @@ class VLLMModel(LightevalModel):
         )
         tokenizer.pad_token = tokenizer.eos_token
         return tokenizer
+
+    def greedy_until_multi_turn(  # noqa: C901
+        self,
+        requests: list[GreedyUntilMultiTurnRequest],
+        override_bs: Optional[int] = None,
+    ) -> list[GenerativeMultiturnResponse]:
+        for request in requests:
+            request.stop_sequence = as_list(request.stop_sequence) + [self.tokenizer.eos_token]
+            request.tokenized_context = self.tok_encode(request.context)["input_ids"]
+
+        results = []
+
+        dataset = GenerativeTaskDataset(requests=requests, num_dataset_splits=1)
+        dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, collate_fn=lambda batch: batch)
+
+        logger.warning("Running greedy multi turn generation, the batch size is set to 1 for this task.")
+
+        for request_batch in tqdm(
+            dataloader, desc="Greedy Multi Turn Generation", position=1, leave=False, disable=False
+        ):
+            request = request_batch[0]
+            # For chat models, generation stops with EOS token, so we don't need to specify stop tokens
+            if self.use_chat_template:
+                stop_tokens = []
+            else:
+                stop_tokens = request.stop_sequence
+            max_new_tokens = self._config.generation_parameters.max_new_tokens or request.generation_size
+
+            turn_results: list[str] = []
+            turn_inputs: list[list[int]] = []  # 各ターンの入力 token ids
+            turn_gen_ids: list[list[int]] = []  # 各ターンの生成 token ids
+
+            prev_generation = ""
+            for i, multi_turn_context in enumerate(request.context):
+                multi_turn_context = (
+                    multi_turn_context if i == 0 else multi_turn_context.format(model_response=prev_generation)
+                )
+                tokenized = self.tokenizer(
+                    multi_turn_context,
+                    add_special_tokens=self.add_special_tokens,
+                )
+                inputs = tokenized["input_ids"]
+                inputs_list = [inputs]
+                context_size = len(inputs_list[0])
+
+                # left truncate the inputs to the maximum length
+                ctx_allowed = self.max_length - max_new_tokens
+                if len(inputs_list[0]) > ctx_allowed and ctx_allowed != 0:
+                    logger.warning(
+                        f"{context_size=} which is greater than {ctx_allowed=}. Truncating context to {ctx_allowed} tokens."
+                    )
+                    context_size = ctx_allowed
+                    if context_size < 0:
+                        logger.critical(
+                            f"{context_size=} is less than 0, either reduce the max_new_tokens or increase model max length."
+                        )
+                        raise ValueError("Context size is less than 0.")
+                    inputs_list[0] = inputs_list[0][-context_size:]
+
+                # change temperature as specified in the request
+                if request.temperature is not None:
+                    self._config.generation_parameters.temperature = request.temperature
+
+                if request.temperature is not None and request.temperature == 0 and request.num_samples > 1:
+                    vllm_output = self._generate(
+                        inputs=inputs_list,
+                        max_new_tokens=max_new_tokens,
+                        stop_tokens=stop_tokens,
+                        returns_logits=False,
+                        num_samples=1,
+                    )
+                    vllm_outputs = [vllm_output[0].outputs[0]] * request.num_samples
+                else:
+                    vllm_outputs = self._generate(
+                        inputs=inputs_list,
+                        max_new_tokens=max_new_tokens,
+                        stop_tokens=stop_tokens,
+                        returns_logits=False,
+                        num_samples=request.num_samples,
+                    )
+                    vllm_outputs = [vllm_outputs[0].outputs[i] for i in range(request.num_samples)]
+
+                # num_samples個分の回答を格納
+                gen_texts = []
+                gen_ids_list = []
+                for vllm_output in vllm_outputs:
+                    gen_ids = vllm_output.token_ids
+                    gen_text = vllm_output.text
+                    # reasoningモデルの場合は、最終的な回答を抽出
+                    gen_text = extract_final_answer_from_reasoning(gen_text)
+                    for term in stop_tokens:
+                        if term in gen_text:
+                            gen_text = gen_text.split(term)[0]
+                    gen_texts.append(gen_text)
+                    gen_ids_list.append(gen_ids)
+
+                # prev_generationは1つ目の回答を使う
+                prev_generation = gen_texts[0] if gen_texts else ""
+                turn_results.append(gen_texts)
+                turn_inputs.append(inputs[0])
+                turn_gen_ids.append(gen_ids_list)
+
+            results.append(
+                GenerativeMultiturnResponse(
+                    result=turn_results,
+                    input_tokens=turn_inputs,
+                    generated_tokens=turn_gen_ids,
+                    truncated_tokens_count=0,
+                    padded_tokens_count=0,
+                )
+            )
+
+        return dataset.get_original_order(results)
 
     def greedy_until(
         self,

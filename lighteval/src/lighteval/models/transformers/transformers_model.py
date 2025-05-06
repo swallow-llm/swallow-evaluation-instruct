@@ -620,7 +620,7 @@ class TransformersModel(LightevalModel):
 
     def greedy_until_multi_turn(  # noqa: C901
         self, requests: list[GreedyUntilMultiTurnRequest], override_bs: Optional[int] = None
-    ) -> GenerativeMultiturnResponse:
+    ) -> list[GenerativeMultiturnResponse]:
         for request in requests:
             request.stop_sequence = as_list(request.stop_sequence) + [self.tokenizer.eos_token]
             request.tokenized_context = self.tok_encode(request.context)["input_ids"]
@@ -730,7 +730,6 @@ class TransformersModel(LightevalModel):
                         "do_sample": False,
                     }
                 )
-                import pdb; pdb.set_trace()
                 model_outputs: GenerateOutput = self.model.generate(
                     input_ids=model_inputs["input_ids"],
                     attention_mask=model_inputs["attention_mask"],

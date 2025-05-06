@@ -44,6 +44,18 @@ logger = logging.getLogger(__name__)
 
 CATEGORIRES = ["coding", "extraction", "humanities", "math", "reasoning", "roleplay", "stem", "writing"]
 NEED_REF_CATEGORIRES = ["math", "reasoning", "coding"]
+CATEGORY_TEMPERATURE_MAP = {
+    "writing": 0.7,
+    "roleplay": 0.7,
+    "extraction": 0.0,
+    "math": 0.0,
+    "coding": 0.0,
+    "reasoning": 0.0,
+    "stem": 0.1,
+    "humanities": 0.1,
+    "arena-hard-200": 0.0,
+}
+NUM_SAMPLES = 5
 
 
 def mt_bench_prompt(line, task_name: str = ""):
@@ -58,6 +70,8 @@ def mt_bench_prompt(line, task_name: str = ""):
             "category": line["category"],
             "multi_turn_queries": line["turns"],
             "id": line["question_id"],
+            "num_samples": NUM_SAMPLES,
+            "temperature": CATEGORY_TEMPERATURE_MAP.get(line["category"], 0.0),
         },
     )
 
@@ -104,9 +118,9 @@ llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
         short_judge_name="gpt-4o",
     ).compute,
     corpus_level_fn={
-        f"judge_score_{category}_turn_1": np.mean for category in ["overall"] + CATEGORIRES
+        f"judge_score_{category}_turn_1_avg": np.mean for category in ["overall"] + CATEGORIRES
     } | {
-        f"judge_score_{category}_turn_2": np.mean for category in ["overall"] + CATEGORIRES
+        f"judge_score_{category}_turn_2_avg": np.mean for category in ["overall"] + CATEGORIRES
     }
 )
 

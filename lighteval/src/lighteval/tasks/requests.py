@@ -139,6 +139,8 @@ class GreedyUntilMultiTurnRequest(Request):
         stop_sequence (str): The sequence of tokens that indicates when to stop generating text.
         generation_size (int): The maximum number of tokens to generate.
         request_type (RequestType): The type of the request, set to RequestType.GREEDY_UNTIL.
+        temperature (float): The temperature for sampling.
+        num_samples (int): The number of samples to generate.
     """
 
     stop_sequence: str
@@ -146,6 +148,8 @@ class GreedyUntilMultiTurnRequest(Request):
     request_type = RequestType.GREEDY_UNTIL_MULTI_TURN
     do_sample: bool = False
     use_logits: bool = False
+    temperature: float = None
+    num_samples: int = 1
 
 
 class SampleUid(NamedTuple):
