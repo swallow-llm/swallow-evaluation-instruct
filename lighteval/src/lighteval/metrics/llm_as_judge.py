@@ -315,7 +315,7 @@ class JudgeLM:
                         model=self.model,
                         messages=as_list(prompt),
                         response_format=self.response_format,
-                        max_tokens=512,
+                        max_tokens=4096,
                         n=1,
                     )
                     text = response.choices[0].message.content
