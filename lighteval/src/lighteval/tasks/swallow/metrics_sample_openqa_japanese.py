@@ -112,7 +112,7 @@ def _free_form_answer_extraction_function(text: str, extraction_mode: Literal["f
     str_answer_match = r"""(?x)    
     (?:                                   # 前方一致
         (?:回答|正解|答え|解答)は          # 「回答は…」のパターン
-        (?:[:：]|→|->|=|＝|[．.])?\s*         # （任意）区切り記号
+        (?:[:：]|→|->|=|＝|[．.、，])?\s* # （任意）区切り記号または読点
       |                                  # または
         (?:                              # プレースホルダ
             (?:【|「|\[|\()?\s*             # (任意) 開括弧
