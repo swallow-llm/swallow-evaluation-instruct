@@ -3,8 +3,8 @@ import re
 from typing import List, Optional, Callable, Literal, Dict, Any
 from collections import Counter
 import itertools
+import unicodedata
 
-import neologdn
 from fuzzywuzzy import fuzz
 
 from lighteval.tasks.requests import Doc
@@ -103,23 +103,23 @@ def _boxed_match_extraction_function(text: str, extraction_mode: Literal["first_
     return _regex_extractor(obj_regex=boxed_match_regex, match_group_name="content",
                             text=text, extraction_mode=extraction_mode)
 
-# ToDo: prefixなしのvariantを実装
 def _free_form_answer_extraction_function(text: str, extraction_mode: Literal["first_match", "last_match", "any_match"]) -> List[str]:
     """
     自由記述形式の応答文から回答スパンを抽出する正規表現。対応している応答文の例は以下の通り。
-    正解: {回答スパン}, 正解は{回答スパン}。, 答えは{回答スパン}\n, [BOS]{回答スパン}。，...
+    正解: {回答スパン}, 正解は{回答スパン}。, 答えは{回答スパン}\n, ...
     """
     
     str_answer_match = r"""(?x)    
     (?:                                   # 前方一致
         (?:回答|正解|答え|解答)は          # 「回答は…」のパターン
+        (?:[:：]|→|->|=|＝|[．.])?\s*         # （任意）区切り記号
       |                                  # または
         (?:                              # プレースホルダ
             (?:【|「|\[|\()?\s*             # (任意) 開括弧
             (?:回答|正解|答え|解答|解|答)  # プレースホルダの表記ゆれ
             (?:】|」|\]|\))?\s*          # 閉括弧
         )
-        (?:[:：]|→|->|=|＝|[．.])\s*         # ②-2 区切り記号
+        (?:[:：]|→|->|=|＝|[．.])\s*         # （必須）区切り記号
     )
     (?P<answer>.+?) # 最短一致
     (?=             # 後方一致
@@ -130,8 +130,16 @@ def _free_form_answer_extraction_function(text: str, extraction_mode: Literal["f
     answer_regex = re.compile(str_answer_match, re.DOTALL | re.UNICODE)
     lst_extracted_answers = _regex_extractor(obj_regex=answer_regex, match_group_name="answer",
                             text=text, extraction_mode=extraction_mode)
-    if len(lst_extracted_answers) > 0:
-        return lst_extracted_answers
+    return lst_extracted_answers
+
+def _direct_answer_extraction_function(text: str, extraction_mode: Literal["first_match", "last_match", "any_match"]) -> List[str]:
+    """
+    自由記述形式の応答文から回答スパンを抽出する正規表現。
+    プレースホルダなしでいきなり回答が記述されているケースに対応。具体例は以下の通り。  
+    [BOS]{回答スパン}。, [BOS]{回答スパン}です, [BOS]{回答スパン}\n, ...
+    
+    プレースホルダにもとづく抽出が失敗した場合のfallbackとしてのみ使うべきである。
+    """
     
     # Fallback: 文頭からすぐに回答が書かれているケース
     str_answer_match = r"""(?x)
@@ -149,12 +157,12 @@ def _free_form_answer_extraction_function(text: str, extraction_mode: Literal["f
     return lst_extracted_answers
     
        
-def _neologd_normalize(text: str) -> str:
+def _nfkc_normalize(text: str) -> str:
     """
-    neologdn package を使って文字列を正規化する．表記揺れを軽減する効果がある．
+    NFKC正規化を行う．全角・半角の統一など，表記揺れを軽減する効果がある．
     quasi_exact_match として利用するとよい．
     """
-    text = neologdn.normalize(text)
+    text = unicodedata.normalize("NFKC", text)
     return text
 
 
@@ -216,13 +224,16 @@ class JapaneseOpenQAExtractor(object):
         self,
         use_boxed_match_extraction: bool = True,
         use_free_form_answer_extraction: bool = True,
+        use_direct_answer_extraction: bool = True,
         extraction_fallback_function: Optional[Callable[[str], List[str]]] = lambda text: [text],
-        neologdn_normalize: bool = False,
+        strip: bool = False,
+        nfkc_normalize: bool = False,
         remove_paren_and_quote: bool = False,
         canonicalize_binary_response: bool = False,
         lowercase: bool = False,
         boxed_match_extraction_mode: Literal["first_match", "last_match", "any_match"] = "first_match",
         free_form_answer_match_extraction_mode: Literal["first_match", "last_match", "any_match"] = "last_match",
+        direct_answer_match_extraction_mode: Literal["first_match", "last_match", "any_match"] = "first_match",
     ):
         """
         自由記述形式の設問に対する応答から回答スパンを抽出して正規化するクラス．  
@@ -232,23 +243,31 @@ class JapaneseOpenQAExtractor(object):
         
         回答スパンの抽出および正規化は，オプションで ON/OFF を変更できる．オプションは以下の通りで，上から順に適用される:
         以下，回答文字列を `ANSWER` としてオプションを説明する．
-          1. boxed_match_extraction: \boxed{ANSWER} から回答を抽出
-          2. free_form_answer_extraction: "回答：ANSWER" のような表現から回答を抽出
-          3. extraction_fallback_function: 上記2つの抽出に失敗した場合に適用する回答スパン抽出関数．デフォルトは応答文全体を回答とみなす．
-          4. neologdn_normalize: [neologdn](https://github.com/ikegami-yukino/neologdn) に従って回答文字列の表記ゆれを正規化．全角/半角，空白，記号類が正規化される．
-          5. remove_paren_and_quote: 回答文字列前後の括弧や引用符を削除．E.g., 「東京都」 -> 東京都
-          6. canonicalize_binary_response: 二択問題の回答を "YES", "NO" に正規化．E.g., いいえ -> NO
-          7. lowercase: 回答を小文字化．E.g., TOKYO -> tokyo
+          1. use_boxed_match_extraction: \boxed{ANSWER} から回答を抽出
+          2. use_free_form_answer_extraction: "回答：ANSWER" のような表現から回答を抽出
+          3. use_direct_answer_extraction: "[BOS]ANSWERです。" のような表現から回答を抽出
+          4. extraction_fallback_function: 上記3つの抽出すべてに失敗した場合に適用する回答スパン抽出関数．デフォルトは応答文をそのまま回答とみなす．
+          5. 回答文字列に .strip() を適用する．
+          6. nfkc_normalize: Unicode NFKC正規化に従って回答文字列を正規化．全角/半角，空白，記号類が正規化される．
+          7. remove_paren_and_quote: 回答文字列前後の括弧や引用符を削除．E.g., 「東京都」 -> 東京都
+          8. canonicalize_binary_response: 二択問題の回答を "YES", "NO" に正規化．E.g., いいえ -> NO
+          9. lowercase: 回答を小文字化．E.g., TOKYO -> tokyo
+          
+          回答スパン抽出関数は 1--3 の順，なおかつ上位の関数による抽出が失敗した場合にのみ適用される．  
+          たとえば boxed_match に成功したら free_form_answer, direct_answer はたとえTrueであっても適用されない．
         """
         self.use_boxed = use_boxed_match_extraction
         self.use_free  = use_free_form_answer_extraction
+        self.use_direct = use_direct_answer_extraction
         self.fallback  = extraction_fallback_function
-        self.do_neologd = neologdn_normalize
-        self.do_strip  = remove_paren_and_quote
+        self.do_strip = strip        
+        self.do_strip_paren  = remove_paren_and_quote
+        self.do_nfkc_normalize = nfkc_normalize
         self.do_bin    = canonicalize_binary_response
         self.do_lower  = lowercase
         self.boxed_match_extraction_mode = boxed_match_extraction_mode
         self.free_form_answer_match_extraction_mode = free_form_answer_match_extraction_mode
+        self.direct_answer_match_extraction_mode = direct_answer_match_extraction_mode
 
     def __call__(
         self,
@@ -258,18 +277,22 @@ class JapaneseOpenQAExtractor(object):
         results = []
         if self.use_boxed:
             results += _boxed_match_extraction_function(text, self.boxed_match_extraction_mode)
-        if self.use_free:
+        if self.use_free and len(results) == 0:
             results += _free_form_answer_extraction_function(text, self.free_form_answer_match_extraction_mode)
+        if self.use_direct and len(results) == 0:
+            results += _direct_answer_extraction_function(text, self.direct_answer_match_extraction_mode)
 
-        # 3. 両方ともヒットしなかったらフォールバック
+        # 3. すべて抽出に失敗したらフォールバック
         if len(results) == 0 and (self.fallback is not None):
             results = self.fallback(text) or []
 
-        # 4–7. 取得した各スパンに対して後処理を適用
+        # 4–7. 取得した各スパンに対して後処理を適用        
         if self.do_strip:
+            results = [r.strip() for r in results]
+        if self.do_strip_paren:
             results = list(map(_remove_paren_and_quote, results))
-        if self.do_neologd:
-            results = list(map(_neologd_normalize, results))
+        if self.do_nfkc_normalize:
+            results = list(map(_nfkc_normalize, results))
         if self.do_bin:
             results = list(map(_canonicalize_binary_response, results))
         if self.do_lower:
@@ -283,14 +306,17 @@ def _pass_through(text: str) -> List[str]:
 default_exact_match_pred_extractor = JapaneseOpenQAExtractor(
     use_boxed_match_extraction=True,
     use_free_form_answer_extraction=True,
+    use_direct_answer_extraction=False,
     extraction_fallback_function=_pass_through
 )
 
 default_quasi_exact_match_pred_extractor = JapaneseOpenQAExtractor(
     use_boxed_match_extraction=True,
     use_free_form_answer_extraction=True,
+    use_direct_answer_extraction=True,
     extraction_fallback_function=_pass_through,
-    neologdn_normalize=True,
+    strip=True,
+    nfkc_normalize=True,
     remove_paren_and_quote=True,
     canonicalize_binary_response=True,
     lowercase=False
