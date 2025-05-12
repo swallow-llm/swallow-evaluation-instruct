@@ -9,11 +9,12 @@
 from .mclm_MATH_100_japanese import math_100_japanese
 from .jmmlu import JMMLU_SUBSET_TASKS
 from .hellaswag import hellaswag_generative
-from .jemhopqa import jemhopqa
+from .jemhopqa import jemhopqa, jemhopqa_cot
 
 SWALLOW_TASKS = [
     math_100_japanese,
     hellaswag_generative,
-    jemhopqa
+    jemhopqa,
+    jemhopqa_cot
 ]
 SWALLOW_TASKS.extend(JMMLU_SUBSET_TASKS)
