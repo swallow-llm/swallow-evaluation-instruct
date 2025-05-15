@@ -106,8 +106,10 @@ def gpt_judge_mt_bench_prompt(question, answer, options, gold):
 
 
 llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
-    metric_name=[f"judge_score_{category}_turn_1" for category in ["overall"] + CATEGORIRES] + [f"judge_score_{category}_turn_2" for category in ["overall"] + CATEGORIRES],
-    higher_is_better={f"judge_score_{category}_turn_1": True for category in ["overall"] + CATEGORIRES} | {f"judge_score_{category}_turn_2": True for category in ["overall"] + CATEGORIRES},
+    metric_name=[f"judge_score_{category}_turn_1" for category in ["overall"] + CATEGORIRES]
+    + [f"judge_score_{category}_turn_2" for category in ["overall"] + CATEGORIRES],
+    higher_is_better={f"judge_score_{category}_turn_1": True for category in ["overall"] + CATEGORIRES}
+    | {f"judge_score_{category}_turn_2": True for category in ["overall"] + CATEGORIRES},
     category=MetricCategory.LLM_AS_JUDGE_MULTI_TURN,
     use_case=MetricUseCase.SUMMARIZATION,
     sample_level_fn=JudgeLLMMTBenchSwallow(
@@ -117,11 +119,8 @@ llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
         judge_backend="openai",
         short_judge_name="gpt-4o",
     ).compute,
-    corpus_level_fn={
-        f"judge_score_{category}_turn_1_avg": np.mean for category in ["overall"] + CATEGORIRES
-    } | {
-        f"judge_score_{category}_turn_2_avg": np.mean for category in ["overall"] + CATEGORIRES
-    }
+    corpus_level_fn={f"judge_score_{category}_turn_1_avg": np.mean for category in ["overall"] + CATEGORIRES}
+    | {f"judge_score_{category}_turn_2_avg": np.mean for category in ["overall"] + CATEGORIRES},
 )
 
 mt_bench_swallow_gpt4o = LightevalTaskConfig(

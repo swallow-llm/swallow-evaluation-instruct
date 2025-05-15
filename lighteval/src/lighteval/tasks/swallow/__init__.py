@@ -10,8 +10,5 @@ from .mclm_MATH_100_japanese import math_100_japanese
 from .jmmlu import JMMLU_SUBSET_TASKS
 from .japanese_mt_bench.main import mt_bench_swallow_gpt4o
 
-SWALLOW_TASKS = [
-    math_100_japanese,
-    mt_bench_swallow_gpt4o
-]
+SWALLOW_TASKS = [math_100_japanese, mt_bench_swallow_gpt4o]
 SWALLOW_TASKS.extend(JMMLU_SUBSET_TASKS)

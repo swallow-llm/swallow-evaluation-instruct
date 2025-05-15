@@ -42,6 +42,7 @@ Please act as an impartial judge and evaluate the quality of the response provid
         },
     ]
 
+
 def gpt_judge_prompt_mt_bench_for_single_v1_with_ref(question, options, answer, gold):
     return [
         {"role": "system", "content": "You are a helpful assistant."},

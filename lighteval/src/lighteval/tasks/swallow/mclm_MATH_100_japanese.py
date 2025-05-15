@@ -1,4 +1,3 @@
-
 from lighteval.metrics.dynamic_metrics import (
     ExprExtractionConfig,
     IndicesExtractionConfig,
@@ -45,6 +44,7 @@ def math100_japanese_prompt_fn(line, task_name: str = None):
         gold_index=0,
     )
 
+
 # Evaluation metric
 # 回答スパン抽出：数式 (LatexExtractionConfig) と 数量表現 (ExprExtractionConfig) を併用
 # ロケール：日本語．要検証
@@ -52,7 +52,10 @@ latex_gold_metric = multilingual_extractive_match_metric(
     language=Language.JAPANESE,
     fallback_mode="first_match",
     precision=5,
-    gold_extraction_target=(ExprExtractionConfig(), LatexExtractionConfig(),),
+    gold_extraction_target=(
+        ExprExtractionConfig(),
+        LatexExtractionConfig(),
+    ),
     # Match boxed first before trying other regexes
     pred_extraction_target=(ExprExtractionConfig(), LatexExtractionConfig(boxed_match_priority=0)),
     aggregation_function=max,
