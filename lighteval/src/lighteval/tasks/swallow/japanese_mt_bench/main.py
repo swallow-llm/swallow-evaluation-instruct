@@ -134,7 +134,6 @@ mt_bench_swallow_gpt4o = LightevalTaskConfig(
     few_shots_split="",
     few_shots_select="random",
     metric=[llm_judge_mt_bench_swallow_gpt4o_judge],
-    generation_size=32768,
     stop_sequence=[],
 )
 
