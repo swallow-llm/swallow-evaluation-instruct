@@ -10,11 +10,11 @@ from lighteval.utils.language import Language
 
 MATH_JAPANESE_QUERY_TEMPLATE = """
 以下の数学の問題を、わかりやすく、論理的に解いてください。  
-出力の最後の行は、次の形式にしてください。ただし引用符 ` は不要です。
+出力の最後の行は、次の形式にしてください。
 
-`回答： $\boxed{{ANSWER}}$`
+回答: $\\boxed{{ANSWER}}$
 
-`ANSWER` には、問題の答えに対する最終的な数式または数値が入ります。  
+`ANSWER` には、解答となる数式または数値が入ります。
 
 ステップバイステップで考えてから回答してください。
 
@@ -24,9 +24,9 @@ MATH_JAPANESE_QUERY_TEMPLATE = """
 # 具体例
 """
 以下の数学の問題を、わかりやすく、論理的に解いてください。  
-出力の最後の行は、次の形式にしてください。ただし引用符 ` は不要です。
+出力の最後の行は、次の形式にしてください。
 
-`回答： $\boxed{{ANSWER}}$`
+回答: $\boxed{{ANSWER}}$
 
 `ANSWER` には、問題の答えに対する最終的な数式または数値が入ります。  
 
@@ -35,12 +35,19 @@ MATH_JAPANESE_QUERY_TEMPLATE = """
 $f(x)=\frac{2x}{x^2-5x-14}$ のグラフには、垂直漸近線 $x=a$ と $x=b$、水平漸近線 $y=c$ があります。$a+b+c$ を求めなさい。
 """
 
+def wrap_answer_with_latex_boxes(str_answer: str):
+    TEMPLATE = "$\\boxed{{{ANSWER}}}$"
+    
+    if not str_answer.startswith("$\\boxed"):
+        return TEMPLATE.format(ANSWER=str_answer)
+    else:
+        return str_answer
 
 def math100_japanese_prompt_fn(line, task_name: str = None):
     return Doc(
         task_name=task_name,
         query=MATH_JAPANESE_QUERY_TEMPLATE.format(Question=line["ja"]),
-        choices=[line["answer"]],
+        choices=[wrap_answer_with_latex_boxes(line["answer"])],
         gold_index=0,
     )
 
@@ -49,13 +56,10 @@ def math100_japanese_prompt_fn(line, task_name: str = None):
 # 回答スパン抽出：数式 (LatexExtractionConfig) と 数量表現 (ExprExtractionConfig) を併用
 # ロケール：日本語．要検証
 latex_gold_metric = multilingual_extractive_match_metric(
-    language=Language.JAPANESE,
+    language=Language.ENGLISH,
     fallback_mode="first_match",
     precision=5,
-    gold_extraction_target=(
-        ExprExtractionConfig(),
-        LatexExtractionConfig(),
-    ),
+    gold_extraction_target=(LatexExtractionConfig(),),
     # Match boxed first before trying other regexes
     pred_extraction_target=(ExprExtractionConfig(), LatexExtractionConfig(boxed_match_priority=0)),
     aggregation_function=max,

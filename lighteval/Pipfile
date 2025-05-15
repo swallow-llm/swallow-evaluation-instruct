@@ -15,12 +15,19 @@ name = "pytorch-cu124"
 url = "https://download.pytorch.org/whl/cu124"
 verify_ssl = true
 
+# pytorch with CUDA 12.8
+[[source]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+verify_ssl = true
+
 [requires]
 python_version = "3.11"
 
 [packages]
 vllm = "==0.8.3"
 transformers = "*"
+regex = "*"
 lighteval = { path = "./", editable = true, extras = ["multilingual", "math", "extended_tasks"] }
 torch = {version = "==2.6.0", index = "pytorch-cu121"}
 

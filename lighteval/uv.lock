@@ -1898,7 +1898,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ec/9f/cbbf6d5e685c214afc9c50be30a3b798b22d178c219f392b9333f6d9dfce/litellm-1.66.2.tar.gz", hash = "sha256:2d3c24c7b10dcb59596b5bbb4f46200dcdb91032b313f4b53cc070b83a4f547d", size = 7209195 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ef/29/65a0fa675fed540c31d402b08d872de40a44ed6697594efe764b5660fc83/litellm-1.66.2-py3-none-any.whl", hash = "sha256:8bcf68a0f155b89eca83000bfa68550de843c894666ca02b5bf78b71b14ba9a7", size = 7568331 },
-]
 
 [[package]]
 name = "llguidance"
