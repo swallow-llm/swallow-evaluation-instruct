@@ -30,6 +30,7 @@ transformers = "*"
 regex = "*"
 lighteval = { path = "./", editable = true, extras = ["multilingual", "math", "extended_tasks"] }
 torch = {version = "==2.6.0", index = "pytorch-cu121"}
+janome = "*"
 
 [dev-packages]
 lighteval = { path = "./", editable = true, extras = ["tests", "multilingual", "math", "extended_tasks"] }
