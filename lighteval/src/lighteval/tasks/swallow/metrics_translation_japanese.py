@@ -83,7 +83,8 @@ class JapaneseTranslationPreparator:
         
         return GenerativeCorpusMetricInput(golds=golds, preds=predictions)
     
-    
+
+# 邦訳文向けBLEU
 bleu_ja = CorpusLevelMetric(
     metric_name="bleu_ja",
     sample_level_fn=JapaneseTranslationPreparator(remove_whiespace_tokens=True, lowercase=False, normalize_nfkc=False).prepare,
@@ -92,3 +93,23 @@ bleu_ja = CorpusLevelMetric(
     corpus_level_fn=CorpusLevelTranslationMetric("bleu").compute,
     higher_is_better=True,
 )    
+
+# 邦訳文向けchrF
+chrf = CorpusLevelMetric(
+    metric_name="chrf_ja",
+    sample_level_fn=JapaneseTranslationPreparator(remove_whiespace_tokens=True, lowercase=False, normalize_nfkc=False).prepare,
+    category=MetricCategory.GENERATIVE,
+    use_case=MetricUseCase.TRANSLATION,
+    corpus_level_fn=CorpusLevelTranslationMetric("chrf").compute,
+    higher_is_better=True,
+)
+
+# 邦訳文向けTER
+ter = CorpusLevelMetric(
+    metric_name="ter",
+    sample_level_fn=JapaneseTranslationPreparator(remove_whiespace_tokens=True, lowercase=False, normalize_nfkc=False).prepare,
+    category=MetricCategory.GENERATIVE,
+    use_case=MetricUseCase.TRANSLATION,
+    corpus_level_fn=CorpusLevelTranslationMetric("ter").compute,
+    higher_is_better=False,
+)
