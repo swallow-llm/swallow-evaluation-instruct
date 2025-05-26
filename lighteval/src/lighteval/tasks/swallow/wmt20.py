@@ -10,9 +10,12 @@ from .metrics_translation_japanese import bleu_ja, chrf_ja, ter_ja
 
 # 英日翻訳用プロンプト
 LIGHTEVAL_MACHINE_TRANSLATION_ENJA_QUERY_TEMPLATE = """
-English phrase: {source_text}\n
-Japanese phrase:
-""".strip()
+以下に示す英文を日本語に翻訳せよ。
+翻訳文の文体は「だ、である」を用いること。
+翻訳文を出力するときは、改行してから `日本語: 翻訳文` という形式で出力すること。
+
+英語: {source_text}
+""".lstrip()
 
 # 日英翻訳用プロンプト
 LIGHTEVAL_MACHINE_TRANSLATION_JAEN_QUERY_TEMPLATE = """
