@@ -6,10 +6,11 @@ from lighteval.metrics.metrics import Metrics
 from lighteval.tasks.requests import Doc
 from lighteval.utils.utils import as_list
 
-from .metrics_translation_japanese import bleu_ja, chrf_ja, ter_ja
+from .metrics_translation_japanese import bleu_ja, chrf_ja, ter_ja, bleu_en, chrf_en, ter_en
 
 # 英日翻訳用プロンプト
-LIGHTEVAL_MACHINE_TRANSLATION_ENJA_QUERY_TEMPLATE = """
+# 翻訳文の接頭辞は `日本語:` とする
+MACHINE_TRANSLATION_ENJA_QUERY_TEMPLATE = """
 以下に示す英文を日本語に翻訳せよ。
 翻訳文の文体は「だ、である」を用いること。
 翻訳文を出力するときは、改行してから `日本語: 翻訳文` という形式で出力すること。
@@ -18,9 +19,12 @@ LIGHTEVAL_MACHINE_TRANSLATION_ENJA_QUERY_TEMPLATE = """
 """.lstrip()
 
 # 日英翻訳用プロンプト
-LIGHTEVAL_MACHINE_TRANSLATION_JAEN_QUERY_TEMPLATE = """
-Japanese phrase: {source_text}\n
-English phrase:
+# 翻訳文の接頭辞は `English:` とする
+MACHINE_TRANSLATION_JAEN_QUERY_TEMPLATE = """
+Translate the following Japanese sentence into English.  
+On a new line, output the result in this exact format: `English: <your translation>`
+
+Japanese: {source_text}
 """.strip()
 
 def wmt_enja(line, task_name: str = None):
@@ -31,7 +35,7 @@ def wmt_enja(line, task_name: str = None):
     for k, v in line["translation"].items():
         line["translation"][k] = as_list(v)[0]
 
-    query = LIGHTEVAL_MACHINE_TRANSLATION_ENJA_QUERY_TEMPLATE.format(source_text=line["translation"]["en"])
+    query = MACHINE_TRANSLATION_ENJA_QUERY_TEMPLATE.format(source_text=line["translation"]["en"])
 
     return Doc(
         task_name=task_name,
@@ -46,7 +50,7 @@ def wmt_jaen(line, task_name: str = None):
     for k, v in line["translation"].items():
         line["translation"][k] = as_list(v)[0]
 
-    query = LIGHTEVAL_MACHINE_TRANSLATION_JAEN_QUERY_TEMPLATE.format(source_text=line["translation"]["ja"])
+    query = MACHINE_TRANSLATION_JAEN_QUERY_TEMPLATE.format(source_text=line["translation"]["ja"])
 
     return Doc(
         task_name=task_name,
@@ -56,7 +60,7 @@ def wmt_jaen(line, task_name: str = None):
     )
 
 
-wmt20_en_ja_swallow = LightevalTaskConfig(
+wmt20_enja_swallow = LightevalTaskConfig(
     name="wmt20:en-ja",
     suite=["swallow"],
     prompt_function=wmt_enja,
@@ -68,12 +72,12 @@ wmt20_en_ja_swallow = LightevalTaskConfig(
     few_shots_select=None,
     generation_size=None,
     metric=[bleu_ja, chrf_ja, ter_ja],
-    stop_sequence=["\n"],
+    stop_sequence=[],
     trust_dataset=True,
     version=0,
 )
 
-wmt20_ja_en_swallow = LightevalTaskConfig(
+wmt20_jaen_swallow = LightevalTaskConfig(
     name="wmt20:ja-en",
     suite=["swallow"],
     prompt_function=wmt_jaen,
@@ -84,8 +88,8 @@ wmt20_ja_en_swallow = LightevalTaskConfig(
     few_shots_split=None,
     few_shots_select=None,
     generation_size=None,
-    metric=[Metrics.bleu, Metrics.chrf, Metrics.ter],
-    stop_sequence=["\n"],
+    metric=[bleu_en, chrf_en, ter_en],
+    stop_sequence=[],
     trust_dataset=True,
     version=0,
 )

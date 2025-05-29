@@ -12,7 +12,7 @@ from .japanese_mt_bench.main import mt_bench_swallow_gpt4o
 from .hellaswag import hellaswag_generative
 from .jemhopqa import jemhopqa, jemhopqa_cot
 from .gpqa_ja import gpqa_ja_instruct_lighteval
-from .wmt20 import wmt20_en_ja_swallow, wmt20_ja_en_swallow
+from .wmt20 import wmt20_enja_swallow, wmt20_jaen_swallow
 
 SWALLOW_TASKS = [
     math_100_japanese,
@@ -21,7 +21,7 @@ SWALLOW_TASKS = [
     jemhopqa,
     jemhopqa_cot,
     mt_bench_swallow_gpt4o,
-    wmt20_en_ja_swallow,
-    wmt20_ja_en_swallow
+    wmt20_enja_swallow,
+    wmt20_jaen_swallow
 ]
 SWALLOW_TASKS.extend(JMMLU_SUBSET_TASKS)

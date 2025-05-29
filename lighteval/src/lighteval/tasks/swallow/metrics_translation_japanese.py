@@ -1,4 +1,4 @@
-from typing import List, Literal, Callable
+from typing import List, Literal, Callable, Optional
 
 import unicodedata
 import re
@@ -62,12 +62,14 @@ def _prefixed_line_extraction_function(text: str, prefix: str,
         extraction_mode=extraction_mode,
     )
 
+def _pass_through(text: str) -> List[str]:
+    return [text]
 
 
 class JanomeTextSegmenter(JanomeTokenizer):
     
-    def __init__(self, remove_whiespace_tokens: bool = True, lowercase: bool = False, normalize_nfkc: bool = False, *, 
-                 udic = '', udic_enc = 'utf8', udic_type = 'ipadic', **kwargs_janome_tokenizer):
+    def __init__(self, remove_whiespace_tokens: bool = True, lowercase: bool = False, normalize_nfkc: bool = False, 
+                 **kwargs_janome_tokenizer):
         
         """
         Janomeを用いて日本語テキストを分かち書きするクラス．
@@ -89,7 +91,7 @@ class JanomeTextSegmenter(JanomeTokenizer):
             >>> ["今日", "は", "晴れ", "です", "。"]
         """
         
-        super().__init__(udic, udic_enc=udic_enc, udic_type=udic_type, wakati=True, **kwargs_janome_tokenizer)
+        super().__init__(wakati=True, **kwargs_janome_tokenizer)
         self.remove_whiespace_tokens = remove_whiespace_tokens
         self.lowercase = lowercase
         self.normalize_nfkc = normalize_nfkc
@@ -110,19 +112,77 @@ class JanomeTextSegmenter(JanomeTokenizer):
             lst_tokens = list(map(self._normalize_nfkc, lst_tokens))
             
         return lst_tokens
+
+
+class TranslationPreparator:
     
+    def __init__(self, text_extraction_function: Callable[[str], List[str]], 
+                 extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through,
+                 lowercase: bool = False, normalize_nfkc: bool = False):
+        """_summary_
+        BLEUやchrFなどを計算する際に使う前処理クラス．
+        翻訳スパンの抽出，文字列の正規化に対応している．
+        CorpusLevelMetric(sample_level_fn) に，インスタンスの .prepare() method を渡すことで前処理が行われるようになる．  
+
+        Args:
+            text_extraction_function (Callable[[str], List[str]]): 翻訳スパン抽出関数．翻訳指示プロンプトに整合させること．
+            extraction_fallback_function (Callable[[str], List[str]]): 翻訳スパン抽出に失敗した場合のスパン抽出関数．デフォルトは応答文全体をそのまま翻訳とみなす．
+            lowercase (bool, optional): トークンの小文字化．Defaults to False.
+            normalize_nfkc (bool, optional): トークンのNFKC正規化．Defaults to False.
+        """        
+        self.text_extraction_function = text_extraction_function
+        self.extraction_fallback_function = extraction_fallback_function
+        
+    def prepare(self, golds: list[str], predictions: list[str], **kwargs):
+        """
+        モデルの出力から翻訳文を抽出する
+
+        Args:
+            golds (list[str]): 1つの事例に対する参照訳のリスト
+            predictions (list[str]): 1つの事例に対する翻訳文のリスト
+
+        Returns:
+            GenerativeCorpusMetricInput: Stores the golds and predictions as such
+        """
+        lst_translated = []
+        for pred in predictions:
+            _lst_extracted = self.text_extraction_function(text=pred)
+            lst_translated.extend(_lst_extracted)
+        
+        # 抽出に失敗した場合はそのまま入力する
+        if len(lst_translated) == 0:
+            _fallback = self.extraction_fallback_function(pred)
+            lst_translated.extend(_fallback)
+        
+        return GenerativeCorpusMetricInput(golds=golds, 
+                                           preds=lst_translated)
+
     
 class JapaneseTranslationPreparator:
     
     def __init__(self, 
-        text_extraction_function: Callable[[str], List[str]] = lambda text: _prefixed_line_extraction_function(text=text, prefix="日本語:", extraction_mode="last_match"),
-        remove_whiespace_tokens: bool = False, lowercase: bool = False, normalize_nfkc: bool = False, *, 
-        udic = '', udic_enc = 'utf8', udic_type = 'ipadic', **kwargs_janome_tokenizer):
-        
+        text_extraction_function: Callable[[str], List[str]],
+        extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through,
+        remove_whiespace_tokens: bool = False, lowercase: bool = False, normalize_nfkc: bool = False,  
+        **kwargs_janome_tokenizer):
+        """_summary_
+        邦訳文に対してBLEUやchrFなどを計算する際に使う前処理クラス．
+        翻訳スパンの抽出，Janomeによる分かち書き，トークン文字列の正規化に対応している．
+        CorpusLevelMetric(sample_level_fn) に，インスタンスの .prepare() method を渡すことで前処理が行われるようになる．  
+
+        Args:
+            text_extraction_function (Callable[[str], List[str]]): 翻訳スパン抽出関数．翻訳指示プロンプトに整合させること．
+            extraction_fallback_function (Callable[[str], List[str]]): 翻訳スパン抽出に失敗した場合のスパン抽出関数．デフォルトは応答文全体をそのまま翻訳とみなす．
+            remove_whiespace_tokens (bool, optional): 空白トークンの削除. Defaults to False.
+            lowercase (bool, optional): トークンの小文字化．Defaults to False.
+            normalize_nfkc (bool, optional): トークンのNFKC正規化．Defaults to False.
+            kwargs_janome_tokenizer: Janome.Tokenizer() に渡す引数．
+        """
         self.text_extraction_function = text_extraction_function
+        self.extraction_fallback_function = extraction_fallback_function
         
         self.segmenter = JanomeTextSegmenter(remove_whiespace_tokens=remove_whiespace_tokens, lowercase=lowercase, normalize_nfkc=normalize_nfkc, 
-                                             udic=udic, udic_enc=udic_enc, udic_type=udic_type, **kwargs_janome_tokenizer)
+                                             **kwargs_janome_tokenizer)
     
     def prepare(self, golds: list[str], predictions: list[str], **kwargs):
         """
@@ -143,19 +203,37 @@ class JapaneseTranslationPreparator:
         
         # 抽出に失敗した場合はそのまま入力する
         if len(lst_translated) == 0:
-            lst_translated.append(pred)
+            _fallback = self.extraction_fallback_function(pred)
+            lst_translated.extend(_fallback)
         
         lst_reference_tokenzed = [" ".join(self.segmenter.segment(gold)) for gold in golds]
         lst_translated_tokenized = [" ".join(self.segmenter.segment(translated)) for translated in lst_translated]
         
         return GenerativeCorpusMetricInput(golds=lst_reference_tokenzed, 
                                            preds=lst_translated_tokenized)
-    
+
+
+def wmt20_enja_translation_span_extractor(text: str):
+    return _prefixed_line_extraction_function(text=text, prefix="日本語:", extraction_mode="last_match")
+
+def wmt20_jaen_translation_span_extractor(text: str):
+    return _prefixed_line_extraction_function(text=text, prefix="English:", extraction_mode="last_match")
+
+
+wmt20_enja_translation_preparator = JapaneseTranslationPreparator(
+    text_extraction_function=wmt20_enja_translation_span_extractor, 
+    extraction_fallback_function=_pass_through,
+    remove_whiespace_tokens=True, lowercase=False, normalize_nfkc=False)
+
+wmt20_jaen_translation_preparator = TranslationPreparator(
+    text_extraction_function=wmt20_jaen_translation_span_extractor, 
+    extraction_fallback_function=_pass_through,
+    remove_whiespace_tokens=True, lowercase=False, normalize_nfkc=False)
 
 # 邦訳文向けBLEU
 bleu_ja = CorpusLevelMetric(
     metric_name="bleu",
-    sample_level_fn=JapaneseTranslationPreparator(remove_whiespace_tokens=True, lowercase=False, normalize_nfkc=False).prepare,
+    sample_level_fn=wmt20_enja_translation_preparator.prepare,
     category=MetricCategory.GENERATIVE,
     use_case=MetricUseCase.TRANSLATION,
     corpus_level_fn=CorpusLevelTranslationMetric("bleu").compute,
@@ -165,7 +243,7 @@ bleu_ja = CorpusLevelMetric(
 # 邦訳文向けchrF
 chrf_ja = CorpusLevelMetric(
     metric_name="chrf",
-    sample_level_fn=JapaneseTranslationPreparator(remove_whiespace_tokens=True, lowercase=False, normalize_nfkc=False).prepare,
+    sample_level_fn=wmt20_enja_translation_preparator.prepare,
     category=MetricCategory.GENERATIVE,
     use_case=MetricUseCase.TRANSLATION,
     corpus_level_fn=CorpusLevelTranslationMetric("chrf").compute,
@@ -175,7 +253,37 @@ chrf_ja = CorpusLevelMetric(
 # 邦訳文向けTER
 ter_ja = CorpusLevelMetric(
     metric_name="ter",
-    sample_level_fn=JapaneseTranslationPreparator(remove_whiespace_tokens=True, lowercase=False, normalize_nfkc=False).prepare,
+    sample_level_fn=wmt20_enja_translation_preparator.prepare,
+    category=MetricCategory.GENERATIVE,
+    use_case=MetricUseCase.TRANSLATION,
+    corpus_level_fn=CorpusLevelTranslationMetric("ter").compute,
+    higher_is_better=False,
+)
+
+# 英訳向けBLEU
+bleu_en = CorpusLevelMetric(
+    metric_name="bleu",
+    sample_level_fn=wmt20_jaen_translation_preparator.prepare,
+    category=MetricCategory.GENERATIVE,
+    use_case=MetricUseCase.TRANSLATION,
+    corpus_level_fn=CorpusLevelTranslationMetric("bleu").compute,
+    higher_is_better=True,
+)    
+
+# 英訳向けchrF
+chrf_en = CorpusLevelMetric(
+    metric_name="chrf",
+    sample_level_fn=wmt20_jaen_translation_preparator.prepare,
+    category=MetricCategory.GENERATIVE,
+    use_case=MetricUseCase.TRANSLATION,
+    corpus_level_fn=CorpusLevelTranslationMetric("chrf").compute,
+    higher_is_better=True,
+)
+
+# 英訳向けTER
+ter_en = CorpusLevelMetric(
+    metric_name="ter",
+    sample_level_fn=wmt20_jaen_translation_preparator.prepare,
     category=MetricCategory.GENERATIVE,
     use_case=MetricUseCase.TRANSLATION,
     corpus_level_fn=CorpusLevelTranslationMetric("ter").compute,
