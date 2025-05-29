@@ -196,13 +196,17 @@ def _canonicalize_binary_response(text: str) -> str:
     
     return text
 
+def _pass_through(text: str) -> List[str]:
+    return [text]
+
+
 class JapaneseOpenQAExtractor(object):
     def __init__(
         self,
         use_boxed_match_extraction: bool = True,
         use_free_form_answer_extraction: bool = True,
         use_direct_answer_extraction: bool = True,
-        extraction_fallback_function: Optional[Callable[[str], List[str]]] = lambda text: [text],
+        extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through,
         strip: bool = False,
         nfkc_normalize: bool = False,
         remove_paren_and_quote: bool = False,
@@ -276,9 +280,6 @@ class JapaneseOpenQAExtractor(object):
             results = [r.lower() for r in results]
         
         return results
-
-def _pass_through(text: str) -> List[str]:
-    return [text]
 
 default_exact_match_pred_extractor = JapaneseOpenQAExtractor(
     use_boxed_match_extraction=True,
