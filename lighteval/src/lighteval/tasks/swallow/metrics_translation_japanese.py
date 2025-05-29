@@ -68,7 +68,7 @@ def _pass_through(text: str) -> List[str]:
 
 class JanomeTextSegmenter(JanomeTokenizer):
     
-    def __init__(self, remove_whiespace_tokens: bool = True, lowercase: bool = False, normalize_nfkc: bool = False, 
+    def __init__(self, remove_whitespace_tokens: bool = True, lowercase: bool = False, normalize_nfkc: bool = False, 
                  **kwargs_janome_tokenizer):
         
         """
@@ -78,7 +78,7 @@ class JanomeTextSegmenter(JanomeTokenizer):
         Ref. https://pypi.org/project/Janome/
 
         Args:
-            remove_whiespace_tokens: 空白トークンを削除．MeCabと合わせるためTrueを推奨
+            remove_whitespace_tokens: 空白トークンを削除．MeCabと合わせるためTrueを推奨
             lowercase: トークンを小文字化
             normalize_nfkc: トークンをNFKC正規化
 
@@ -86,13 +86,13 @@ class JanomeTextSegmenter(JanomeTokenizer):
             JanomeTextSegmenterクラス．.segment() method で分かち書きを実行する
             
         Usage:
-            segmenter = JanomeTextSegmenter(remove_whiespace_tokens=True)
+            segmenter = JanomeTextSegmenter(remove_whitespace_tokens=True)
             segmenter.segment(text="今日は晴れです。")
             >>> ["今日", "は", "晴れ", "です", "。"]
         """
         
         super().__init__(wakati=True, **kwargs_janome_tokenizer)
-        self.remove_whiespace_tokens = remove_whiespace_tokens
+        self.remove_whitespace_tokens = remove_whitespace_tokens
         self.lowercase = lowercase
         self.normalize_nfkc = normalize_nfkc
     
@@ -104,7 +104,7 @@ class JanomeTextSegmenter(JanomeTokenizer):
         
     def segment(self, text: str) -> List[str]:
         lst_tokens = list(self.tokenize(text))
-        if self.remove_whiespace_tokens:
+        if self.remove_whitespace_tokens:
             lst_tokens = [token for token in lst_tokens if not self._is_whitespace(token)]
         if self.lowercase:
             lst_tokens = [token.lower() for token in lst_tokens]
@@ -117,8 +117,7 @@ class JanomeTextSegmenter(JanomeTokenizer):
 class TranslationPreparator:
     
     def __init__(self, text_extraction_function: Callable[[str], List[str]], 
-                 extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through,
-                 lowercase: bool = False, normalize_nfkc: bool = False):
+                 extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through):
         """_summary_
         BLEUやchrFなどを計算する際に使う前処理クラス．
         翻訳スパンの抽出，文字列の正規化に対応している．
@@ -127,8 +126,6 @@ class TranslationPreparator:
         Args:
             text_extraction_function (Callable[[str], List[str]]): 翻訳スパン抽出関数．翻訳指示プロンプトに整合させること．
             extraction_fallback_function (Callable[[str], List[str]]): 翻訳スパン抽出に失敗した場合のスパン抽出関数．デフォルトは応答文全体をそのまま翻訳とみなす．
-            lowercase (bool, optional): トークンの小文字化．Defaults to False.
-            normalize_nfkc (bool, optional): トークンのNFKC正規化．Defaults to False.
         """        
         self.text_extraction_function = text_extraction_function
         self.extraction_fallback_function = extraction_fallback_function
@@ -149,7 +146,7 @@ class TranslationPreparator:
             _lst_extracted = self.text_extraction_function(text=pred)
             lst_translated.extend(_lst_extracted)
         
-        # 抽出に失敗した場合はそのまま入力する
+        # 抽出に失敗した場合はfallback
         if len(lst_translated) == 0:
             _fallback = self.extraction_fallback_function(pred)
             lst_translated.extend(_fallback)
@@ -163,7 +160,7 @@ class JapaneseTranslationPreparator:
     def __init__(self, 
         text_extraction_function: Callable[[str], List[str]],
         extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through,
-        remove_whiespace_tokens: bool = False, lowercase: bool = False, normalize_nfkc: bool = False,  
+        remove_whitespace_tokens: bool = False, lowercase: bool = False, normalize_nfkc: bool = False,  
         **kwargs_janome_tokenizer):
         """_summary_
         邦訳文に対してBLEUやchrFなどを計算する際に使う前処理クラス．
@@ -173,7 +170,7 @@ class JapaneseTranslationPreparator:
         Args:
             text_extraction_function (Callable[[str], List[str]]): 翻訳スパン抽出関数．翻訳指示プロンプトに整合させること．
             extraction_fallback_function (Callable[[str], List[str]]): 翻訳スパン抽出に失敗した場合のスパン抽出関数．デフォルトは応答文全体をそのまま翻訳とみなす．
-            remove_whiespace_tokens (bool, optional): 空白トークンの削除. Defaults to False.
+            remove_whitespace_tokens (bool, optional): 空白トークンの削除. Defaults to False.
             lowercase (bool, optional): トークンの小文字化．Defaults to False.
             normalize_nfkc (bool, optional): トークンのNFKC正規化．Defaults to False.
             kwargs_janome_tokenizer: Janome.Tokenizer() に渡す引数．
@@ -181,7 +178,7 @@ class JapaneseTranslationPreparator:
         self.text_extraction_function = text_extraction_function
         self.extraction_fallback_function = extraction_fallback_function
         
-        self.segmenter = JanomeTextSegmenter(remove_whiespace_tokens=remove_whiespace_tokens, lowercase=lowercase, normalize_nfkc=normalize_nfkc, 
+        self.segmenter = JanomeTextSegmenter(remove_whitespace_tokens=remove_whitespace_tokens, lowercase=lowercase, normalize_nfkc=normalize_nfkc, 
                                              **kwargs_janome_tokenizer)
     
     def prepare(self, golds: list[str], predictions: list[str], **kwargs):
@@ -201,7 +198,7 @@ class JapaneseTranslationPreparator:
             _lst_extracted = self.text_extraction_function(text=pred)
             lst_translated.extend(_lst_extracted)
         
-        # 抽出に失敗した場合はそのまま入力する
+        # 抽出に失敗した場合はfallback
         if len(lst_translated) == 0:
             _fallback = self.extraction_fallback_function(pred)
             lst_translated.extend(_fallback)
@@ -223,12 +220,11 @@ def wmt20_jaen_translation_span_extractor(text: str):
 wmt20_enja_translation_preparator = JapaneseTranslationPreparator(
     text_extraction_function=wmt20_enja_translation_span_extractor, 
     extraction_fallback_function=_pass_through,
-    remove_whiespace_tokens=True, lowercase=False, normalize_nfkc=False)
+    remove_whitespace_tokens=True, lowercase=False, normalize_nfkc=False)
 
 wmt20_jaen_translation_preparator = TranslationPreparator(
     text_extraction_function=wmt20_jaen_translation_span_extractor, 
-    extraction_fallback_function=_pass_through,
-    remove_whiespace_tokens=True, lowercase=False, normalize_nfkc=False)
+    extraction_fallback_function=_pass_through)
 
 # 邦訳文向けBLEU
 bleu_ja = CorpusLevelMetric(
