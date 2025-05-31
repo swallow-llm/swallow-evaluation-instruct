@@ -11,7 +11,7 @@ def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
     # raw_outputs_dir 内のすべての JSON ファイルを取得する
     pattern = os.path.join(raw_outputs_dir, "*.json")
     all_results_files: list[str] = glob.glob(pattern)
-    
+
     # 各結果ファイルからタスク名，メトリクス，必要時間，実行日時を抽出し集約する
     all_results_dicts: list[dict[str, Any]] = []
     for file_path in all_results_files:
@@ -27,11 +27,10 @@ def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
 
         with open(file_path, "r") as f:
             data = json.load(f)
-            
         # 結果が対象のモデルか確認
         if data.get("config_general", {}).get("model_name") != model_name:
+            print(f"Skipping file {filename} as it does not match the model name {model_name}. config_general: {data.get('config_general', {})}, model_name: {model_name}")
             continue
-        
         config = data.get("config_general", {})
         # total_evaluation_time_secondes があればそれを使用，なければ start_time と end_time の差分で計算
         if "total_evaluation_time_secondes" in config:
