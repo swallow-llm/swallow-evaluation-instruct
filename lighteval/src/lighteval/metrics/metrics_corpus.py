@@ -116,13 +116,14 @@ class CorpusLevelTranslationMetric:
         BLEU is a metric used to evaluate the quality of machine-generated sentences by comparing them to reference translations [1]. 
         It works by measuring how many word n-grams (regardless of order) in the generated sentence match those in the reference sentence. 
         Typically, a weighted average of unigram to 4-gram precision is used.
-        It is recommended to use the SacreBLEU implementation, as BLEU is sensitive to tokenization choices [2,3,4]. 
+        It is recommended to use the SacreBLEU implementation [5], as BLEU is sensitive to tokenization choices [2,3,4]. 
         
         References:
         [1] PAPINENI, Kishore, et al. Bleu: a method for automatic evaluation of machine translation. In: ACL2002, 2002.
         [2] Comparing the Uncomparable to Claim the State of the Art: A Concerning Trend. https://kaitchup.substack.com/p/comparing-the-uncomparable-to-claim-the-state-of-the-art-a-concerning-trend-3d864522a0ba
         [3] POST, Matt. A Call for Clarity in Reporting BLEU Scores. WMT 2018, 2018, 186.
         [4] GRUSKY, Max. Rogue scores. In: ACL2023. 2023. p. 1914-1934.
+        [5] https://github.com/mjpost/sacrebleu
         
         # SacreBLEU spec:
         SacreBLEU expects input as (generated sentences, reference sentences) as (List[str], List[List[str]]). 
@@ -135,11 +136,10 @@ class CorpusLevelTranslationMetric:
         metric = self.get_metric()        
         
         # Assert: The number of reference sentences must be identical across all predictions.
-        num_references = None
+        first_item = next(iter(items))
+        num_references = len(first_item.golds)
         for item in items:
-            if num_references is None:
-                num_references = len(item.golds)
-            else:
+            if num_references != len(item.golds):
                 logger.error(
                     f"Error: inconsistent number of reference setences detected. Expected: {num_references}, actual: {len(item.golds)}"
                 )
