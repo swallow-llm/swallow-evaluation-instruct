@@ -90,6 +90,7 @@ class VLLMModelConfig:
     trust_remote_code: bool = False
     use_chat_template: bool = False
     add_special_tokens: bool = True
+    enforce_eager: bool = False
     multichoice_continuations_start_space: bool = (
         True  # whether to add a space at the start of each continuation in multichoice generation
     )
@@ -180,6 +181,7 @@ class VLLMModel(LightevalModel):
             "trust_remote_code": config.trust_remote_code,
             "tensor_parallel_size": int(config.tensor_parallel_size),
             "pipeline_parallel_size": int(config.pipeline_parallel_size),
+            "enforce_eager": config.enforce_eager,
             "max_model_len": self._max_length,
             "swap_space": 4,
             "seed": config.seed,
