@@ -33,6 +33,7 @@ import multiprocessing
 import os
 import pickle
 import platform
+import re
 
 # to run the solution files we're using a timing based approach
 import signal
@@ -63,6 +64,7 @@ import_string = "from string import *\nfrom re import *\nfrom datetime import *\
 class CODE_TYPE(Enum):
     call_based = 0
     standard_input = 1
+    check_fn = 2
 
 
 # stuff for setting up signal timer
@@ -358,6 +360,53 @@ def grade_stdio(  # noqa: C901
     return all_results
 
 
+def grade_check_fn(code: str, fn_name: str, check_fn: str, timeout: int) -> list[int | bool]:
+    # check-fn clean up logic
+    # need to wrap in try-catch logic after to catch the correct errors, but for now this is fine.
+    code = import_string + "\n\n" + code + "\n\n" + check_fn + "\n\n" + f"check({fn_name})"
+    compiled_sol = compile_code(code, timeout)
+    if compiled_sol is None:
+        # The code could not be compiled as the text was maybe malformed, return [-4] error code.
+        return [-4]
+
+    method = get_function(compiled_sol, fn_name)
+    check_fn = get_function(compiled_sol, "check")
+    if (method is None) or (check_fn is None):
+        # The function to evaluate could not be extracted from the code, return [-4] error code.
+        return [-4]
+
+    total_execution = 0
+    all_results = []
+
+    signal.alarm(timeout)
+    faulthandler.enable()
+    try:
+        # can lock here so time is useful
+        start = time.time()
+        check_fn(method)    # if check_fn passes, method is correct
+        total_execution += time.time() - start
+        signal.alarm(0)
+
+        all_results.append(True)
+
+    except Exception as e:
+        signal.alarm(0)
+        if "timeoutexception" in repr(e).lower():
+            all_results.append(-3)
+            return all_results
+
+        else:
+            # if check_fn fails, method is incorrect
+            all_results.append(False)
+            return all_results
+
+    finally:
+        signal.alarm(0)
+        faulthandler.disable()
+
+    return all_results
+
+
 def run_test(sample: dict[str, str], test=None, timeout: int = 6) -> list[int | bool]:
     """If test(generated_code) is not None it'll try to run the code.
     otherwise it'll just return an input and output pair.
@@ -376,13 +425,20 @@ def run_test(sample: dict[str, str], test=None, timeout: int = 6) -> list[int | 
         in_outs = None
 
     if in_outs:
-        if in_outs.get("fn_name") is None:
+        if in_outs.get("check_fn") is not None:
+            which_type = CODE_TYPE.check_fn  # Check function
+            method_name = in_outs["fn_name"]
+            check_fn = in_outs["check_fn"]
+
+        elif in_outs.get("fn_name") is None:
             which_type = CODE_TYPE.standard_input  # Standard input
             method_name = None
+            check_fn = None
 
         else:
             which_type = CODE_TYPE.call_based  # Call-based
             method_name = in_outs["fn_name"]
+            check_fn = None
 
     if test is None:
         # assert False, "should not happen: test code is none"
@@ -418,6 +474,22 @@ def run_test(sample: dict[str, str], test=None, timeout: int = 6) -> list[int | 
         except Exception:
             return [-4]
 
+        finally:
+            signal.alarm(0)
+    
+    elif which_type == CODE_TYPE.check_fn:
+        signal.alarm(timeout)
+        try:
+            return grade_check_fn(
+                code=test,
+                fn_name=method_name,
+                check_fn=check_fn,
+                timeout=timeout,
+            )
+        
+        except Exception:
+            return [-4]
+        
         finally:
             signal.alarm(0)
 
@@ -517,11 +589,16 @@ def check_correctness(sample, generation, timeout: int) -> list[int | bool]:
     result = manager.list()
     p = multiprocessing.Process(target=_temp_run, args=(sample, generation, result))
     p.start()
-    p.join(timeout=(timeout + 1) * len(json.loads(sample["input_output"])["inputs"]) + 5)
+    in_outs = json.loads(sample["input_output"])
+    if in_outs.get("check_fn") is not None:
+        # when check_fn is used, consider len(in_outs["inputs"]) as 1
+        timeout = timeout + 6
+    else:
+        timeout = (timeout + 1) * len(in_outs["inputs"]) + 5
+    p.join(timeout=timeout)
     if p.is_alive():
         p.kill()
     if not result:
-        in_outs = json.loads(sample["input_output"])
         # consider that all tests failed
         result = [[-1 for i in range(len(in_outs["inputs"]))]]
 

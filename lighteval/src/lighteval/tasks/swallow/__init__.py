@@ -8,10 +8,12 @@
 
 from .mclm_MATH_100_japanese import math_100_japanese
 from .jmmlu import JMMLU_SUBSET_TASKS
+from .jhumaneval import jhumaneval
 from .hellaswag import hellaswag_generative
 
 SWALLOW_TASKS = [
     math_100_japanese,
-    hellaswag_generative
+    hellaswag_generative,
+    jhumaneval,
 ]
 SWALLOW_TASKS.extend(JMMLU_SUBSET_TASKS)
