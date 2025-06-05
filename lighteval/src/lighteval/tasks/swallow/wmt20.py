@@ -12,7 +12,7 @@ from .metrics_translation_japanese import bleu_ja, chrf_ja, ter_ja, bleu_en, chr
 # 翻訳文の接頭辞は `日本語:` とする
 MACHINE_TRANSLATION_ENJA_QUERY_TEMPLATE = """
 以下に示す英文を日本語に翻訳せよ。
-翻訳文の文体は「だ、である」を用いること。
+翻訳文の文体は、常体（だ、である）を用いること。
 翻訳文を出力するときは、改行してから `日本語: 翻訳文` という形式で出力すること。
 
 英語: {source_text}
@@ -71,7 +71,8 @@ wmt20_enja_swallow = LightevalTaskConfig(
     few_shots_split=None,
     few_shots_select=None,
     generation_size=None,
-    metric=[bleu_ja, chrf_ja, ter_ja],
+    # metric=[bleu_ja, chrf_ja, ter_ja],
+    metric=[bleu_ja],
     stop_sequence=[],
     trust_dataset=True,
     version=0,
