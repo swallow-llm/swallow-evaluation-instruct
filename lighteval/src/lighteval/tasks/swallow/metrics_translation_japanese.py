@@ -11,6 +11,7 @@ from lighteval.metrics.utils.metric_utils import (
 )
 from lighteval.metrics.metrics_corpus import CorpusLevelTranslationMetric
 from lighteval.metrics.sample_preparator import GenerativeCorpusMetricInput
+from lighteval.tasks.requests import Doc
 
 from .utils import _regex_extractor
 
@@ -130,7 +131,7 @@ class TranslationPreparator:
         self.text_extraction_function = text_extraction_function
         self.extraction_fallback_function = extraction_fallback_function
         
-    def prepare(self, golds: list[str], predictions: list[str], **kwargs):
+    def prepare(self, golds: list[str], predictions: list[str], formatted_doc: Doc, **kwargs):
         """
         モデルの出力から翻訳文を抽出する
 
@@ -150,6 +151,10 @@ class TranslationPreparator:
         if len(lst_translated) == 0:
             _fallback = self.extraction_fallback_function(pred)
             lst_translated.extend(_fallback)
+            
+        if formatted_doc.specific is None:
+            formatted_doc.specific = {}
+        formatted_doc.specific["extracted_predictions"] = lst_translated
         
         return GenerativeCorpusMetricInput(golds=golds, 
                                            preds=lst_translated)
@@ -181,7 +186,7 @@ class JapaneseTranslationPreparator:
         self.segmenter = JanomeTextSegmenter(remove_whitespace_tokens=remove_whitespace_tokens, lowercase=lowercase, normalize_nfkc=normalize_nfkc, 
                                              **kwargs_janome_tokenizer)
     
-    def prepare(self, golds: list[str], predictions: list[str], **kwargs):
+    def prepare(self, golds: list[str], predictions: list[str], formatted_doc: Doc, **kwargs):
         """
         1. モデルの出力から翻訳文を抽出する
         2. 抽出した翻訳文および参照訳を分かち書きする
@@ -202,6 +207,10 @@ class JapaneseTranslationPreparator:
         if len(lst_translated) == 0:
             _fallback = self.extraction_fallback_function(pred)
             lst_translated.extend(_fallback)
+            
+        if formatted_doc.specific is None:
+            formatted_doc.specific = {}
+        formatted_doc.specific["extracted_predictions"] = lst_translated
         
         lst_reference_tokenzed = [" ".join(self.segmenter.segment(gold)) for gold in golds]
         lst_translated_tokenized = [" ".join(self.segmenter.segment(translated)) for translated in lst_translated]
@@ -220,7 +229,7 @@ def wmt20_jaen_translation_span_extractor(text: str):
 wmt20_enja_translation_preparator = JapaneseTranslationPreparator(
     text_extraction_function=wmt20_enja_translation_span_extractor, 
     extraction_fallback_function=_pass_through,
-    remove_whitespace_tokens=True, lowercase=False, normalize_nfkc=False)
+    remove_whitespace_tokens=False, lowercase=False, normalize_nfkc=False)
 
 wmt20_jaen_translation_preparator = TranslationPreparator(
     text_extraction_function=wmt20_jaen_translation_span_extractor, 
@@ -232,7 +241,7 @@ bleu_ja = CorpusLevelMetric(
     sample_level_fn=wmt20_enja_translation_preparator.prepare,
     category=MetricCategory.GENERATIVE,
     use_case=MetricUseCase.TRANSLATION,
-    corpus_level_fn=CorpusLevelTranslationMetric("bleu").compute,
+    corpus_level_fn=CorpusLevelTranslationMetric("bleu", lang="").compute,
     higher_is_better=True,
 )    
 
@@ -242,7 +251,7 @@ chrf_ja = CorpusLevelMetric(
     sample_level_fn=wmt20_enja_translation_preparator.prepare,
     category=MetricCategory.GENERATIVE,
     use_case=MetricUseCase.TRANSLATION,
-    corpus_level_fn=CorpusLevelTranslationMetric("chrf").compute,
+    corpus_level_fn=CorpusLevelTranslationMetric("chrf", lang="").compute,
     higher_is_better=True,
 )
 
@@ -252,7 +261,7 @@ ter_ja = CorpusLevelMetric(
     sample_level_fn=wmt20_enja_translation_preparator.prepare,
     category=MetricCategory.GENERATIVE,
     use_case=MetricUseCase.TRANSLATION,
-    corpus_level_fn=CorpusLevelTranslationMetric("ter").compute,
+    corpus_level_fn=CorpusLevelTranslationMetric("ter", lang="").compute,
     higher_is_better=False,
 )
 
@@ -262,7 +271,7 @@ bleu_en = CorpusLevelMetric(
     sample_level_fn=wmt20_jaen_translation_preparator.prepare,
     category=MetricCategory.GENERATIVE,
     use_case=MetricUseCase.TRANSLATION,
-    corpus_level_fn=CorpusLevelTranslationMetric("bleu").compute,
+    corpus_level_fn=CorpusLevelTranslationMetric("bleu", lang="en").compute,
     higher_is_better=True,
 )    
 
@@ -272,7 +281,7 @@ chrf_en = CorpusLevelMetric(
     sample_level_fn=wmt20_jaen_translation_preparator.prepare,
     category=MetricCategory.GENERATIVE,
     use_case=MetricUseCase.TRANSLATION,
-    corpus_level_fn=CorpusLevelTranslationMetric("chrf").compute,
+    corpus_level_fn=CorpusLevelTranslationMetric("chrf", lang="en").compute,
     higher_is_better=True,
 )
 
@@ -282,6 +291,6 @@ ter_en = CorpusLevelMetric(
     sample_level_fn=wmt20_jaen_translation_preparator.prepare,
     category=MetricCategory.GENERATIVE,
     use_case=MetricUseCase.TRANSLATION,
-    corpus_level_fn=CorpusLevelTranslationMetric("ter").compute,
+    corpus_level_fn=CorpusLevelTranslationMetric("ter", lang="en").compute,
     higher_is_better=False,
 )
