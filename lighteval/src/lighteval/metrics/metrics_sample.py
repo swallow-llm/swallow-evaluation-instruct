@@ -50,7 +50,7 @@ from lighteval.metrics.normalizations import (
     remove_braces_and_strip,
 )
 from lighteval.tasks.requests import Doc
-from lighteval.utils.utils import as_list, safe_divide
+from lighteval.utils.utils import as_list, safe_divide, extract_final_answer_from_reasoning
 
 
 logger = logging.getLogger(__name__)
@@ -915,7 +915,7 @@ class JudgeLLM:
 
 
 class JudgeLLMMTBench(JudgeLLM):
-    def compute(self, predictions: list[str], formatted_doc: Doc, **kwargs):
+    def compute(self, sample_ids: list[str], responses: list, formatted_docs: list[Doc], **kwargs) -> dict[str, float]:
         """
         Compute the score of a generative task using a llm as a judge.
         The generative task can be multiturn with 2 turns max, in that case, we
@@ -923,27 +923,109 @@ class JudgeLLMMTBench(JudgeLLM):
         which are ignored later by the aggregator.
         """
         import json
-
         # If we are evaluating a multiturn task, we need to have specific field in the formatted doc
-        questions = formatted_doc.specific["multi_turn_queries"]
-        golds = formatted_doc.specific.get("reference", None)
+        question_1 = [formatted_doc.specific["multi_turn_queries"][0] for formatted_doc in formatted_docs]
+        question_2 = [formatted_doc.specific["multi_turn_queries"][1] for formatted_doc in formatted_docs]
+        predictions_1 = [response[0].result[0] for response in responses]
+        predictions_2 = [response[0].result[1] for response in responses]
+        golds_1 = [formatted_doc.specific["reference"][0] for formatted_doc in formatted_docs]
+        golds_2 = [formatted_doc.specific["reference"][1] for formatted_doc in formatted_docs]
 
-        query_context_1 = {"query": questions[0], "context": ""}
-        query_context_2 = {"query": questions[1], "context": predictions[0]}
+        scores_turn_1, messages_turn_1, judgements_turn_1 = self.judge.evaluate_answer_batch(question_1, predictions_1, [None] * len(question_1), golds_1)
+        scores_turn_2, messages_turn_2, judgements_turn_2 = self.judge.evaluate_answer_batch(question_2, predictions_2, [None] * len(question_2), golds_2)
+        # query_context_1 = {"query": questions[0], "context": ""}
+        # query_context_2 = {"query": questions[1], "context": predictions[0]}
 
-        score_turn_1, message_turn_1, judgement_turn_1 = self.judge.evaluate_answer(
-            question=json.dumps(query_context_1, indent=2), answer=predictions[0], gold=golds[0] if golds else None
-        )
-        score_turn_2, message_turn_2, judgement_turn_2 = self.judge.evaluate_answer(
-            question=json.dumps(query_context_2, indent=2), answer=predictions[1], gold=golds[1] if golds else None
-        )
+        # score_turn_1, message_turn_1, judgement_turn_1 = self.judge.evaluate_answer(
+        #     question=json.dumps(query_context_1, indent=2), answer=predictions[0], gold=golds[0] if golds else None
+        # )
+        # score_turn_2, message_turn_2, judgement_turn_2 = self.judge.evaluate_answer(
+        #     question=json.dumps(query_context_2, indent=2), answer=predictions[1], gold=golds[1] if golds else None
+        # )
 
-        return {
-            "judge_score_turn_1": score_turn_1,
-            "judge_score_turn_2": score_turn_2,
-            "user_prompt": [message_turn_1, message_turn_2],
-            "judgement": [judgement_turn_1, judgement_turn_2],
-        }
+        metrics = []
+        for i in range(len(sample_ids)):
+            metrics.append(
+                {
+                    f"judge_score_{self.short_judge_name}_turn_1": scores_turn_1[i],
+                    f"judge_score_{self.short_judge_name}_turn_2": scores_turn_2[i],
+                    f"user_prompt_{self.short_judge_name}_turn_1": messages_turn_1[i],
+                    f"user_prompt_{self.short_judge_name}_turn_2": messages_turn_2[i],
+                    f"judgement_{self.short_judge_name}_turn_1": judgements_turn_1[i],
+                    f"judgement_{self.short_judge_name}_turn_2": judgements_turn_2[i],
+                }
+            )
+
+        return metrics
+
+        # return {
+        #     "judge_score_turn_1": score_turn_1,
+        #     "judge_score_turn_2": score_turn_2,
+        #     "user_prompt": [message_turn_1, message_turn_2],
+        #     "judgement": [judgement_turn_1, judgement_turn_2],
+        # }
+
+
+class JudgeLLMMTBenchSwallow(JudgeLLM):
+    def compute(self, sample_ids: list[str], responses: list, formatted_docs: list[Doc], **kwargs) -> dict[str, float]:
+        """
+        Compute the score of a generative task using a llm as a judge.
+        The generative task can be multiturn with 2 turns max, in that case, we
+        return scores for turn 1 and 2. Also returns user_prompt and judgement
+        which are ignored later by the aggregator.
+        """
+        questions_1 = [formatted_doc.specific["multi_turn_queries"][0] for formatted_doc in formatted_docs]
+        questions_2 = [(formatted_doc.specific["multi_turn_queries"][0], formatted_doc.specific["multi_turn_queries"][1]) for formatted_doc in formatted_docs]
+        golds_1 = [formatted_doc.specific["reference"][0]["turns"][0] for formatted_doc in formatted_docs]
+        golds_2 = [(formatted_doc.specific["reference"][0]["turns"][0], formatted_doc.specific["reference"][0]["turns"][1]) for formatted_doc in formatted_docs]
+        categories = [formatted_doc.specific["category"] for formatted_doc in formatted_docs]
+
+        metrics = []
+        score_turn_1_list = []
+        score_turn_2_list = []
+        message_turn_1_list = []
+        message_turn_2_list = []
+        judgement_turn_1_list = []
+        judgement_turn_2_list = []
+        num_samples = len(responses[0][0].result[0])
+        for sample_idx in range(num_samples):
+            predictions_1 = [extract_final_answer_from_reasoning(response[0].result[0][sample_idx]) for response in responses]
+            predictions_2 = [(extract_final_answer_from_reasoning(response[0].result[0][sample_idx]), extract_final_answer_from_reasoning(response[0].result[1][sample_idx])) for response in responses]
+            scores_turn_1, messages_turn_1, judgements_turn_1 = self.judge.evaluate_answer_batch(questions_1, predictions_1, categories, golds_1)
+            scores_turn_2, messages_turn_2, judgements_turn_2 = self.judge.evaluate_answer_batch(questions_2, predictions_2, categories, golds_2)
+            score_turn_1_list.append(scores_turn_1)
+            score_turn_2_list.append(scores_turn_2)
+            message_turn_1_list.append(messages_turn_1)
+            message_turn_2_list.append(messages_turn_2)
+            judgement_turn_1_list.append(judgements_turn_1)
+            judgement_turn_2_list.append(judgements_turn_2)
+
+        metrics = []
+        for i in range(len(sample_ids)):
+            judge_score_turn_1 = [score_turn_1_list[j][i] for j in range(num_samples)]
+            judge_score_turn_2 = [score_turn_2_list[j][i] for j in range(num_samples)]
+            user_prompt_turn_1 = [message_turn_1_list[j][i] for j in range(num_samples)]
+            user_prompt_turn_2 = [message_turn_2_list[j][i] for j in range(num_samples)]
+            judgement_turn_1 = [judgement_turn_1_list[j][i] for j in range(num_samples)]
+            judgement_turn_2 = [judgement_turn_2_list[j][i] for j in range(num_samples)]
+            judge_score_turn_1_avg = np.mean(judge_score_turn_1)
+            judge_score_turn_2_avg = np.mean(judge_score_turn_2)
+            metrics.append(
+                {
+                    "judge_score_overall_turn_1_avg": judge_score_turn_1_avg,
+                    "judge_score_overall_turn_2_avg": judge_score_turn_2_avg,
+                    "judge_score_overall_turn_1": judge_score_turn_1,
+                    "judge_score_overall_turn_2": judge_score_turn_2,
+                    "user_prompt_overall_turn_1": user_prompt_turn_1,
+                    "user_prompt_overall_turn_2": user_prompt_turn_2,
+                    "judgement_overall_turn_1": judgement_turn_1,
+                    "judgement_overall_turn_2": judgement_turn_2,
+                    f"judge_score_{categories[i]}_turn_1_avg": judge_score_turn_1_avg,
+                    f"judge_score_{categories[i]}_turn_2_avg": judge_score_turn_2_avg,
+                }
+            )
+
+        return metrics
 
 
 class JudgeLLMMixEval(JudgeLLM):

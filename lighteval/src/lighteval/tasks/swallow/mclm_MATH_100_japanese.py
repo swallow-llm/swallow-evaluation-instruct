@@ -1,4 +1,3 @@
-
 from lighteval.metrics.dynamic_metrics import (
     ExprExtractionConfig,
     IndicesExtractionConfig,
@@ -51,6 +50,7 @@ def math100_japanese_prompt_fn(line, task_name: str = None):
         choices=[wrap_answer_with_latex_boxes(line["answer"])],
         gold_index=0,
     )
+
 
 # Evaluation metric
 # 回答スパン抽出：数式 (LatexExtractionConfig) と 数量表現 (ExprExtractionConfig) を併用

@@ -56,11 +56,11 @@ dependencies = [
     # Base dependencies
     "transformers>=4.38.0",
     "accelerate",
-    "huggingface_hub>=0.23.0",
+    "huggingface-hub[cli]>=0.23.0",
     "torch>=2.0,<3.0",
     "GitPython>=3.1.41", # for logging
     "datasets>=2.14.0",
-    "numpy<2",  # pinned to avoid incompatibilities
+    "numpy<2", # pinned to avoid incompatibilities
     # Prettiness
     "typer",
     "termcolor==2.3.0",
@@ -78,6 +78,7 @@ dependencies = [
     "protobuf==3.20.*", # pinned for sentencepiece compat
     "pycountry",
     "fsspec>=2023.12.2",
+    "fuzzywuzzy>=0.18.0",
 ]
 
 [project.optional-dependencies]

@@ -620,7 +620,7 @@ class TransformersModel(LightevalModel):
 
     def greedy_until_multi_turn(  # noqa: C901
         self, requests: list[GreedyUntilMultiTurnRequest], override_bs: Optional[int] = None
-    ) -> GenerativeMultiturnResponse:
+    ) -> list[GenerativeMultiturnResponse]:
         for request in requests:
             request.stop_sequence = as_list(request.stop_sequence) + [self.tokenizer.eos_token]
             request.tokenized_context = self.tok_encode(request.context)["input_ids"]
@@ -646,14 +646,14 @@ class TransformersModel(LightevalModel):
                 stop_tokens = request.stop_sequence
             max_generated_tokens = request.generation_size
             context = request.context[0]
-            max_context_size_allowed = self.max_length - max_generated_tokens
+            max_length = min(self.max_length, max_generated_tokens)
 
             model_inputs = self.tokenizer(
                 context,
                 padding=True,
                 truncation=True,
                 return_tensors="pt",
-                max_length=max_context_size_allowed,
+                max_length=max_length,
                 add_special_tokens=self.add_special_tokens,
             ).to(self.device)
 
@@ -668,10 +668,11 @@ class TransformersModel(LightevalModel):
                 ]
             )
 
+            max_new_tokens = max_length - model_inputs["input_ids"].size(1)
             generation_config = self.generation_config_dict.copy()
             generation_config.update(
                 {
-                    "max_new_tokens": max_generated_tokens,
+                    "max_new_tokens": max_new_tokens,
                     "pad_token_id": self.tokenizer.pad_token_id
                     if self.tokenizer.pad_token_id
                     else self.tokenizer.eos_token_id,
@@ -687,7 +688,7 @@ class TransformersModel(LightevalModel):
 
             # We manage stop tokens in an extra step in case they were incorrectly detected earlier
             # (which can happen for multitoken stop sequences)
-            decoded_generation = self.tokenizer.decode(model_outputs)  # should we skip_special_tokens=True here?
+            decoded_generation = self.tokenizer.decode(model_outputs, skip_special_tokens=True)  # should we skip_special_tokens=True here?
             for term in stop_tokens:
                 decoded_generation = decoded_generation.split(term)[0]
             model_generations = [model_outputs]
@@ -702,7 +703,7 @@ class TransformersModel(LightevalModel):
                     padding=True,
                     truncation=True,
                     return_tensors="pt",
-                    max_length=max_context_size_allowed,
+                    max_length=max_length,
                     add_special_tokens=self.add_special_tokens,
                 ).to(self.device)
 
@@ -717,10 +718,11 @@ class TransformersModel(LightevalModel):
                     ]
                 )
 
+                max_new_tokens = max_length - model_inputs["input_ids"].size(1)
                 generation_config = self.generation_config_dict.copy()
                 generation_config.update(
                     {
-                        "max_new_tokens": max_generated_tokens,
+                        "max_new_tokens": max_new_tokens,
                         "pad_token_id": self.tokenizer.pad_token_id
                         if self.tokenizer.pad_token_id
                         else self.tokenizer.eos_token_id,
@@ -728,7 +730,6 @@ class TransformersModel(LightevalModel):
                         "do_sample": False,
                     }
                 )
-
                 model_outputs: GenerateOutput = self.model.generate(
                     input_ids=model_inputs["input_ids"],
                     attention_mask=model_inputs["attention_mask"],

@@ -244,3 +244,17 @@ def download_dataset_worker(
 
 def safe_divide(numerator: np.ndarray, denominator: float, default_value: float = 0.0) -> np.ndarray:
     return np.where(denominator != 0, numerator / denominator, default_value)
+
+def extract_final_answer_from_reasoning(output: str) -> str:
+    """
+    Extracts the final answer from the reasoning output.
+
+    Args:
+        output (str): The reasoning output.
+
+    Returns:
+        str: The extracted final answer.
+    """
+    if "</think>" in output:
+        output = output.split("</think>")[-1].strip()
+    return output
