@@ -14,8 +14,9 @@ USER_CONFIG_PATH=$1
 RAW_OUTPUTS_DIR=$2
 AGGREGATED_OUTPUTS_DIR=$3
 MODEL_NAME=$4
-SYSTEM_MESSAGE=$5
-MAX_CONTEXT_WINDOW=$6
+SYSTEM_MESSAGE=${5:-""}
+MAX_MODEL_LENGTH=32768  # Though the default value is 32768, some models may not support it. Then change it to its max_position_embeddings.
+MAX_NEW_TOKEN=2048
 
 # load and set env
 source $USER_CONFIG_PATH
@@ -29,12 +30,12 @@ export HF_TOKEN=$HF_TOKEN
 source "$REPO_PATH/lighteval/.venv/bin/activate"
 
 # model setting
-## temperature and top_p are set to 0.2 and 0.95 regarding to "評価方法_swallow-eval"
+## temperature and top_p are set to 0.2 and 0.95, respectively, regarding to "評価方法_swallow-eval"
 NUM_GPUS=1
 TEMPERATURE=0.2
 TOP_P=0.95
-GPU_MEMORY_UTILIZATION=0.8
-MODEL_ARGS_L="pretrained=$MODEL_NAME,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_CONTEXT_WINDOW,gpu_memory_utilization=$GPU_MEMORY_UTILIZATION,generation_parameters={max_new_tokens:$MAX_CONTEXT_WINDOW,temperature:$TEMPERATURE,top_p:$TOP_P}"
+GPU_MEMORY_UTILIZATION=0.9
+MODEL_ARGS_L="pretrained=$MODEL_NAME,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_MODEL_LENGTH,gpu_memory_utilization=$GPU_MEMORY_UTILIZATION,generation_parameters={max_new_tokens:$MAX_NEW_TOKEN,temperature:$TEMPERATURE,top_p:$TOP_P}"
 
 # task definition
 TASK_DEF="swallow|swallow_jhumaneval|0|0"

@@ -22,7 +22,8 @@ SWALLOW_JHUMANEVAL_QUERY_TEMPLATE = """
 ```
 {code_snipet}
 ```
-""".strip()
+
+""".lstrip()    # 末尾の2重改行は残す（distill-llamaで性能の著しい劣化を確認したため）
 
 
 def swallow_jhumaneval_prompt_fn(line, task_name: str = "swallow_jhumaneval") -> Doc:
