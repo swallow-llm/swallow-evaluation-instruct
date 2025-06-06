@@ -18,7 +18,7 @@ from .white_lists import (
     MMLU_PROX_JAPANESE_PHILOSOPHY,
     MMLU_PROX_JAPANESE_ENGINEERING,
 )
-from .funcs import micro_average
+from .funcs import micro_average, pick
 
 # Aggregate Config
 # - Each entry must have 'display_name', 'func', and 'target'. 'target' must have 'task_key' and 'is_category'.
