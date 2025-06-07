@@ -48,6 +48,11 @@ ligiteval の `--tasks` として指定できるように [lighteval/tasks/swall
 * 英語MT-Bench: WIP
 * MMLU-Pro: WIP
 
+## ベンチマークごとの詳細な評価設定
+shot数，メトリック，CoT有無などの詳細な評価設定は，以下の資料を参照してください．  
+* [表1. 評価タスクの一覧 Ver. 202504](https://docs.google.com/spreadsheets/d/1lMMaZmv6FwIZC6EArFLaApvc99gkuXh7uGb8AMnhzB4/edit?gid=1254224743#gid=1254224743&range=A9)
+* [Instructモデルむけ評価方法および実装方法の検討](https://nlp-titech.slack.com/docs/T7EAFSVDY/F08F9ACBPL2)（岡崎研Slack Canvas）
+
 ## 評価指標一覧
 [lightevalのMetricクラス](https://huggingface.co/docs/lighteval/metric-list)に準拠して，LLM-as-a-Judgeや自由記述式QAなどを定量化する評価指標を実装しています．  
 
