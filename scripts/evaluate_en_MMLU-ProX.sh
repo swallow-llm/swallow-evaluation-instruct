@@ -6,10 +6,8 @@ export NUM_GPUS=2
 MODEL=$1
 SYSTEM_MESSAGE=$2
 MAX_MODEL_LENGTH=32768
-# MAX_NEW_TOKENS=8192
 TEMPERATURE=0.0
 
-# MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_MODEL_LENGTH,gpu_memory_utilization=0.8,generation_parameters={max_new_tokens:$MAX_NEW_TOKENS,temperature:$TEMPERATURE}"
 MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_MODEL_LENGTH,gpu_memory_utilization=0.8,generation_parameters={temperature:$TEMPERATURE}"
 RAW_OUTPUT_DIR="./outputs"
 OUTPUT_DIR="./results"
