@@ -254,18 +254,26 @@ class VLLMModel(LightevalModel):
                 context_size = len(inputs_list[0])
 
                 # left truncate the inputs to the maximum length
-                ctx_allowed = self.max_length - max_new_tokens
-                if len(inputs_list[0]) > ctx_allowed and ctx_allowed != 0:
-                    logger.warning(
-                        f"{context_size=} which is greater than {ctx_allowed=}. Truncating context to {ctx_allowed} tokens."
-                    )
-                    context_size = ctx_allowed
-                    if context_size < 0:
-                        logger.critical(
-                            f"{context_size=} is less than 0, either reduce the max_new_tokens or increase model max length."
+                if max_new_tokens is not None:
+                    ctx_allowed = self.max_length - max_new_tokens
+                    if len(inputs_list[0]) > ctx_allowed and ctx_allowed != 0:
+                        logger.warning(
+                            f"{context_size=} which is greater than {ctx_allowed=}. Truncating context to {ctx_allowed} tokens."
                         )
-                        raise ValueError("Context size is less than 0.")
-                    inputs_list[0] = inputs_list[0][-context_size:]
+                        context_size = ctx_allowed
+                        if context_size < 0:
+                            logger.critical(
+                                f"{context_size=} is less than 0, either reduce the max_new_tokens or increase model max length."
+                            )
+                            raise ValueError("Context size is less than 0.")
+                        inputs_list[0] = inputs_list[0][-context_size:]
+                else:
+                    if context_size > self.max_length:
+                        logger.warning(
+                            f"{context_size=} which is greater than {self.max_length=}. Truncating context to {self.max_length} tokens."
+                        )
+                        context_size = self.max_length
+                        inputs_list[0] = inputs_list[0][-context_size:]
 
                 # change temperature as specified in the request
                 if request.temperature is not None:

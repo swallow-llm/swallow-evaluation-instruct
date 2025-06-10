@@ -163,3 +163,242 @@ MMLU_PROX_JAPANESE_ENGINEERING = [
     "stemez_ElectricCircuits",
     "stemez_MachineDesign"
 ]
+
+MMLU_PROX_ENGLISH_BUSINESS = [
+    "theoremQA_Finance",
+    "ori_mmlu_marketing",
+    "stemez_Business",
+    "ori_mmlu_management",
+    "ori_mmlu_business_ethics"
+]
+
+MMLU_PROX_ENGLISH_LAW = [
+    "ori_mmlu_professional_law",
+    "ori_mmlu_international_law",
+    "ori_mmlu_jurisprudence"
+]
+
+MMLU_PROX_ENGLISH_PSYCHOLOGY = [
+    "stemez_Psychology",
+    "ori_mmlu_high_school_psychology",
+    "ori_mmlu_professional_psychology"
+]
+
+MMLU_PROX_ENGLISH_BIOLOGY = [
+    "ori_mmlu_high_school_biology",
+    "stemez_Genetics",
+    "ori_mmlu_college_biology",
+    "stemez_Biology"
+]
+
+MMLU_PROX_ENGLISH_CHEMISTRY = [
+    "scibench_matter",
+    "scibench_atkins",
+    "scibench_chemmc",
+    "stemez_PhysicalChemistry",
+    "ori_mmlu_college_chemistry",
+    "ori_mmlu_high_school_chemistry",
+    "stemez_OrganicChemistry",
+    "stemez_Chemistry",
+    "scibench_quan"
+]
+
+MMLU_PROX_ENGLISH_HISTORY = [
+    "ori_mmlu_high_school_us_history",
+    "ori_mmlu_high_school_world_history",
+    "ori_mmlu_high_school_european_history",
+    "ori_mmlu_prehistory"
+]
+
+MMLU_PROX_ENGLISH_OTHER = [
+    "ori_mmlu_high_school_government_and_politics",
+    "ori_mmlu_professional_accounting",
+    "ori_mmlu_security_studies",
+    "ori_mmlu_sociology",
+    "ori_mmlu_miscellaneous",
+    "ori_mmlu_human_sexuality",
+    "ori_mmlu_high_school_geography",
+    "ori_mmlu_global_facts",
+    "ori_mmlu_public_relations",
+    "ori_mmlu_us_foreign_policy"
+]
+
+MMLU_PROX_ENGLISH_HEALTH = [
+    "ori_mmlu_nutrition",
+    "ori_mmlu_clinical_knowledge",
+    "ori_mmlu_virology",
+    "ori_mmlu_medical_genetics",
+    "ori_mmlu_professional_medicine",
+    "ori_mmlu_anatomy",
+    "ori_mmlu_human_aging",
+    "ori_mmlu_college_medicine"
+]
+
+MMLU_PROX_ENGLISH_ECONOMICS = [
+    "ori_mmlu_high_school_macroeconomics",
+    "stemez_Economics",
+    "ori_mmlu_econometrics",
+    "ori_mmlu_high_school_microeconomics"
+]
+
+MMLU_PROX_ENGLISH_MATH = [
+    "theoremQA_Math",
+    "scibench_calculus",
+    "ori_mmlu_high_school_mathematics",
+    "scibench_stat",
+    "ori_mmlu_college_mathematics",
+    "ori_mmlu_high_school_statistics",
+    "ori_mmlu_elementary_mathematics",
+    "scibench_diff",
+    "ori_mmlu_abstract_algebra"
+]
+
+MMLU_PROX_ENGLISH_PHYSICS = [
+    "scibench_class",
+    "stemez_Optics",
+    "theoremQA_Physics",
+    "ori_mmlu_conceptual_physics",
+    "stemez_Physics",
+    "ori_mmlu_high_school_physics",
+    "ori_mmlu_college_physics",
+    "scibench_thermo",
+    "scibench_fund",
+    "ori_mmlu_astronomy",
+    "stemez_Mechanics"
+]
+
+MMLU_PROX_ENGLISH_COMPUTER_SCIENCE = [
+    "ori_mmlu_high_school_computer_science",
+    "ori_mmlu_college_computer_science",
+    "stemez_ComputerScience",
+    "ori_mmlu_machine_learning",
+    "ori_mmlu_computer_security",
+    "theoremQA_EECS"
+]
+
+MMLU_PROX_ENGLISH_PHILOSOPHY = [
+    "ori_mmlu_logical_fallacies",
+    "ori_mmlu_world_religions",
+    "ori_mmlu_formal_logic",
+    "ori_mmlu_moral_disputes",
+    "ori_mmlu_philosophy"
+]
+
+MMLU_PROX_ENGLISH_ENGINEERING = [
+    "stemez_Electromagnetics",
+    "stemez_FluidMechanics",
+    "stemez_HeatTransfer",
+    "stemez_Thermodynamics",
+    "stemez_TransportPhenomena",
+    "ori_mmlu_electrical_engineering",
+    "stemez_ElectricalMachines",
+    "stemez_ElectronicCommunications",
+    "stemez_ElectricCircuits",
+    "stemez_MachineDesign"
+]
+
+JAPANESE_MTBENCH_CODING = [
+    "judge_score_coding_turn_1_avg",
+    "judge_score_coding_turn_2_avg",
+]
+
+JAPANESE_MTBENCH_EXTRACTION = [
+    "judge_score_extraction_turn_1_avg",
+    "judge_score_extraction_turn_2_avg",
+]
+
+JAPANESE_MTBENCH_HUMANITIES = [
+    "judge_score_humanities_turn_1_avg",
+    "judge_score_humanities_turn_2_avg",
+]
+
+JAPANESE_MTBENCH_MATH = [
+    "judge_score_math_turn_1_avg",
+    "judge_score_math_turn_2_avg",
+]
+
+JAPANESE_MTBENCH_REASONING = [
+    "judge_score_reasoning_turn_1_avg",
+    "judge_score_reasoning_turn_2_avg",
+]
+
+JAPANESE_MTBENCH_ROLEPLAY = [
+    "judge_score_roleplay_turn_1_avg",
+    "judge_score_roleplay_turn_2_avg",
+]
+
+JAPANESE_MTBENCH_STEM = [
+    "judge_score_stem_turn_1_avg",
+    "judge_score_stem_turn_2_avg",
+]
+
+JAPANESE_MTBENCH_WRITING = [
+    "judge_score_writing_turn_1_avg",
+    "judge_score_writing_turn_2_avg",
+]
+
+JAPANESE_MTBENCH_FIRST_TURN = [
+    "judge_score_overall_turn_1_avg",
+]
+
+JAPANESE_MTBENCH_SECOND_TURN = [
+    "judge_score_overall_turn_2_avg",
+]
+
+JAPANESE_MTBENCH_ALL = [
+    "judge_score_overall_turn_1_avg",
+    "judge_score_overall_turn_2_avg",
+]
+
+ENGLISH_MTBENCH_CODING = [
+    "judge_score_coding_turn_1_avg",
+    "judge_score_coding_turn_2_avg",
+]
+
+ENGLISH_MTBENCH_EXTRACTION = [
+    "judge_score_extraction_turn_1_avg",
+    "judge_score_extraction_turn_2_avg",
+]
+
+ENGLISH_MTBENCH_HUMANITIES = [
+    "judge_score_humanities_turn_1_avg",
+    "judge_score_humanities_turn_2_avg",
+]
+
+ENGLISH_MTBENCH_MATH = [
+    "judge_score_math_turn_1_avg",
+    "judge_score_math_turn_2_avg",
+]
+
+ENGLISH_MTBENCH_REASONING = [
+    "judge_score_reasoning_turn_1_avg",
+    "judge_score_reasoning_turn_2_avg",
+]
+
+ENGLISH_MTBENCH_ROLEPLAY = [
+    "judge_score_roleplay_turn_1_avg",
+    "judge_score_roleplay_turn_2_avg",
+]
+
+ENGLISH_MTBENCH_STEM = [
+    "judge_score_stem_turn_1_avg",
+    "judge_score_stem_turn_2_avg",
+]
+
+ENGLISH_MTBENCH_WRITING = [
+    "judge_score_writing_turn_1_avg",
+    "judge_score_writing_turn_2_avg",
+]
+
+ENGLISH_MTBENCH_FIRST_TURN = [
+    "judge_score_overall_turn_1_avg",
+]
+
+ENGLISH_MTBENCH_SECOND_TURN = [
+    "judge_score_overall_turn_2_avg",
+]
+
+ENGLISH_MTBENCH_ALL = [
+    "judge_score_overall_turn_1_avg",
+    "judge_score_overall_turn_2_avg",
+]
