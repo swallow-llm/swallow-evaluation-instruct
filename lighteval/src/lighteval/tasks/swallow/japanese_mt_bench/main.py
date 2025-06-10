@@ -123,7 +123,7 @@ llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
     | {f"judge_score_{category}_turn_2_avg": np.mean for category in ["overall"] + CATEGORIRES},
 )
 
-mt_bench_swallow_gpt4o = LightevalTaskConfig(
+mt_bench_japanese_swallow_gpt4o = LightevalTaskConfig(
     name="japanese_mt_bench",
     prompt_function=mt_bench_prompt,  # must be defined in the file or imported from src/lighteval/tasks/tasks_prompt_formatting.py
     suite=["swallow"],
@@ -138,4 +138,4 @@ mt_bench_swallow_gpt4o = LightevalTaskConfig(
 )
 
 
-TASKS_TABLE = [mt_bench_swallow_gpt4o]
+TASKS_TABLE = [mt_bench_japanese_swallow_gpt4o]
