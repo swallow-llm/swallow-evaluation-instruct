@@ -64,12 +64,11 @@ def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
                     continue
                 task_name = task_key
                 subset_name = ""
-            
             entry = {
                 "task_key": task_key,
                 "task": task_name,
                 "subset": subset_name,
-                "sample_num": config_tasks['|'.join(task_key.split("|")[:-1])].get("effective_num_docs", -1),
+                "sample_num": config_tasks['|'.join(task_key.split("|")[:-1])].get("effective_num_docs", -1) if type( config_tasks['|'.join(task_key.split("|")[:-1])]) is dict else -1,
                 "execution_datetime": execution_dt.isoformat(),
                 "required_time": required_time,
                 "metrics": metrics
@@ -104,6 +103,8 @@ def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
         try:
             value = func(latest_results, target, **func_args)
             assert value is not None, f"Try calculating {display_name}, but received None."
+            if value == -1:
+                print(f"No samples found for {display_name}")
         except Exception as e:
             print(f"Error processing {display_name}: {e}")
             value = -1
