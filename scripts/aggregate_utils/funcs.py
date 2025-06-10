@@ -11,6 +11,7 @@ def pick(latest_results: dict, target: dict, metric_key: str) -> float:
     for entry in latest_results.values():
         if entry["task_key"] == task_key:
             return entry["metrics"].get(metric_key, -1)
+    print(f"Warning: {task_key} does not have {metric_key}.")
     return -1
 
 
@@ -37,13 +38,14 @@ def micro_average(latest_results: dict, target: dict, metric_key: str, white_lis
             base_second = parts[1]
             subset_name = ""
             base_key = f"{parts[0]}|{base_second}|{parts[2]}"
+
         if (base_key == task_key) and ((len(white_list)==0) or (subset_name in white_list)):
-            sample = entry.get("sample_num", 0)
+            sample_num = entry.get("sample_num", 0)
             metric_value = entry["metrics"].get(metric_key)
             if metric_value is None:
                 continue
-            total_sample += sample
-            weighted_sum += sample * metric_value
+            total_sample += sample_num
+            weighted_sum += sample_num * metric_value
     if total_sample > 0:
         return weighted_sum / total_sample
     else:
