@@ -28,7 +28,7 @@ from lighteval.tasks.lighteval_task import LightevalTaskConfig
 from lighteval.tasks.requests import Doc
 from lighteval.metrics.metrics_sample import JudgeLLMMTBenchSwallow
 from lighteval.metrics.utils.metric_utils import SampleLevelMetricGrouping, MetricCategory, MetricUseCase
-from lighteval.tasks.swallow.japanese_mt_bench.judge_prompt_templates import (
+from lighteval.tasks.swallow.english_mt_bench.judge_prompt_templates import (
     gpt_judge_prompt_mt_bench_for_single_v1,
     gpt_judge_prompt_mt_bench_for_single_v1_with_ref,
     gpt_judge_prompt_mt_bench_for_single_v1_multi_turn,
@@ -123,11 +123,11 @@ llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
     | {f"judge_score_{category}_turn_2_avg": np.mean for category in ["overall"] + CATEGORIRES},
 )
 
-mt_bench_japanese_swallow_gpt4o = LightevalTaskConfig(
-    name="japanese_mt_bench",
+mt_bench_english_swallow_gpt4o = LightevalTaskConfig(
+    name="english_mt_bench",
     prompt_function=mt_bench_prompt,  # must be defined in the file or imported from src/lighteval/tasks/tasks_prompt_formatting.py
     suite=["swallow"],
-    hf_repo="tokyotech-llm/swallow_japanese_mt_bench",
+    hf_repo="tokyotech-llm/swallow_english_mt_bench",
     hf_subset="default",
     hf_avail_splits=["train"],
     evaluation_splits=["train"],
@@ -138,4 +138,4 @@ mt_bench_japanese_swallow_gpt4o = LightevalTaskConfig(
 )
 
 
-TASKS_TABLE = [mt_bench_japanese_swallow_gpt4o]
+TASKS_TABLE = [mt_bench_english_swallow_gpt4o]

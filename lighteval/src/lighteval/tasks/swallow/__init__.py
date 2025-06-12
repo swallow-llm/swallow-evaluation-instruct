@@ -8,20 +8,30 @@
 
 from .mclm_MATH_100_japanese import math_100_japanese
 from .jmmlu import JMMLU_SUBSET_TASKS
-from .japanese_mt_bench.main import mt_bench_swallow_gpt4o
+from .japanese_mt_bench.main import mt_bench_japanese_swallow_gpt4o
+from .jhumaneval import jhumaneval
+
 from .hellaswag import hellaswag_generative
 from .jemhopqa import jemhopqa, jemhopqa_cot
 from .gpqa_ja import gpqa_ja_instruct_lighteval
 from .wmt20 import wmt20_enja_swallow, wmt20_jaen_swallow
+from .mmlu_prox_japanese import mmlu_prox_japanese_tasks
+from .mmlu_prox_english import mmlu_prox_english_tasks
+from .english_mt_bench.main import mt_bench_english_swallow_gpt4o
 
 SWALLOW_TASKS = [
     math_100_japanese,
     hellaswag_generative,
+    jhumaneval,
     gpqa_ja_instruct_lighteval,
     jemhopqa,
     jemhopqa_cot,
     mt_bench_swallow_gpt4o,
     wmt20_enja_swallow,
     wmt20_jaen_swallow
+    mt_bench_japanese_swallow_gpt4o,
+    mt_bench_english_swallow_gpt4o,
 ]
 SWALLOW_TASKS.extend(JMMLU_SUBSET_TASKS)
+SWALLOW_TASKS.extend(mmlu_prox_japanese_tasks)
+SWALLOW_TASKS.extend(mmlu_prox_english_tasks)
