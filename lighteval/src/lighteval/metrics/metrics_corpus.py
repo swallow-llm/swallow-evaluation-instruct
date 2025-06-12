@@ -110,9 +110,46 @@ class CorpusLevelTranslationMetric:
             raise ValueError(f"Unknown corpus level translation metric type : {self.metric_type}")
 
     def compute(self, items: list[GenerativeCorpusMetricInput]) -> float:
-        """Computes the metric score over all the corpus generated items, by using the sacrebleu implementation."""
-        metric = self.get_metric()
-        golds = [i.golds for i in items]
+        """Computes the metric score over all the corpus generated items, by using the sacrebleu implementation.
+        
+        # BLEU    
+        BLEU is a metric used to evaluate the quality of machine-generated sentences by comparing them to reference translations [1]. 
+        It works by measuring how many word n-grams (regardless of order) in the generated sentence match those in the reference sentence. 
+        Typically, a weighted average of unigram to 4-gram precision is used.
+        It is recommended to use the SacreBLEU implementation [5], as BLEU is sensitive to tokenization choices [2,3,4]. 
+        
+        References:
+        [1] PAPINENI, Kishore, et al. Bleu: a method for automatic evaluation of machine translation. In: ACL2002, 2002.
+        [2] Comparing the Uncomparable to Claim the State of the Art: A Concerning Trend. https://kaitchup.substack.com/p/comparing-the-uncomparable-to-claim-the-state-of-the-art-a-concerning-trend-3d864522a0ba
+        [3] POST, Matt. A Call for Clarity in Reporting BLEU Scores. WMT 2018, 2018, 186.
+        [4] GRUSKY, Max. Rogue scores. In: ACL2023. 2023. p. 1914-1934.
+        [5] https://github.com/mjpost/sacrebleu
+        
+        # SacreBLEU spec:
+        SacreBLEU expects input as (generated sentences, reference sentences) as (List[str], List[List[str]]). 
+        Note that each inner list corresponds to one reference across all generations.  
+        In other words, for N predictions and M reference sentences each, the input shapes are:
+        - preds [N]: List of N predicted sentences
+        - refs [M, N]:  List of M lists, each containing N reference sentences       
+        """
+                
+        metric = self.get_metric()        
+        
+        # Assert: The number of reference sentences must be identical across all predictions.
+        first_item = next(iter(items))
+        num_references = len(first_item.golds)
+        for item in items:
+            if num_references != len(item.golds):
+                logger.error(
+                    f"Error: inconsistent number of reference setences detected. Expected: {num_references}, actual: {len(item.golds)}"
+                )
+                raise ValueError
+        
+        golds = []
+        for idx in range(num_references):
+            _golds = [item.golds[idx] for item in items]
+            golds.append(_golds)
+        
         preds = []
         for i in items:
             pred = as_list(i.preds)
@@ -121,6 +158,7 @@ class CorpusLevelTranslationMetric:
                     f"Multiple predictions present, keeping only the first prediction (when computing sacrebleu.{metric.__name__})."
                 )
             preds.append(pred[0])
+        
         return float(metric.corpus_score(hypotheses=preds, references=golds).score)
 
 

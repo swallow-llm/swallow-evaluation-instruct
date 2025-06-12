@@ -2572,8 +2572,8 @@ def wmt(line, alphabetical, task_name: str = None):
     # It would be better to just reupload the file tbh
     if isinstance(line["translation"], str):
         line["translation"] = ast.literal_eval(line["translation"])
-        for k, v in line["translation"].items():
-            line["translation"][k] = as_list(v)[0]
+    for k, v in line["translation"].items():
+        line["translation"][k] = as_list(v)[0]
 
     l_in, l_out = sorted(line["translation"].keys(), reverse=not alphabetical)
 
