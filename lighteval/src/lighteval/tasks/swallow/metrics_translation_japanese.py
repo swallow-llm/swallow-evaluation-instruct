@@ -3,6 +3,7 @@ from typing import List, Literal, Callable, Optional
 import unicodedata
 import re
 from janome.tokenizer import Tokenizer as JanomeTokenizer
+import nagisa
 
 from lighteval.metrics.utils.metric_utils import (
     CorpusLevelMetric,
@@ -67,51 +68,62 @@ def _pass_through(text: str) -> List[str]:
     return [text]
 
 
-class JanomeTextSegmenter(JanomeTokenizer):
-    
-    def __init__(self, remove_whitespace_tokens: bool = True, lowercase: bool = False, normalize_nfkc: bool = False, 
-                 **kwargs_janome_tokenizer):
-        
-        """
-        Janomeを用いて日本語テキストを分かち書きするクラス．
-        sacrebleuのリファレンス分かち書きは MeCab+IPADICだがMeCabはPythonでインストールが完結しない．
-        pure python でインストールが容易かつ MeCab+IPADIC と処理結果がほとんど同一であることから Janome を選択した．
-        Ref. https://pypi.org/project/Janome/
+class JapaneseTextSegmenter:
+    """
+    日本語テキストの分かち書き用クラス。JanomeまたはNagisaを選択可能。
+    segmenter_type: "janome" または "nagisa"
+    """
 
+    def __init__(
+        self,
+        segmenter_type: str = "janome",
+        remove_whitespace_tokens: bool = True,
+        lowercase: bool = False,
+        normalize_nfkc: bool = False,
+        **kwargs_segmenter,
+    ):
+        """
         Args:
-            remove_whitespace_tokens: 空白トークンを削除．MeCabと合わせるためTrueを推奨
+            segmenter_type: "janome" または "nagisa"
+            remove_whitespace_tokens: 空白トークンを削除
             lowercase: トークンを小文字化
             normalize_nfkc: トークンをNFKC正規化
-
-        Returns:
-            JanomeTextSegmenterクラス．.segment() method で分かち書きを実行する
-            
-        Usage:
-            segmenter = JanomeTextSegmenter(remove_whitespace_tokens=True)
-            segmenter.segment(text="今日は晴れです。")
-            >>> ["今日", "は", "晴れ", "です", "。"]
+            kwargs_segmenter: Janome, Nagisaの初期化引数
         """
-        
-        super().__init__(wakati=True, **kwargs_janome_tokenizer)
+        self.segmenter_type = segmenter_type
         self.remove_whitespace_tokens = remove_whitespace_tokens
         self.lowercase = lowercase
         self.normalize_nfkc = normalize_nfkc
-    
+
+        if segmenter_type == "janome":
+            self.tokenizer = JanomeTokenizer(wakati=True, **kwargs_segmenter)
+        elif segmenter_type == "nagisa":
+            # nagisa.Tagger()はkwargsを受け取れる
+            self.tokenizer = nagisa.Tagger(**kwargs_segmenter)
+        else:
+            raise ValueError(f"Unknown segmenter_type: {segmenter_type}")
+
     def _is_whitespace(self, token: str) -> bool:
         return token in (" ", "　")
-    
+
     def _normalize_nfkc(self, token: str) -> str:
         return unicodedata.normalize("NFKC", token)
-        
+
     def segment(self, text: str) -> List[str]:
-        lst_tokens = list(self.tokenize(text))
+        if self.segmenter_type == "janome":
+            lst_tokens = list(self.tokenizer.tokenize(text))
+        elif self.segmenter_type == "nagisa":
+            lst_tokens = self.tokenizer.wakati(text)
+        else:
+            raise ValueError(f"Unknown segmenter_type: {self.segmenter_type}")
+
         if self.remove_whitespace_tokens:
             lst_tokens = [token for token in lst_tokens if not self._is_whitespace(token)]
         if self.lowercase:
             lst_tokens = [token.lower() for token in lst_tokens]
         if self.normalize_nfkc:
             lst_tokens = list(map(self._normalize_nfkc, lst_tokens))
-            
+
         return lst_tokens
 
 
@@ -161,62 +173,66 @@ class TranslationPreparator:
 
     
 class JapaneseTranslationPreparator:
-    
-    def __init__(self, 
+    def __init__(
+        self,
         text_extraction_function: Callable[[str], List[str]],
         extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through,
-        remove_whitespace_tokens: bool = False, lowercase: bool = False, normalize_nfkc: bool = False,  
-        **kwargs_janome_tokenizer):
-        """_summary_
+        segmenter_type: str = "janome",
+        remove_whitespace_tokens: bool = False,
+        lowercase: bool = False,
+        normalize_nfkc: bool = False,
+        **kwargs_segmenter,
+    ):
+        """
         邦訳文に対してBLEUやchrFなどを計算する際に使う前処理クラス．
-        翻訳スパンの抽出，Janomeによる分かち書き，トークン文字列の正規化に対応している．
-        CorpusLevelMetric(sample_level_fn) に，インスタンスの .prepare() method を渡すことで前処理が行われるようになる．  
+        JanomeまたはNagisaによる分かち書き，トークン正規化に対応．
 
         Args:
-            text_extraction_function (Callable[[str], List[str]]): 翻訳スパン抽出関数．翻訳指示プロンプトに整合させること．
-            extraction_fallback_function (Callable[[str], List[str]]): 翻訳スパン抽出に失敗した場合のスパン抽出関数．デフォルトは応答文全体をそのまま翻訳とみなす．
-            remove_whitespace_tokens (bool, optional): 空白トークンの削除. Defaults to False.
-            lowercase (bool, optional): トークンの小文字化．Defaults to False.
-            normalize_nfkc (bool, optional): トークンのNFKC正規化．Defaults to False.
-            kwargs_janome_tokenizer: Janome.Tokenizer() に渡す引数．
+            text_extraction_function: 翻訳スパン抽出関数
+            extraction_fallback_function: 抽出失敗時の関数
+            segmenter_type: "janome" または "nagisa"
+            remove_whitespace_tokens: 空白トークンの削除
+            lowercase: 小文字化
+            normalize_nfkc: NFKC正規化
+            kwargs_segmenter: 分かち書き器の初期化引数
         """
         self.text_extraction_function = text_extraction_function
         self.extraction_fallback_function = extraction_fallback_function
-        
-        self.segmenter = JanomeTextSegmenter(remove_whitespace_tokens=remove_whitespace_tokens, lowercase=lowercase, normalize_nfkc=normalize_nfkc, 
-                                             **kwargs_janome_tokenizer)
-    
+
+        self.segmenter = JapaneseTextSegmenter(
+            segmenter_type=segmenter_type,
+            remove_whitespace_tokens=remove_whitespace_tokens,
+            lowercase=lowercase,
+            normalize_nfkc=normalize_nfkc,
+            **kwargs_segmenter,
+        )
+
     def prepare(self, golds: list[str], predictions: list[str], formatted_doc: Doc, **kwargs):
         """
         1. モデルの出力から翻訳文を抽出する
         2. 抽出した翻訳文および参照訳を分かち書きする
-
-        Args:
-            golds (list[str]): 1つの事例に対する参照訳のリスト
-            predictions (list[str]): 1つの事例に対する翻訳文のリスト
-
-        Returns:
-            GenerativeCorpusMetricInput: Stores the golds and predictions as such
         """
         lst_translated = []
         for pred in predictions:
             _lst_extracted = self.text_extraction_function(text=pred)
             lst_translated.extend(_lst_extracted)
-        
+
         # 抽出に失敗した場合はfallback
         if len(lst_translated) == 0:
             _fallback = self.extraction_fallback_function(pred)
             lst_translated.extend(_fallback)
-            
+
         if formatted_doc.specific is None:
             formatted_doc.specific = {}
         formatted_doc.specific["extracted_predictions"] = lst_translated
-        
+
         lst_reference_tokenzed = [" ".join(self.segmenter.segment(gold)) for gold in golds]
         lst_translated_tokenized = [" ".join(self.segmenter.segment(translated)) for translated in lst_translated]
-        
-        return GenerativeCorpusMetricInput(golds=lst_reference_tokenzed, 
-                                           preds=lst_translated_tokenized)
+
+        return GenerativeCorpusMetricInput(
+            golds=lst_reference_tokenzed,
+            preds=lst_translated_tokenized,
+        )
 
 
 def wmt20_enja_translation_span_extractor(text: str):
@@ -292,5 +308,41 @@ ter_en = CorpusLevelMetric(
     category=MetricCategory.GENERATIVE,
     use_case=MetricUseCase.TRANSLATION,
     corpus_level_fn=CorpusLevelTranslationMetric("ter", lang="en").compute,
+    higher_is_better=False,
+)
+
+# --- Nagisa分かち書き対応: 邦訳文向けPreparatorとメトリクス ---
+
+wmt20_enja_translation_preparator_nagisa = JapaneseTranslationPreparator(
+    text_extraction_function=wmt20_enja_translation_span_extractor,
+    extraction_fallback_function=_pass_through,
+    segmenter_type="nagisa",
+    remove_whitespace_tokens=False, lowercase=False, normalize_nfkc=False
+)
+
+bleu_ja_nagisa = CorpusLevelMetric(
+    metric_name="bleu_lmevalja",
+    sample_level_fn=wmt20_enja_translation_preparator_nagisa.prepare,
+    category=MetricCategory.GENERATIVE,
+    use_case=MetricUseCase.TRANSLATION,
+    corpus_level_fn=CorpusLevelTranslationMetric("bleu", lang="").compute,
+    higher_is_better=True,
+)
+
+chrf_ja_nagisa = CorpusLevelMetric(
+    metric_name="chrf_lmevalja",
+    sample_level_fn=wmt20_enja_translation_preparator_nagisa.prepare,
+    category=MetricCategory.GENERATIVE,
+    use_case=MetricUseCase.TRANSLATION,
+    corpus_level_fn=CorpusLevelTranslationMetric("chrf", lang="").compute,
+    higher_is_better=True,
+)
+
+ter_ja_nagisa = CorpusLevelMetric(
+    metric_name="ter_lmevalja",
+    sample_level_fn=wmt20_enja_translation_preparator_nagisa.prepare,
+    category=MetricCategory.GENERATIVE,
+    use_case=MetricUseCase.TRANSLATION,
+    corpus_level_fn=CorpusLevelTranslationMetric("ter", lang="").compute,
     higher_is_better=False,
 )
