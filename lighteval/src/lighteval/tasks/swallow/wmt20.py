@@ -6,7 +6,7 @@ from lighteval.metrics.metrics import Metrics
 from lighteval.tasks.requests import Doc
 from lighteval.utils.utils import as_list
 
-from .metrics_translation_japanese import bleu_ja, chrf_ja, ter_ja, bleu_en, chrf_en, ter_en
+from .metrics_translation_japanese import bleu_ja, chrf_ja, ter_ja, bleu_en, chrf_en, ter_en, bleu_ja_nagisa, chrf_ja_nagisa, ter_ja_nagisa
 
 # 英日翻訳用プロンプト
 # 翻訳文の接頭辞は `日本語:` とする
@@ -71,8 +71,7 @@ wmt20_enja_swallow = LightevalTaskConfig(
     few_shots_split=None,
     few_shots_select=None,
     generation_size=None,
-    # metric=[bleu_ja, chrf_ja, ter_ja],
-    metric=[bleu_ja],
+    metric=[bleu_ja, bleu_ja_nagisa],
     stop_sequence=[],
     trust_dataset=True,
     version=0,
@@ -89,7 +88,7 @@ wmt20_jaen_swallow = LightevalTaskConfig(
     few_shots_split=None,
     few_shots_select=None,
     generation_size=None,
-    metric=[bleu_en, chrf_en, ter_en],
+    metric=[bleu_en],
     stop_sequence=[],
     trust_dataset=True,
     version=0,
