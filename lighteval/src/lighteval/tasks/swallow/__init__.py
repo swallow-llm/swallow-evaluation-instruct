@@ -26,9 +26,8 @@ SWALLOW_TASKS = [
     gpqa_ja_instruct_lighteval,
     jemhopqa,
     jemhopqa_cot,
-    mt_bench_swallow_gpt4o,
     wmt20_enja_swallow,
-    wmt20_jaen_swallow
+    wmt20_jaen_swallow,
     mt_bench_japanese_swallow_gpt4o,
     mt_bench_english_swallow_gpt4o,
 ]
