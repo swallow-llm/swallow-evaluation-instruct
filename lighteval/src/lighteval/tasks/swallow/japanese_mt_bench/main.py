@@ -24,20 +24,30 @@
 # SOFTWARE.
 
 # ruff: noqa: F405, F403, F401, I001
+
+import re
+import logging
+import ast
+
+import numpy as np
+from markdown import markdown
+from bs4 import BeautifulSoup
+
 from lighteval.tasks.lighteval_task import LightevalTaskConfig
 from lighteval.tasks.requests import Doc
 from lighteval.metrics.metrics_sample import JudgeLLMMTBenchSwallow
-from lighteval.metrics.utils.metric_utils import SampleLevelMetricGrouping, MetricCategory, MetricUseCase
+from lighteval.metrics.utils.metric_utils import (
+    SampleLevelMetricGrouping,
+    MetricCategory,
+    MetricUseCase,
+)
 from lighteval.tasks.swallow.japanese_mt_bench.judge_prompt_templates import (
     gpt_judge_prompt_mt_bench_for_single_v1,
     gpt_judge_prompt_mt_bench_for_single_v1_with_ref,
     gpt_judge_prompt_mt_bench_for_single_v1_multi_turn,
     gpt_judge_prompt_mt_bench_for_single_v1_with_ref_multi_turn,
 )
-import re
-import numpy as np
-import logging
-import ast
+from lighteval.utils.utils import extract_final_answer_from_reasoning
 
 
 logger = logging.getLogger(__name__)
@@ -105,6 +115,91 @@ def gpt_judge_mt_bench_prompt(question, answer, options, gold):
         raise ValueError(f"Unsupported question type: {type(question)}")
 
 
+# Markdownからテキスト部分を抜き出す関数
+def extract_plain_text(markdown_text: str) -> str:
+    # MarkdownをHTMLに変換
+    html = markdown(markdown_text)
+    # HTMLから純粋なテキストを抽出
+    soup = BeautifulSoup(html, "html.parser")
+    plain_text = soup.get_text()
+    # テキストの文字数をカウント
+    return plain_text
+
+
+# 日本語文字か否かを判定する関数
+def is_japanese_char(ch):
+    # Hiragana
+    if "\u3041" <= ch <= "\u309f":
+        return True
+    # Katakana
+    if "\u30a1" <= ch <= "\u30ff":
+        return True
+    # Kanji (CJK Unified Ideographs excl. Extenson A-I)
+    if "\u4e00" <= ch <= "\u9fff":
+        return True
+    # Full-width characters
+    if "\uff01" <= ch <= "\uff5e":
+        return True
+    # Japanese punctuation and symbols
+    # https://qiita.com/YusukeHirao/items/099ab93bdbf47f0d7a02
+    if ("\u3000" <= ch <= "\u3036") or (ch == "\u30fb") or (ch == "\uff5e"):
+        return True
+    return False
+
+
+# テキスト中の日本語文字の割合を計算する関数
+def count_japanese_chars(text: str) -> int:
+    num_japanese_chars = sum(1 for ch in text if is_japanese_char(ch))
+    return num_japanese_chars
+
+
+def safe_divide(numerator: int, denominator: int) -> float:
+    if denominator == 0:
+        return 0.0
+    else:
+        return numerator / denominator
+
+
+def compute_japanese_ratio_sample(
+    sample_ids: list[str], responses: list, formatted_docs: list[Doc], **kwargs
+) -> dict[str, int]:
+    metrics = []
+    for sample_idx in range(len(sample_ids)):
+        category = formatted_docs[sample_idx].specific["category"]
+        # 1ターン目と2ターン目は区別しないで連結する
+        prediction = [(responses[sample_idx][0].result[0][turn], responses[sample_idx][0].result[1][turn]) for turn in range(len(responses[sample_idx][0].result[0]))]
+        metrics.append(
+            {
+                f"japanese_ratio_{category}": prediction,
+                "japanese_ratio_overall": prediction,
+            }
+        )
+    return metrics
+
+
+def compute_japanese_ratio_corpus(prediction_list: list[list[tuple[str]]]) -> dict[str, float]:
+    total_num_chars = 0
+    total_num_ja_chars = 0
+    for prediction in prediction_list:
+        for first_turn, second_turn in prediction:
+            plain_text = extract_plain_text(first_turn + second_turn)
+            num_chars = len(plain_text)
+            num_ja_chars = count_japanese_chars(plain_text)
+            total_num_chars += num_chars
+            total_num_ja_chars += num_ja_chars
+
+    return safe_divide(total_num_ja_chars, total_num_chars)
+
+
+japanese_character_ratio_metric = SampleLevelMetricGrouping(
+    metric_name=[f"japanese_ratio_{category}" for category in ["overall"] + CATEGORIRES],
+    higher_is_better={f"japanese_ratio_{category}": True for category in ["overall"] + CATEGORIRES},
+    category=MetricCategory.LLM_AS_JUDGE_MULTI_TURN,
+    use_case=MetricUseCase.SUMMARIZATION,
+    sample_level_fn=compute_japanese_ratio_sample,
+    corpus_level_fn=compute_japanese_ratio_corpus,
+)
+
 llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
     metric_name=[f"judge_score_{category}_turn_1" for category in ["overall"] + CATEGORIRES]
     + [f"judge_score_{category}_turn_2" for category in ["overall"] + CATEGORIRES],
@@ -133,7 +228,7 @@ mt_bench_japanese_swallow_gpt4o = LightevalTaskConfig(
     evaluation_splits=["train"],
     few_shots_split="",
     few_shots_select="random",
-    metric=[llm_judge_mt_bench_swallow_gpt4o_judge],
+    metric=[llm_judge_mt_bench_swallow_gpt4o_judge, japanese_character_ratio_metric],
     stop_sequence=[],
 )
 
