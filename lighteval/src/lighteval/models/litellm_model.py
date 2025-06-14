@@ -37,14 +37,17 @@ from lighteval.models.model_output import (
     GenerativeResponse,
     LoglikelihoodResponse,
     LoglikelihoodSingleTokenResponse,
+    GenerativeMultiturnResponse,
 )
 from lighteval.tasks.requests import (
+    GreedyUntilMultiTurnRequest,
     GreedyUntilRequest,
     LoglikelihoodRequest,
     LoglikelihoodRollingRequest,
     LoglikelihoodSingleTokenRequest,
 )
 from lighteval.utils.imports import is_litellm_available
+from lighteval.utils.utils import extract_final_answer_from_reasoning
 
 
 logger = logging.getLogger(__name__)
@@ -58,7 +61,7 @@ if is_litellm_available():
     logging.getLogger("LiteLLM").setLevel(logging.WARNING)
     logging.getLogger("LiteLLM").handlers.clear()
 
-    litellm.cache = Cache(type="disk")
+    # litellm.cache = Cache(type="disk")  # キャッシュ機能を無効化
 
 
 @dataclass
@@ -135,13 +138,15 @@ class LiteLLMClient(LightevalModel):
         if not max_new_tokens or max_new_tokens <= 0:
             return None
 
-        if "o1" in self.model:
+        if "o1" in self.model or "o3" in self.model:
             # We need to allow more tokens to include reasoning tokens
             max_new_tokens = min(max_new_tokens * 10, 32000)
         return max_new_tokens
 
     def __call_api(self, prompt, return_logits, max_new_tokens, num_samples, stop_sequence):
         """Make API call with retries."""
+        assert self.provider != "deepinfra" or num_samples == 1, "Deepinfra does not support num_samples > 1"
+
         response = ModelResponse()
         for attempt in range(self.API_MAX_RETRY):
             try:
@@ -161,8 +166,8 @@ class LiteLLMClient(LightevalModel):
                     "caching": True,
                     "api_key": self.api_key,
                 }
-                if "o1" in self.model:
-                    logger.warning("O1 models do not support temperature, top_p, stop sequence. Disabling.")
+                if "o1" in self.model or "o3" in self.model:
+                    logger.warning("O* models do not support temperature, top_p, stop sequence. Disabling.")
                 else:
                     kwargs.update(self.generation_parameters.to_litellm_dict())
 
@@ -178,6 +183,7 @@ class LiteLLMClient(LightevalModel):
                     response = litellm.completion(**kwargs)
                 return response
             except litellm.BadRequestError as e:
+                logger.error(f"Error in API call: {e}")
                 if "message" in e.__dict__:
                     error_string = (
                         "The response was filtered due to the prompt triggering Microsoft's content management policy"
@@ -282,6 +288,82 @@ class LiteLLMClient(LightevalModel):
 
         return dataset.get_original_order(results)
 
+    def greedy_until_multi_turn(
+        self,
+        requests: list[GreedyUntilMultiTurnRequest],
+        override_bs: Optional[int] = None,
+    ) -> list[GenerativeMultiturnResponse]:
+        """
+        マルチターンの会話に対して、greedy decodingを使用して応答を生成します。
+
+        Args:
+            requests (list[GreedyUntilMultiTurnRequest]): コンテキストと終了条件を含むリクエストのリスト
+            override_bs (int, optional): 生成のバッチサイズを上書きする値。デフォルトはNone。
+
+        Returns:
+            list[GenerativeMultiturnResponse]: 生成された応答のリスト
+        """
+        for request in requests:
+            request.tokenized_context = self.tok_encode(request.context)
+
+        results = []
+
+        dataset = GenerativeTaskDataset(requests=requests, num_dataset_splits=self.DATASET_SPLITS)
+
+        for _ in tqdm(
+            dataset.splits_start_end_iterator(),
+            total=dataset.num_dataset_splits,
+            desc="Greedy Multi Turn Generation",
+            position=1,
+            leave=False,
+            disable=False,
+        ):
+            # TODO: self._call_api_parallelを使用して各ターンの出力を生成すれば、並列化により高速化できる。
+            # ただ、入力によってtemperatureが異なる場合に対応できないため、現状はself._call_apiを使用している。
+            # したがって、並列化を実現するには、まず入力単位でtemperatureを指定できるように実装を変更する必要がある。
+            contexts = [c.context for c in dataset]
+            max_new_tokens = dataset[0].generation_size  # could be none
+            return_logits = dataset[0].use_logits
+            num_samples = dataset[0].num_samples
+            stop_sequence = requests[0].stop_sequence
+            for idx in tqdm(range(len(contexts))):
+                turn_results = []
+                multi_turn_context_all = contexts[idx]
+                for turn in range(len(multi_turn_context_all)):
+                    tmp_turn = 0
+                    multi_turn_context = multi_turn_context_all[turn]
+                    for i in range(len(multi_turn_context)):
+                        if "model_response" in multi_turn_context[i]["content"]:
+                            multi_turn_context[i]["content"] = multi_turn_context[i]["content"].format(model_response=turn_results[tmp_turn][0])
+                            tmp_turn += 1
+                    temperature = requests[idx].temperature
+                    if temperature is not None:
+                        self.generation_parameters.temperature = temperature
+
+                    if temperature is not None and temperature == 0 and num_samples > 1:
+                        multi_turn_response = self.__call_api(multi_turn_context, return_logits, max_new_tokens, 1, stop_sequence)
+                        gen_text = extract_final_answer_from_reasoning(multi_turn_response.choices[0].message.content)
+                        turn_results.append([gen_text] * num_samples)
+                    else:
+                        tmp_results = []
+                        for i in range(num_samples):
+                            multi_turn_response = self.__call_api(multi_turn_context, return_logits, max_new_tokens, 1, stop_sequence)
+                            gen_text = extract_final_answer_from_reasoning(multi_turn_response.choices[0].message.content)
+                            tmp_results.append(gen_text)
+                        turn_results.append(tmp_results)
+
+                results.append(
+                    GenerativeMultiturnResponse(
+                        result=turn_results,
+                        input_tokens=[],
+                        generated_tokens=[],
+                        truncated_tokens_count=0,
+                        padded_tokens_count=0,
+                    )
+                )
+
+        return dataset.get_original_order(results)
+
     @property
     def tokenizer(self):
         return self._tokenizer
@@ -294,8 +376,12 @@ class LiteLLMClient(LightevalModel):
 
     def tok_encode(self, text: str | list[str]):
         if isinstance(text, list):
-            toks = [self._encode(t["content"]) for t in text]
-            toks = [tok for tok in toks if tok]
+            if isinstance(text[0], list):
+                toks = [[self._encode(t["content"]) for t in sublist] for sublist in text]
+                toks = [tok for sublist in toks for tok in sublist]
+            else:
+                toks = [self._encode(t["content"]) for t in text]
+                toks = [tok for tok in toks if tok]
             return toks
         return self._encode(text)
 

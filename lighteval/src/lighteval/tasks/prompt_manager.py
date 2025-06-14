@@ -159,10 +159,14 @@ class PromptManager:
         contexts = []
         offset = 2 if system_prompt is not None else 1
         for i in range(0, len(role_content_list), offset + 1):
-            c = self.model.tokenizer.apply_chat_template(
-                role_content_list[: i + offset], add_generation_prompt=True, tokenize=False, add_special_tokens=False
-            )
+            if  type(self.model) in [LiteLLMClient, InferenceProvidersClient]:
+                c = role_content_list[: i + offset]
+            else:
+                c = self.model.tokenizer.apply_chat_template(
+                    role_content_list[: i + offset], add_generation_prompt=True, tokenize=False, add_special_tokens=False
+                )
             contexts.append(c)
+
 
         return contexts, 0
 
