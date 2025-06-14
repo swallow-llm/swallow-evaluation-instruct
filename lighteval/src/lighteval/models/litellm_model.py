@@ -28,7 +28,6 @@ from typing import Optional
 
 import yaml
 from tqdm import tqdm
-import torch
 
 from lighteval.data import GenerativeTaskDataset
 from lighteval.models.abstract_model import LightevalModel
@@ -48,7 +47,6 @@ from lighteval.tasks.requests import (
     LoglikelihoodSingleTokenRequest,
 )
 from lighteval.utils.imports import is_litellm_available
-from lighteval.utils.utils import as_list, extract_final_answer_from_reasoning
 
 
 logger = logging.getLogger(__name__)
