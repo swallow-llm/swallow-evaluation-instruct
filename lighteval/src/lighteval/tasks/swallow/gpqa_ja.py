@@ -56,7 +56,6 @@ gpqa_ja_instruct_lighteval = LightevalTaskConfig(
     evaluation_splits=["train"],
     few_shots_split=None,
     few_shots_select=None,
-    generation_size=32768,  # needed for reasoning models like R1
     metric=[gpqa_ja_instruct_metric],
     stop_sequence=[],  # no stop sequence, will use eos token
     trust_dataset=True,
