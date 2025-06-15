@@ -3,16 +3,16 @@
 
 from . import ja_instructions
 
-_KEYWORD = "keywords:"
-_LANGUAGE = "language:"
-_LENGTH = "length_constraints:"
-_CONTENT = "detectable_content:"
-_FORMAT = "detectable_format:"
-_MULTITURN = "multi-turn:"
-_COMBINATION = "combination:"
-_STARTEND = "startend:"
-_PUNCTUATION = "punctuation:"
-_LETTERS = "letters:"
+_KEYWORD = "ja:keywords:"
+_LANGUAGE = "ja:language:"
+_LENGTH = "ja:length_constraints:"
+_CONTENT = "ja:detectable_content:"
+_FORMAT = "ja:detectable_format:"
+_MULTITURN = "ja:multi-turn:"
+_COMBINATION = "ja:combination:"
+_STARTEND = "ja:startend:"
+_PUNCTUATION = "ja:punctuation:"
+_LETTERS = "ja:letters:"
 
 JA_INSTRUCTION_DICT = {
     _KEYWORD + "existence": ja_instructions.KeywordChecker,
