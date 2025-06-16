@@ -80,8 +80,14 @@ dependencies = [
     "fsspec>=2023.12.2",
     "fuzzywuzzy>=0.18.0",
     "uv>=0.7.12",
-    "markdown>=3.8",
-    "beautifulsoup4>=4.13.4",
+    "markdown>=3.8", # MT-Bench-Ja
+    "beautifulsoup4>=4.13.4,<5.0.0", # MT-Bench-Ja
+    "immutabledict", # M-IFEval-Ja
+    "regex", # JEMHopQA, etc.
+    "ja_sentence_segmenter", # M-IFEval-Ja
+    "langdetect>=1.0.0,<2.0.0", # M-IFEval-Ja
+    "janome", # M-IFEval-Ja, WMT20
+    "nagisa" # WMT20
 ]
 
 [project.optional-dependencies]
@@ -101,7 +107,6 @@ tests = ["pytest==7.4.0"]
 dev = ["lighteval[accelerate,quality,tests,multilingual,math,extended_tasks]"]
 docs = ["hf-doc-builder", "watchdog"]
 extended_tasks = [
-  "langdetect", # ifeval
   "openai", # llm as a judge using openai models
   "tiktoken"
 ]
