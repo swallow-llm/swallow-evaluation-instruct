@@ -9,6 +9,7 @@ from lighteval.metrics.utils.metric_utils import (
 )
 from lighteval.tasks.lighteval_task import LightevalTaskConfig
 from lighteval.tasks.requests import Doc
+from lighteval.utils.utils import extract_final_answer_from_reasoning
 
 # プロンプト生成関数
 def mifeval_ja_prompt(line, task_name: str = None):
@@ -30,6 +31,9 @@ submetric_names = [
 
 def mifeval_ja_metric(predictions: list[str], formatted_doc: Doc, **kwargs) -> dict:
     response = predictions[0]
+    
+    # 推論型モデルの出力から最終回答部分のみを抽出する
+    response = extract_final_answer_from_reasoning(response)
 
     # Strict instructions
     instruction_list = formatted_doc.specific["instructions_id_list"]
