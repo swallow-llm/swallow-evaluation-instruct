@@ -45,3 +45,4 @@ lighteval = { path = "./", editable = true, extras = ["tests", "multilingual", "
 [scripts]
 test_unit = "python -m pytest tests/test_unit_*.py"
 test_extractive_match = "python -m pytest tests/metrics/test_extractive_match.py"
+test_mifeval_ja_metric = "python -m pytest -s tests/tasks/test_mifeval_ja_metric.py"
