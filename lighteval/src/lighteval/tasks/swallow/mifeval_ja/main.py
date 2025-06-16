@@ -41,10 +41,11 @@ def mifeval_ja_metric(predictions: list[str], formatted_doc: Doc, **kwargs) -> d
     response_remove_first = "\n".join(r[1:]).strip()
     response_remove_last = "\n".join(r[:-1]).strip()
     response_remove_both = "\n".join(r[1:-1]).strip()
-    revised_response = response.replace("・", "")
-    revised_response_remove_first = response_remove_first.replace("・", "")
-    revised_response_remove_last = response_remove_last.replace("・", "")
-    revised_response_remove_both = response_remove_both.replace("・", "")
+    revised_response = response.replace("*", "")
+    revised_response_quotation = response.replace('"', '')
+    revised_response_remove_first = response_remove_first.replace("*", "")
+    revised_response_remove_last = response_remove_last.replace("*", "")
+    revised_response_remove_both = response_remove_both.replace("*", "")
     all_responses = [
         response,
         revised_response,
