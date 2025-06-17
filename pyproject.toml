@@ -1,0 +1,53 @@
+[project]
+name = "jalm-evaluation-instruct-private"
+version = "0.0.1"
+description = "beta"
+readme = "README.md"
+requires-python = "==3.10.14"
+dependencies = []
+
+
+[project.optional-dependencies]
+aggregate_results = [
+    "pandas>=2.2.3",
+]
+
+lighteval = [
+    "transformers>=4.51.0", # Set the floor to allow evaluation of the latest models: Llama 4, Phi4-Multimodal, DeepSeek-v3, Qwen3.
+    "openai>=1.40.0", # Set the floor to avoid using deprecated names.
+    "datasets==2.21.0", # Pinned to force default value of trust_remote_code to True (It has been changed to False since 3.0.0).
+    "vllm>=0.8.5.post1", # Set the floor to avoid using SetDevice symbol which has been deprecated since pytorch 2.3.
+    
+    "lighteval",
+]
+
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu126" }
+torchvision = { index = "pytorch-cu126" }
+
+lighteval = { path = "./lighteval", editable = true }
+
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = "aggregate_results" },
+    { extra = "lighteval" },
+  ],
+]
+index-strategy = "unsafe-best-match"
+
+
+[tool.ruff]
+ignore = ["F841", "E741"]
+fix = true
