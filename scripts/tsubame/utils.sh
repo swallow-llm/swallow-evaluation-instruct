@@ -60,7 +60,6 @@ serve_litellm(){
             BASE_URL="http://localhost:8000/v1"
             MODEL_NAME_CONFIG="hosted_vllm/$MODEL_NAME"
             RAW_DIR="$RAW_OUTPUT_DIR/results/hosted_vllm/$MODEL_NAME"
-            export CUDA_VISIBLE_DEVICES=$GPUS
             ;;
         *)
             echo "💀 Error: Invalid provider. Must be one of: openai, deepinfra, vllm"
@@ -87,7 +86,7 @@ serve_litellm(){
 
         # Start vllm server in background
         echo "🏗️ Starting vllm server..."
-        uv run vllm serve $MODEL_NAME --tensor-parallel-size $NUM_GPUS > "$RAW_DIR/vllm_server.log" 2>&1 &
+        uv run vllm serve $MODEL_NAME > "$RAW_DIR/vllm_server.log" 2>&1 &
         VLLM_PID=$!
 
         # Wait for server to start
