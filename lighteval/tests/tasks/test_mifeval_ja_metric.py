@@ -84,12 +84,3 @@ def test_mifeval_ja_metric_accuracy_aggregate():
     assert loose_prompt_acc == pytest.approx(ref_scores["prompt_level_loose_acc"], abs=1e-4), f"loose prompt_level accuracy mismatch: {loose_prompt_acc} vs {ref_scores['prompt_level_loose_acc']}"
     assert loose_inst_acc == pytest.approx(ref_scores["inst_level_loose_acc"], abs=1e-4), f"loose inst_level accuracy mismatch: {loose_inst_acc} vs {ref_scores['inst_level_loose_acc']}"
     
-    d = {
-        "prompt_level_strict_acc": strict_prompt_acc,
-        "inst_level_strict_acc": strict_inst_acc,
-        "prompt_level_loose_acc": loose_prompt_acc,
-        "inst_level_loose_acc": loose_inst_acc
-    }
-    
-    pprint(ref_scores)
-    pprint(d)
