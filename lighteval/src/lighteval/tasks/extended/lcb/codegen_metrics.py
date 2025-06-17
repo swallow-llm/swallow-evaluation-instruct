@@ -50,6 +50,7 @@ from typing import Callable, Optional
 # used for testing the code that reads from input
 from unittest.mock import mock_open, patch
 
+from markdown_it import MarkdownIt
 import numpy as np
 from tqdm import tqdm
 
@@ -363,7 +364,7 @@ def grade_stdio(  # noqa: C901
 def grade_check_fn(code: str, fn_name: str, check_fn: str, timeout: int) -> list[int | bool]:
     # check-fn clean up logic
     # need to wrap in try-catch logic after to catch the correct errors, but for now this is fine.
-    code = import_string + "\n\n" + code + "\n\n" + check_fn + "\n\n" + f"check({fn_name})"
+    code = import_string + "\n\n" + code + "\n\n" + check_fn 
     compiled_sol = compile_code(code, timeout)
     if compiled_sol is None:
         # The code could not be compiled as the text was maybe malformed, return [-4] error code.
@@ -611,6 +612,7 @@ def evaluate_generations_by_problem(args: list[list]) -> list:
     timeout: int = args[2]
 
     res = []
+    task_id = json.loads(sample["input_output"]).get("task_id")
     for o_idx, o in enumerate(problem_generations):
         curr_res = [-2]
         try:
@@ -629,7 +631,8 @@ def evaluate_generations_by_problem(args: list[list]) -> list:
             pass
 
         finally:
-            assert isinstance(curr_res, list), curr_res
+            assert isinstance(curr_res, list), f"Output is not a list: {curr_res}" if task_id is None else f"[task_id: {task_id}] Output is not a list: {curr_res}" 
+            # assert isinstance(curr_res, list), curr_res
             res.append(curr_res)
 
     return res
@@ -748,3 +751,14 @@ def extract_code(model_output: str) -> str:
     if len(indexlines) < 2:
         return ""
     return "\n".join(outputlines[indexlines[-2] + 1 : indexlines[-1]])
+
+
+def extract_last_code_block(model_output: str) -> str:
+    """
+    モデルの出力にける最後のコードブロックを抽出する．
+    ただし，文中に現れるコードブロック以外の ``` や，文法的に成立していないコードブロックは無視する．
+    """
+    md = MarkdownIt()
+    tokens = md.parse(model_output)
+    codes = [t.content for t in tokens if t.type == "fence"]
+    return codes[-1] if len(codes) > 0 else ""

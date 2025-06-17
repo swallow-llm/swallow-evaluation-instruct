@@ -9,9 +9,10 @@ from aenum import extend_enum
 from lighteval.metrics.metrics import MetricCategory, Metrics, MetricUseCase, SampleLevelMetric
 from lighteval.tasks.extended.lcb.codegen_metrics import (
     codegen_metrics,
-    extract_code,
+    extract_last_code_block,
 )
 from lighteval.tasks.lighteval_task import Doc, LightevalTaskConfig
+from lighteval.utils.utils import extract_final_answer_from_reasoning
 
 
 # Query template
@@ -52,20 +53,29 @@ def codegen_metric_passk(predictions: list[str], formatted_doc: Doc, k: int , **
     (This is a modified version of codegen_metric in lcb)
     """
     # Extract generated code snippets
-    generated_code_snippets = [[extract_code(pred) for pred in predictions]]
+    predictions_wo_thinkblock = [extract_final_answer_from_reasoning(pred) for pred in predictions]
+    generated_code_snippets = [[extract_last_code_block(pred) for pred in predictions_wo_thinkblock]]
+    # formatted_doc.specific["extracted_predictions"] = generated_code_snippets
     evaluation_sample = {
         "fn_name": formatted_doc.specific["fn_name"],
         "check_fn": formatted_doc.specific["check_fn"],
+        "task_id": formatted_doc.specific["task_id"],
     }
     # This is a list of lists because
     evaluation_sample = [{"input_output": json.dumps(evaluation_sample)}]
 
-    metrics, _ = codegen_metrics(
+    metrics, results = codegen_metrics(
         evaluation_sample,
         generated_code_snippets,
         k_list=[k],
         num_process_evaluate=32,    # node_q: 32 / node_f: 160
     )
+
+    # Record the results in the formatted_doc
+    formatted_doc.specific["extracted_predictions"] = generated_code_snippets[0]
+    formatted_doc.specific["results"] = json.dumps(results[0])
+    formatted_doc.specific["context"] = formatted_doc.ctx
+    
     return metrics[f"pass@{k}"]
 
 
