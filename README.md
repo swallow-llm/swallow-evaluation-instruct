@@ -152,3 +152,13 @@ shot数，メトリック，CoT有無などの詳細な評価設定は，以下�
 もしflash-attention を入れる場合は，仮想環境を有効化してから `pip install flash-attn --no-build-isolation` を実行します．
 
 さらに詳しい使用例は [Pipenv](https://pipenv.pypa.io/en/latest/) を参照するか，ChatGPTに聞いてみてください．  
+
+## 評価スクリプトが使用するLLM評価フレームワークおよびそれらのライセンス・変更点
+公開までに揃えること．
+
+### M-IFEval 日本語サブセット
+* バージョン: [M-IFEval](https://github.com/lightblue-tech/M-IFEval) 0bc3143
+* ライセンス: Copyright 2025 Lightblue Inc, Apache License Version 2.0 ([LICENSE](https://github.com/lightblue-tech/M-IFEval/blob/main/LICENSE.txt))
+
+#### 主な変更点
+* <think>...</think>のような推論型モデルの推論過程を削除する処理を追加しました．  
