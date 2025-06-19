@@ -15,6 +15,7 @@ init_common(){
     export TMPDIR=/local/${JOB_ID}
     export HUGGINGFACE_HUB_CACHE=$HUGGINGFACE_CACHE
     export HF_HOME=$HUGGINGFACE_CACHE
+    export HF_TOKEN=$HF_TOKEN
     export UV_CACHE_DIR=$UV_CACHE
     export VLLM_CACHE_ROOT=$VLLM_CACHE
     export REPO_PATH=$REPO_PATH
@@ -139,6 +140,7 @@ PY
         uv run --isolated --project ${REPO_PATH} --locked --extra vllm \
             vllm serve \
                 $MODEL_NAME \
+                --hf-token $HF_TOKEN \
                 --tensor-parallel-size $NUM_GPUS \
                 --max-model-len $MAX_MODEL_LENGTH \
                 --gpu-memory-utilization $GPU_MEMORY_UTILIZATION \
@@ -187,7 +189,7 @@ aggregate_result(){
     REPO_PATH=$4
 
     uv run --isolated --project ${REPO_PATH} --locked --extra aggregate_results \
-        python ${REPO_PATH}/scripts/aggregate_result.py --model $MODEL_NAME \
+        python ${REPO_PATH}/scripts/aggregate_results.py --model $MODEL_NAME \
         --raw-outputs-dir "${RAW_OUTPUTS_DIR}" \
         --aggregated-outputs-dir $AGGREGATED_OUTPUTS_DIR
 
