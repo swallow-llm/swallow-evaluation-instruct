@@ -10,15 +10,13 @@ lighteval: [v0.8.0](https://github.com/huggingface/lighteval/releases/tag/v0.8.0
 ## 実行方法
 [標準的な lighteval の実行方法](https://huggingface.co/docs/lighteval/quicktour)で動かすことができます．  
 
-
 ```
 MODEL="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3"
 SYSTEM_PROMPT="あなたは誠実で優秀な日本人のアシスタントです。"
 MAX_MODEL_LENGTH=8192
-MAX_NEW_TOKENS=2048
 TEMPERATURE=0.0
 
-MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_MODEL_LENGTH,gpu_memory_utilization=0.8,generation_parameters={max_new_tokens:$MAX_NEW_TOKENS,temperature:$TEMPERATURE}"
+MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_MODEL_LENGTH,gpu_memory_utilization=0.8,generation_parameters={temperature:$TEMPERATURE}"
 
 lighteval vllm $MODEL_ARGS "swallow|{ベンチマークのID}|0|0" \
 --system-prompt "${SYSTEM_PROMPT}" \
@@ -26,27 +24,80 @@ lighteval vllm $MODEL_ARGS "swallow|{ベンチマークのID}|0|0" \
 --use-chat-template
 ```
 
+### OpenAIモデル等の評価
+litellmをバックエンドとして指定することにより，OpenAIのように推論APIだけが提供されているモデルも評価できます．  
+NVIDIA NIM や DeepInfra のようなOpenAI互換の推論APIも対応しています．  
+ただしAPIプロバイダ固有の仕様（並列リクエスト数など）によりエラーが起きることがあるのでデバッグに注意してください．  
+実行例は以下の通り．  
+
+```
+# GPT-4o の GPQA を OpenAI API で評価する例
+API_KEY="APIキー"
+MODEL_NAME="gpt-4o-2024-08-06"
+BASE_URL="https://api.openai.com/v1" # OpenAI API の URL
+OUTPUT_DIR=data/evals/
+
+lighteval endpoint litellm \
+    "model=$MODEL_NAME,api_key=$API_KEY,base_url=$BASE_URL" \
+    "lighteval|gpqa:diamond|0|0" \
+    --use-chat-template \
+    --output-dir $OUTPUT_DIR
+```
+
+### 推論エンジンを分離してオープンウェイトモデルを評価
+オープンウェイトモデルについてもvLLMで推論APIを立ててからlitellm経由でAPIを呼び出すことにより，lightevalと異なる仮想環境や計算機でモデルを走らせて評価できます．  
+実行例は以下の通り．  
+
+```
+MODEL="Qwen/Qwen3-0.6B"
+API_KEY="DUMMY"
+
+vllm serve --model $MODEL \
+--host localhost \
+--port 8000 \
+--reasoning-parser deepseek_r1
+
+BASE_URL="http://localhost:8000/v1"
+
+lighteval endpoint litellm \
+"model=$MODEL,api_key=$API_KEY,base_url=$BASE_URL" \
+"lighteval|gpqa:diamond|0|0" \
+--use-chat-template \
+--output-dir $OUTPUT_DIR
+```
+
+
 ## ベンチマーク一覧
 ligiteval の `--tasks` として指定できるように [lighteval/tasks/swallow](./lighteval/src/lighteval/tasks/swallow/) 以下に各種ベンチマークを実装しています．  
 いずれも自由に応答文を記述させて回答スパンを抽出するスタイルで実装しています．  
-実装中のベンチマーク一覧は以下の通り．  
+ベンチマーク一覧およびそのIDは以下の通り．  
 
 ### 日本語
 
 * JEMHopQA: jemhopqa, jemhopqa_cot
-* WMT20 En-Ja, Ja-En: WIP
 * 日本語MT-Bench: japanese_mt_bench
-* M-IFEval 日本語サブセット: WIP
+* M-IFEval 日本語サブセット: mifeval_ja
 * JMMLU: swallow_jmmlu
-* MMLU-ProX: WIP
+* MMLU-ProX 日本語サブセット: mmlu_prox_japanese
 * JHumanEval: WIP
 * MCLM MATH-100 日本語サブセット = MATH邦訳版: math_100_japanese
 * BenchMAX Science Reasoning 日本語版 = GPQA邦訳版: swallow_gpqa_ja
+* WMT20 En-Ja, Ja-En: wmt20:en-ja, wmt20:ja-en
 
 ### 英語
 * HellaSwag: hellaswag
-* 英語MT-Bench: WIP
-* MMLU-Pro: WIP
+* 英語MT-Bench: english_mt_bench
+* MMLU-Pro: 未実装
+* MMLU-ProX: mmlu_prox_english
+* MMLU: 未実装
+    * 既存実装 helm|mmlu は選択肢だけ出力する短答を想定した実装になってる（Ref. [コード](https://github.com/swallow-llm/swallow-evaluation-instruct-private/blob/main/lighteval/src/lighteval/tasks/default_tasks.py#L10310)）ので，GPQA/MMLU-Proと同じスタイルで実装し直すことを検討中．
+
+以下のベンチマークはligiteval公式実装を必要に応じて微調整して使う予定です．  
+
+* GPQA: lighteval|gpqa:diamond
+* MATH-500: lighteval|math_500
+* AIME 2024--2025: lighteval|aime24, lighteval|aime25
+* LiveCodeBench v5 & v6 追加設問: extended|lcb:codegeneration_v5_v6
 
 ## ベンチマークごとの詳細な評価設定
 shot数，メトリック，CoT有無などの詳細な評価設定は，以下の資料を参照してください．  
@@ -60,15 +111,26 @@ shot数，メトリック，CoT有無などの詳細な評価設定は，以下�
 * `JapaneseOpenQAExactMatchSamplingFunc` クラス
 * 厳密な回答スパン抽出モード，ロバストな回答スパン抽出+文字列正規化モード(接頭辞 `quasi`) に対応  
 * 3種類の評価指標に対応
-    * 完全一致 (exact_match, quasi_exact_match)
-    * 文字F1 (f1_score, f1_score_quasi)
-    * llm-jp-eval方式の文字F1 (llmjpeval_f1_score, llmjpeval_f1_score_quasi)
+    * 完全一致 : exact_match, quasi_exact_match
+    * 文字F1: f1_score, f1_score_quasi
+    * llm-jp-eval方式の文字F1: llmjpeval_f1_score, llmjpeval_f1_score_quasi
 
 ### LLM-as-a-Judge
 * `JudgeLLMMTBenchSwallow` クラス
 * `<think>...</think>` タグで囲まれた推論過程の除外に対応  
 * 応答文を複数回サンプリングするN回平均値の算出に対応
 * カテゴリ別スコアの算出に対応
+
+### 機械翻訳
+* `{Japanese}TranslationPreparator` クラスで前処理したのちに sacreBLEU で計算
+* `日本語: ` や `English: ` のように所定のプレースホルダに後続する文字列を抽出することで「考えてから翻訳する」タイプのモデルに対応
+* トークナイザが異なる2種類の日本語BLEUに対応
+    * Janomeトークナイザ (≒MeCab+IPADIC) による標準的なBLEU
+    * Nagisaトークナイザ によるJP LM Eval. Harness方式互換のBLEU
+* chrFやTERもサポートしているが不採用  
+
+### 
+
 
 ## [暫定] Pipenvによる仮想環境の管理
 
