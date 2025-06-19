@@ -76,7 +76,7 @@ ligiteval の `--tasks` として指定できるように [lighteval/tasks/swall
 
 * JEMHopQA: `swallow|jemhopqa, swallow|jemhopqa_cot`
 * 日本語MT-Bench: `swallow|japanese_mt_bench`
-* M-IFEval 日本語サブセット: `swallow|mifeval_ja`
+* M-IFEval 日本語版: `swallow|mifeval_ja`
 * JMMLU: `swallow|swallow_jmmlu`
 * MMLU-ProX 日本語サブセット: `swallow|mmlu_prox_japanese`
 * JHumanEval: `swallow|swallow_jhumaneval`

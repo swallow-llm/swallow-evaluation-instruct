@@ -402,3 +402,10 @@ ENGLISH_MTBENCH_ALL = [
     "judge_score_overall_turn_1_avg",
     "judge_score_overall_turn_2_avg",
 ]
+
+M_IFEVAL = [
+    "prompt_level_strict_acc",
+    "inst_level_strict_acc",
+    "prompt_level_loose_acc",
+    "inst_level_loose_acc",
+]

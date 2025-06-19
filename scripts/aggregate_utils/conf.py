@@ -729,4 +729,160 @@ AGGREGATE_CONF = [
             "task_key": "swallow|english_mt_bench|0"
         },
     },
+    # JEMHopQA
+    {
+        "display_name": "jemhopqa_cot_f1_score_quasi",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'f1_score_quasi'
+        }, 
+        'target': {
+            'task_key': 'swallow|jemhopqa_cot|0'
+        }
+    },
+    {
+        "display_name": "jemhopqa_cot_f1_score",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'f1_score'
+        }, 
+        'target': {
+            'task_key': 'swallow|jemhopqa_cot|0'
+        }
+    },
+    # WMT20 En-Ja
+    {
+        "display_name": "wmt20_en_ja_bleu",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'bleu'
+        }, 
+        'target': {
+            'task_key': 'swallow|wmt20:en-ja|0'
+        }
+    },
+    {
+        "display_name": "wmt20_en_ja_bleu_lmevalja",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'bleu_lmevalja'
+        }, 
+        'target': {
+            'task_key': 'swallow|wmt20:en-ja|0'
+        }
+    },
+    # WMT20 Ja-En
+    {
+        "display_name": "wmt20_ja_en_bleu",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'bleu'
+        }, 
+        'target': {
+            'task_key': 'swallow|wmt20:ja-en|0'
+        }
+    },
+    # M-IFEval 日本語版
+    {
+        "display_name": "mifeval_ja_inst_level_strict_acc",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'inst_level_strict_acc'
+        }, 
+        'target': {
+            'task_key': 'swallow|mifeval_ja|0'
+        }
+    },
+    {
+        "display_name": "mifeval_ja_average",
+        "func": average_in_one_task,        
+        "func_args": {
+            "metric_key_list": M_IFEVAL
+        },
+        'target': {
+            'task_key': 'swallow|mifeval_ja|0'
+        }
+    },
+    # MCLM MATH-100 日本語サブセット (=MATH-500邦訳版)
+    {
+        "display_name": "mclm_math_100_japanese",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'extractive_match'
+        }, 
+        'target': {
+            'task_key': 'swallow|math_100_japanese|0'
+        }
+    },
+    # BenchMAX Science Reasoning 日本語版 (=GPQA邦訳版)
+    {
+        "display_name": "gpqa_main_ja",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'extractive_match'
+        }, 
+        'target': {
+            'task_key': 'swallow|swallow_gpqa_ja|0'
+        }
+    },
+    # HellaSwag
+    {
+        "display_name": "swallow_hellaswag",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'extractive_match'
+        }, 
+        'target': {
+            'task_key': 'swallow|hellaswag|0'
+        }
+    },
+    # GPQA - Diamond subset
+    {
+        "display_name": "gpqa_diamond",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'extractive_match'
+        }, 
+        'target': {
+            'task_key': 'lighteval|gpqa:diamond|0'
+        }
+    },
+    # MATH-500
+    {
+        "display_name": "math_500",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'extractive_match'
+        }, 
+        'target': {
+            'task_key': 'lighteval|math_500|0'
+        }
+    },
+    # AIME 2024--2025
+    # ToDo: 異なるタスクのマクロ平均を取るにはどうしたらいいか？
+    # --tasks "lighteval|aime24|0|0,lighteval|aime25|0|0" で実行したときの task_key = all, metric_key = extractive_match を pick したい
+    # タスク名を変更して aime:24, aime:25 にしてもよい．こうすれば --tasks "lighteval|aime|0" で処理できると思われる
+    {
+        "display_name": "aime_2024_2025",
+        "func": micro_average,
+        "func_args": {
+            'metric_key': 'extractive_match'
+        }, 
+        'target': {
+            'task_key': 'lighteval|aime24|0'
+        }
+    },
+    # LiveCodeBench v5 & v6 の設問
+    # NOTE: Pass@K:N のK,Nを変えたらそれに合わせてmetric_keyを変更すること
+    {
+        "display_name": "livecodebench_v5_v6",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'codegen_pass@1:16'
+        }, 
+        'target': {
+            'task_key': 'extended|lcb:codegeneration_v5_v6|0'
+        }
+    },
+    # ToDo: MMLU-Pro, MMLU の追加
 ]
