@@ -74,21 +74,21 @@ ligiteval の `--tasks` として指定できるように [lighteval/tasks/swall
 
 ### 日本語
 
-* JEMHopQA: jemhopqa, jemhopqa_cot
-* 日本語MT-Bench: japanese_mt_bench
-* M-IFEval 日本語サブセット: mifeval_ja
-* JMMLU: swallow_jmmlu
-* MMLU-ProX 日本語サブセット: mmlu_prox_japanese
-* JHumanEval: WIP
-* MCLM MATH-100 日本語サブセット = MATH邦訳版: math_100_japanese
-* BenchMAX Science Reasoning 日本語版 = GPQA邦訳版: swallow_gpqa_ja
-* WMT20 En-Ja, Ja-En: wmt20:en-ja, wmt20:ja-en
+* JEMHopQA: swallow|jemhopqa, swallow|jemhopqa_cot
+* 日本語MT-Bench: swallow|japanese_mt_bench
+* M-IFEval 日本語サブセット: swallow|mifeval_ja
+* JMMLU: swallow|swallow_jmmlu
+* MMLU-ProX 日本語サブセット: swallow|mmlu_prox_japanese
+* JHumanEval: swallow|swallow_jhumaneval
+* MCLM MATH-100 日本語サブセット = MATH邦訳版: swallow|math_100_japanese
+* BenchMAX Science Reasoning 日本語版 = GPQA邦訳版: swallow|swallow_gpqa_ja
+* WMT20 En-Ja, Ja-En: swallow|wmt20:en-ja, swallow|wmt20:ja-en
 
 ### 英語
-* HellaSwag: hellaswag
-* 英語MT-Bench: english_mt_bench
+* HellaSwag: swallow|hellaswag
+* 英語MT-Bench: swallow|english_mt_bench
 * MMLU-Pro: 未実装
-* MMLU-ProX: mmlu_prox_english
+* MMLU-ProX: swallow|mmlu_prox_english
 * MMLU: 未実装
     * 既存実装 helm|mmlu は選択肢だけ出力する短答を想定した実装になってる（Ref. [コード](https://github.com/swallow-llm/swallow-evaluation-instruct-private/blob/main/lighteval/src/lighteval/tasks/default_tasks.py#L10310)）ので，GPQA/MMLU-Proと同じスタイルで実装し直すことを検討中．
 
