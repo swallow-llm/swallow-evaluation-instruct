@@ -13,6 +13,7 @@ from lighteval.metrics.utils.metric_utils import (
 from lighteval.metrics.metrics_corpus import CorpusLevelTranslationMetric
 from lighteval.metrics.sample_preparator import GenerativeCorpusMetricInput
 from lighteval.tasks.requests import Doc
+from lighteval.utils.utils import extract_final_answer_from_reasoning
 
 from .utils import _regex_extractor
 
@@ -130,7 +131,8 @@ class JapaneseTextSegmenter:
 class TranslationPreparator:
     
     def __init__(self, text_extraction_function: Callable[[str], List[str]], 
-                 extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through):
+                 extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through,
+                 remove_deepseek_r1_style_reasoning_trace: bool = True):
         """_summary_
         BLEUやchrFなどを計算する際に使う前処理クラス．
         翻訳スパンの抽出，文字列の正規化に対応している．
@@ -139,9 +141,11 @@ class TranslationPreparator:
         Args:
             text_extraction_function (Callable[[str], List[str]]): 翻訳スパン抽出関数．翻訳指示プロンプトに整合させること．
             extraction_fallback_function (Callable[[str], List[str]]): 翻訳スパン抽出に失敗した場合のスパン抽出関数．デフォルトは応答文全体をそのまま翻訳とみなす．
+            remove_open_r1_style_reasoning_trace (bool): DeepSeek-R1のような <think>...</think> でマークアップされた推論過程を削除する
         """        
         self.text_extraction_function = text_extraction_function
         self.extraction_fallback_function = extraction_fallback_function
+        self.remove_deepseek_r1_style_reasoning_trace = remove_deepseek_r1_style_reasoning_trace
         
     def prepare(self, golds: list[str], predictions: list[str], formatted_doc: Doc, **kwargs):
         """
@@ -153,9 +157,12 @@ class TranslationPreparator:
 
         Returns:
             GenerativeCorpusMetricInput: Stores the golds and predictions as such
-        """
+        """      
         lst_translated = []
         for pred in predictions:
+            if self.remove_deepseek_r1_style_reasoning_trace:
+                pred = extract_final_answer_from_reasoning(pred)
+                
             _lst_extracted = self.text_extraction_function(text=pred)
             lst_translated.extend(_lst_extracted)
         
@@ -177,6 +184,7 @@ class JapaneseTranslationPreparator:
         self,
         text_extraction_function: Callable[[str], List[str]],
         extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through,
+        remove_deepseek_r1_style_reasoning_trace: bool = True,
         segmenter_type: str = "janome",
         remove_whitespace_tokens: bool = False,
         lowercase: bool = False,
@@ -190,6 +198,7 @@ class JapaneseTranslationPreparator:
         Args:
             text_extraction_function: 翻訳スパン抽出関数
             extraction_fallback_function: 抽出失敗時の関数
+            remove_open_r1_style_reasoning_trace (bool): DeepSeek-R1のような <think>...</think> でマークアップされた推論過程を削除する
             segmenter_type: "janome" または "nagisa"
             remove_whitespace_tokens: 空白トークンの削除
             lowercase: 小文字化
@@ -198,6 +207,7 @@ class JapaneseTranslationPreparator:
         """
         self.text_extraction_function = text_extraction_function
         self.extraction_fallback_function = extraction_fallback_function
+        self.remove_deepseek_r1_style_reasoning_trace = remove_deepseek_r1_style_reasoning_trace
 
         self.segmenter = JapaneseTextSegmenter(
             segmenter_type=segmenter_type,
@@ -214,6 +224,9 @@ class JapaneseTranslationPreparator:
         """
         lst_translated = []
         for pred in predictions:
+            if self.remove_deepseek_r1_style_reasoning_trace:
+                pred = extract_final_answer_from_reasoning(pred)
+            
             _lst_extracted = self.text_extraction_function(text=pred)
             lst_translated.extend(_lst_extracted)
 
@@ -245,11 +258,13 @@ def wmt20_jaen_translation_span_extractor(text: str):
 wmt20_enja_translation_preparator = JapaneseTranslationPreparator(
     text_extraction_function=wmt20_enja_translation_span_extractor, 
     extraction_fallback_function=_pass_through,
+    remove_deepseek_r1_style_reasoning_trace=True,
     remove_whitespace_tokens=False, lowercase=False, normalize_nfkc=False)
 
 wmt20_jaen_translation_preparator = TranslationPreparator(
     text_extraction_function=wmt20_jaen_translation_span_extractor, 
-    extraction_fallback_function=_pass_through)
+    extraction_fallback_function=_pass_through,
+    remove_deepseek_r1_style_reasoning_trace=True)
 
 # 邦訳文向けBLEU
 bleu_ja = CorpusLevelMetric(
