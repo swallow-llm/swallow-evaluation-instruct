@@ -1,3 +1,5 @@
+# Modifications copyright 2025 nlp-titech. Licensed under the Apache License 2.0.
+
 import numpy as np
 import inspect
 
