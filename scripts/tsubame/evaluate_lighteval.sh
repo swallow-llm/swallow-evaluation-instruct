@@ -7,10 +7,18 @@ set -euo pipefail
 # Extra Generation Parameters
 ## If not specified, DEFAULT_GEN_PARAMS is used.
 ## Note that max_new_tokens is automatically set to max_model_length if not specified.
-DEFAULT_GEN_PARAMS="temperature:0.0"
-declare -A GEN_PARAMS_LIST=(
+DEFAULT_GEN_PARAMS=$(cat <<'EOL'
+        temperature: 0.0
+EOL
+)
+declare -A GEN_PARAMS_LIST
+GEN_PARAMS_LIST=(
     [japanese_mt_bench]=""
-    [swallow_jhumaneval]="temperature:0.2,top_p:0.95"
+    [swallow_jhumaneval]=$(cat <<'EOL'
+        temperature: 0.2
+        top_p: 0.95
+EOL
+)
 )
 
 
@@ -28,7 +36,6 @@ MAX_COMPLETION_TOKENS=$8
 # Setup
 source "${REPO_PATH}/scripts/tsubame/utils.sh"
 init_common $MODEL_NAME $NODE_KIND $REPO_PATH
-serve_litellm $MODEL_NAME $PROVIDER $REPO_PATH
 RAW_OUTPUTS_DIR="${REPO_PATH}/lighteval/outputs"
 AGGREGATED_OUTPUTS_DIR="${REPO_PATH}/results/${MODEL_NAME}"
 
@@ -37,7 +44,7 @@ AGGREGATED_OUTPUTS_DIR="${REPO_PATH}/results/${MODEL_NAME}"
 ## Set NUM_GPUS based on NODE_KIND
 if [[ $NODE_KIND == "node_q" ]]; then
     NUM_GPUS=1
-else if [[ $NODE_KIND == "node_f" ]]; then
+elif [[ $NODE_KIND == "node_f" ]]; then
     NUM_GPUS=4
 else
     echo "❌ Unknown NODE_KIND: $NODE_KIND"
@@ -55,13 +62,28 @@ else
 fi
 
 ## Set MAX_COMPLETION_TOKENS only if specified
-if [[ $MAX_COMPLETION_TOKENS != "-1" ]]; then
-    GEN_PARAMS="${GEN_PARAMS},max_new_tokens:${MAX_COMPLETION_TOKENS}"
+if [[ "$MAX_COMPLETION_TOKENS" != "-1" ]]; then
+    GEN_PARAMS+="        max_new_tokens: $MAX_COMPLETION_TOKENS
+"
 fi
 
 ## Set MODEL_ARGS
-MODEL_ARGS="pretrained=$MODEL_NAME,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_MODEL_LENGTH,gpu_memory_utilization=$GPU_MEMORY_UTILIZATION,generation_parameters={${GEN_PARAMS}}"
-echo "🤖 MODEL_ARGS: $MODEL_ARGS"
+if [[ -n $GEN_PARAMS ]]; then
+  GEN_PARAMS="    generation:
+$GEN_PARAMS"
+fi
+echo "⚙️ Generation Parameters: ${GEN_PARAMS}"
+
+
+# Serve a LLM by using litellm
+serve_litellm $MODEL_NAME $PROVIDER $REPO_PATH "${GEN_PARAMS}" $TASK_NAME $NUM_GPUS $GPU_MEMORY_UTILIZATION $MAX_MODEL_LENGTH
+case $PROVIDER in
+    "openai") PROVIDER_SUBDIR="" ;;
+    "deepinfra") PROVIDER_SUBDIR="deepinfra/" ;;
+    "vllm") PROVIDER_SUBDIR="hosted_vllm/" ;;
+    *) echo "❌ Unknown PROVIDER: $PROVIDER" && exit 1 ;;
+esac
+MODEL_CONFIG_PATH="${RAW_OUTPUTS_DIR}/results/${PROVIDER_SUBDIR}${MODEL_NAME}/model_config_${TASK_NAME}.yaml"
 
 
 # Task Definition
@@ -71,9 +93,10 @@ echo "📝 Task: ${TASK_DEF}"
 
 # Run Evaluation
 cd "${REPO_PATH}/lighteval"
+echo "🏃‍♂️ Run Evaluation..."
 start_time=$(date +%s)
 uv run $UV_OPTIONS --extra lighteval \
- lighteval vllm $MODEL_ARGS $TASK_DEF \
+ lighteval endpoint litellm $MODEL_CONFIG_PATH $TASK_DEF \
     --system-prompt "${SYSTEM_MESSAGE}" \
     --use-chat-template \
     --output-dir "${RAW_OUTPUTS_DIR}" \
@@ -84,4 +107,4 @@ echo "⌚️ Elapsed time: ${elapsed} seconds"
 
 
 # Aggregate Results
-aggregate_result $MODEL_NAME $RAW_OUTPUTS_DIR $AGGREGATED_OUTPUTS_DIR
+aggregate_result $MODEL_NAME $RAW_OUTPUTS_DIR $AGGREGATED_OUTPUTS_DIR $REPO_PATH

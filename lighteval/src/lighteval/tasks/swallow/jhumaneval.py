@@ -12,7 +12,6 @@ from lighteval.tasks.extended.lcb.codegen_metrics import (
     extract_last_code_block,
 )
 from lighteval.tasks.lighteval_task import Doc, LightevalTaskConfig
-from lighteval.utils.utils import extract_final_answer_from_reasoning
 
 
 # Query template
@@ -53,9 +52,7 @@ def codegen_metric_passk(predictions: list[str], formatted_doc: Doc, k: int , **
     (This is a modified version of codegen_metric in lcb)
     """
     # Extract generated code snippets
-    predictions_wo_thinkblock = [extract_final_answer_from_reasoning(pred) for pred in predictions]
-    generated_code_snippets = [[extract_last_code_block(pred) for pred in predictions_wo_thinkblock]]
-    # formatted_doc.specific["extracted_predictions"] = generated_code_snippets
+    generated_code_snippets = [[extract_last_code_block(pred) for pred in predictions]]
     evaluation_sample = {
         "fn_name": formatted_doc.specific["fn_name"],
         "check_fn": formatted_doc.specific["check_fn"],
