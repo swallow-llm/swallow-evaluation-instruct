@@ -242,7 +242,9 @@ AGGREGATE_CONF = [
     {
         "display_name": "mmlu_prox_japanese",
         "func": micro_average,
-        "func_args": {"metric_key": "extractive_match"},
+        "func_args": {
+            "metric_key": "extractive_match"
+        },
         "target": {
             "task_key": "swallow|mmlu_prox_japanese|0",
         },
