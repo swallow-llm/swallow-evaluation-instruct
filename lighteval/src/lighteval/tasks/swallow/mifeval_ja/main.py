@@ -1,4 +1,5 @@
 import numpy as np
+import inspect
 
 from lighteval.tasks.swallow.mifeval_ja.mifeval_ja_instructions_registry import JA_INSTRUCTION_DICT
 from lighteval.metrics.metrics import Metrics
@@ -31,8 +32,6 @@ submetric_names = [
 
 def mifeval_ja_metric(predictions: list[str], formatted_doc: Doc, **kwargs) -> dict:
     response = predictions[0]
-    
-    # 推論型モデルの出力から最終回答部分のみを抽出する
     response = extract_final_answer_from_reasoning(response)
 
     # Strict instructions
@@ -68,9 +67,12 @@ def mifeval_ja_metric(predictions: list[str], formatted_doc: Doc, **kwargs) -> d
         instruction_cls = JA_INSTRUCTION_DICT[instruction_id]
         instruction = instruction_cls(instruction_id)
 
-        # None値を除外してbuild_descriptionに渡す
-        task_kwargs = {k: v for k, v in all_kwargs[index].items() if v}
-        instruction.build_description(**task_kwargs)
+        # build_descriptionのシグネチャに合う引数だけを渡す        
+        sig = inspect.signature(instruction.build_description)
+        valid_keys = set(sig.parameters.keys()) - {"self"}
+        filtered_kwargs = {k: v for k, v in all_kwargs[index].items() if k in valid_keys}
+        
+        instruction.build_description(**filtered_kwargs)
         args = instruction.get_instruction_args()
         if args and "prompt" in args:
             instruction.build_description(prompt=prompt)

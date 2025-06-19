@@ -23,11 +23,14 @@ from typing import Dict, Optional, Sequence, Union
 
 from absl import logging
 import langdetect
+from langdetect import DetectorFactory
 
 from . import ja_instructions_util
 
 import unicodedata
 
+# Specify seed for langdetect package to make deterministic result.
+DetectorFactory.seed = 0
 
 _InstructionArgsDtype = Optional[Dict[str, Union[int, str, Sequence[str]]]]
 
