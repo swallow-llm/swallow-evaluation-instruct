@@ -12,6 +12,7 @@ build/
 develop-eggs/
 dist/
 downloads/
+data/
 eggs/
 .eggs/
 lib/
@@ -135,6 +136,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.litellm_cache/
 
 # Spyder project settings
 .spyderproject

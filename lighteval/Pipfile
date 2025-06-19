@@ -33,6 +33,11 @@ torch = {version = "==2.6.0", index = "pytorch-cu121"}
 janome = "*"
 nagisa = "*"
 litellm = "<2.0.0"
+ja_sentence_segmenter = "*"
+langdetect = "1.0.0>,<2.0.0"
+immutabledict = "*"
+markdown = "*"
+beautifulsoup4 = "<5.0.0"
 
 [dev-packages]
 lighteval = { path = "./", editable = true, extras = ["tests", "multilingual", "math", "extended_tasks"] }
@@ -40,3 +45,4 @@ lighteval = { path = "./", editable = true, extras = ["tests", "multilingual", "
 [scripts]
 test_unit = "python -m pytest tests/test_unit_*.py"
 test_extractive_match = "python -m pytest tests/metrics/test_extractive_match.py"
+test_mifeval_ja_metric = "python -m pytest -s tests/tasks/test_mifeval_ja_metric.py"

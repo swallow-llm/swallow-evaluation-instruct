@@ -18,6 +18,7 @@ from .wmt20 import wmt20_enja_swallow, wmt20_jaen_swallow
 from .mmlu_prox_japanese import mmlu_prox_japanese_tasks
 from .mmlu_prox_english import mmlu_prox_english_tasks
 from .english_mt_bench.main import mt_bench_english_swallow_gpt4o
+from .mifeval_ja.main import mifeval_ja
 
 SWALLOW_TASKS = [
     math_100_japanese,
@@ -30,6 +31,7 @@ SWALLOW_TASKS = [
     wmt20_jaen_swallow,
     mt_bench_japanese_swallow_gpt4o,
     mt_bench_english_swallow_gpt4o,
+    mifeval_ja
 ]
 SWALLOW_TASKS.extend(JMMLU_SUBSET_TASKS)
 SWALLOW_TASKS.extend(mmlu_prox_japanese_tasks)
