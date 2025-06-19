@@ -93,7 +93,7 @@ echo "📝 Task: ${TASK_DEF}"
 
 # Run Evaluation
 cd "${REPO_PATH}/lighteval"
-echo "🏃‍♂️ Run Evaluation..."
+echo "🏃 Run Evaluation..."
 start_time=$(date +%s)
 uv run $UV_OPTIONS --extra lighteval \
  lighteval endpoint litellm $MODEL_CONFIG_PATH $TASK_DEF \
