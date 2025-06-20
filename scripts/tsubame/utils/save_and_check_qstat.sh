@@ -56,7 +56,7 @@ done <<< "$current_jobs"
 term_width=$(tput cols)
 
 # 各カラム幅の合計  カラム間スペース数(6)
-fixed_width=$((10+8+8+8+10+35+6))
+fixed_width=$((10+8+8+8+10+25+6))
 max_model=100
 available=$(( term_width - fixed_width ))
 (( available < 0 )) && available=0
@@ -67,7 +67,7 @@ else
 fi
 
 # 共通の printf フォーマット
-fmt="%-10s %-8s %-8s %-8s %-10s %-35s %-*.*s\n"
+fmt="%-10s %-8s %-8s %-8s %-10s %-25s %-*.*s\n"
 
 # 出力のヘッダー
 printf "$fmt"  "job_ID" "state" "node" "slots" "priority" "task" "$model_width" "$model_width" "model name"

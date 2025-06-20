@@ -34,26 +34,13 @@ MAX_COMPLETION_TOKENS=$8
 
 
 # Setup
-source "${REPO_PATH}/scripts/tsubame/utils.sh"
+source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
 init_common $MODEL_NAME $NODE_KIND $REPO_PATH
 RAW_OUTPUTS_DIR="${REPO_PATH}/lighteval/outputs"
 AGGREGATED_OUTPUTS_DIR="${REPO_PATH}/results/${MODEL_NAME}"
 
 
 # Generation Parameters
-## Set NUM_GPUS based on NODE_KIND
-if [[ $NODE_KIND == "node_q" ]]; then
-    NUM_GPUS=1
-elif [[ $NODE_KIND == "node_f" ]]; then
-    NUM_GPUS=4
-else
-    echo "❌ Unknown NODE_KIND: $NODE_KIND"
-    exit 1
-fi
-
-## Set GPU_MEMORY_UTILIZATION
-GPU_MEMORY_UTILIZATION=0.9
-
 ## Set GEN_PARAMS based on TASK_NAME
 if [[ -v GEN_PARAMS_LIST[$TASK_NAME] ]]; then
     GEN_PARAMS=${GEN_PARAMS_LIST[$TASK_NAME]}
