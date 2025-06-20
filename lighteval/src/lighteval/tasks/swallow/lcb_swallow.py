@@ -11,7 +11,7 @@ from lighteval.tasks.extended.lcb.main import lcb_codegeneration_prompt_fn, code
 from lighteval.tasks.lighteval_task import LightevalTaskConfig
 
 # metricだけサンプル数10で新規定義
-lcb_swallow_codegen_metric = SampleLevelMetric(
+lcb_codegenmetric_pass_at_k_n10 = SampleLevelMetric(
     metric_name="codegen_pass@1:10",
     category=MetricCategory.GENERATIVE_SAMPLING,
     use_case=MetricUseCase.REASONING,
@@ -19,7 +19,7 @@ lcb_swallow_codegen_metric = SampleLevelMetric(
     sample_level_fn=codegen_metric,
     corpus_level_fn=np.mean,
 )
-extend_enum(Metrics, "swallow_lcb_codegen_metric", lcb_swallow_codegen_metric)
+extend_enum(Metrics, "lcb_codegenmetric_pass_at_k_n10", lcb_codegenmetric_pass_at_k_n10)
 
 configs = get_dataset_config_names("livecodebench/code_generation_lite", trust_remote_code=True)
 
@@ -35,7 +35,7 @@ for subset in configs:
         hf_avail_splits=["test"],
         evaluation_splits=["test"],
         generation_size=None,
-        metric=[Metrics.lcb_swallow_codegen_metric],
+        metric=[Metrics.lcb_codegenmetric_pass_at_k_n10],
         stop_sequence=[],
         trust_dataset=True,
         version=0,
