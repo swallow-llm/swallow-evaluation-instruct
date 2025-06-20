@@ -844,7 +844,7 @@ AGGREGATE_CONF = [
             'metric_key': 'extractive_match'
         }, 
         'target': {
-            'task_key': 'lighteval|gpqa:diamond|0'
+            'task_key': 'swallow|gpqa:diamond|0'
         }
     },
     # MATH-500
@@ -855,13 +855,12 @@ AGGREGATE_CONF = [
             'metric_key': 'extractive_match'
         }, 
         'target': {
-            'task_key': 'lighteval|math_500|0'
+            'task_key': 'swallow|math_500|0'
         }
     },
-    # AIME 2024--2025
-    # ToDo: 異なるタスクのマクロ平均を取るにはどうしたらいいか？
-    # --tasks "lighteval|aime24|0|0,lighteval|aime25|0|0" で実行したときの task_key = all, metric_key = extractive_match を pick したい
-    # タスク名を変更して aime:24, aime:25 にしてもよい．こうすれば --tasks "lighteval|aime|0" で処理できると思われる
+    # AIME 2024--2025    
+    # タスク名を aime:{24,25} に変更したので --tasks "swallow|aime|0" で実行すればよい
+    # スコア一覧表の Task列には swallow:aime:24:0, swallow:aime:25:0 と表示される
     {
         "display_name": "aime_2024_2025",
         "func": micro_average,
@@ -869,19 +868,19 @@ AGGREGATE_CONF = [
             'metric_key': 'extractive_match'
         }, 
         'target': {
-            'task_key': 'lighteval|aime24|0'
+            'task_key': 'swallow|aime|0'
         }
     },
     # LiveCodeBench v5 & v6 の設問
-    # NOTE: Pass@K:N のK,Nを変えたらそれに合わせてmetric_keyを変更すること
+    # 指標名を Pass@1:10 （=10回試行で推定したPass@1）に変更した
     {
         "display_name": "livecodebench_v5_v6",
         "func": pick,
         "func_args": {
-            'metric_key': 'codegen_pass@1:16'
+            'metric_key': 'codegen_pass@1:10'
         }, 
         'target': {
-            'task_key': 'extended|lcb:codegeneration_v5_v6|0'
+            'task_key': 'swallow|lcb:codegeneration_v5_v6|0'
         }
     },
     # ToDo: MMLU-Pro, MMLU の追加
