@@ -92,12 +92,12 @@ ligiteval の `--tasks` として指定できるように [lighteval/tasks/swall
 * MMLU: 未実装
     * 既存実装 helm|mmlu は選択肢だけ出力する短答を想定した実装になってる（Ref. [コード](https://github.com/swallow-llm/swallow-evaluation-instruct-private/blob/main/lighteval/src/lighteval/tasks/default_tasks.py#L10310)）ので，GPQA/MMLU-Proと同じスタイルで実装し直すことを検討中．
 
-以下のベンチマークはligiteval公式実装を必要に応じて微調整して使う予定です．  
+以下のベンチマークはligiteval公式実装を微調整したものです．  
 
-* GPQA: `lighteval|gpqa:diamond`
-* MATH-500: `lighteval|math_500`
-* AIME 2024--2025: `lighteval|aime24, lighteval|aime25`
-* LiveCodeBench v5 & v6 追加設問: `extended|lcb:codegeneration_v5_v6`
+* GPQA: `swallow|gpqa:diamond`
+* MATH-500: `swallow|math_500`
+* AIME 2024--2025: `swallow|aime:24, lighteval|aime:25`
+* LiveCodeBench v5 & v6 追加設問: `swallow|lcb:codegeneration_v5_v6`
 
 ## ベンチマークごとの詳細な評価設定
 shot数，メトリック，CoT有無などの詳細な評価設定は，以下の資料を参照してください．  
