@@ -45,7 +45,7 @@ from lighteval.tasks.requests import (
     LoglikelihoodRequest,
 )
 from lighteval.utils.imports import is_vllm_available
-from lighteval.utils.utils import EnvConfig, as_list, extract_final_answer_from_reasoning
+from lighteval.utils.utils import EnvConfig, as_list
 
 
 logger = logging.getLogger(__name__)
@@ -306,8 +306,6 @@ class VLLMModel(LightevalModel):
                 for vllm_output in vllm_outputs:
                     gen_ids = vllm_output.token_ids
                     gen_text = vllm_output.text
-                    # reasoningモデルの場合は、最終的な回答を抽出
-                    gen_text = extract_final_answer_from_reasoning(gen_text)
                     for term in stop_tokens:
                         if term in gen_text:
                             gen_text = gen_text.split(term)[0]

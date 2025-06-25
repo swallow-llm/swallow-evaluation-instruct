@@ -50,7 +50,7 @@ from lighteval.metrics.normalizations import (
     remove_braces_and_strip,
 )
 from lighteval.tasks.requests import Doc
-from lighteval.utils.utils import as_list, safe_divide, extract_final_answer_from_reasoning
+from lighteval.utils.utils import as_list, safe_divide
 
 
 logger = logging.getLogger(__name__)
@@ -989,8 +989,8 @@ class JudgeLLMMTBenchSwallow(JudgeLLM):
         judgement_turn_2_list = []
         num_samples = len(responses[0][0].result[0])
         for sample_idx in range(num_samples):
-            predictions_1 = [extract_final_answer_from_reasoning(response[0].result[0][sample_idx]) for response in responses]
-            predictions_2 = [(extract_final_answer_from_reasoning(response[0].result[0][sample_idx]), extract_final_answer_from_reasoning(response[0].result[1][sample_idx])) for response in responses]
+            predictions_1 = [response[0].result[0][sample_idx] for response in responses]
+            predictions_2 = [(response[0].result[0][sample_idx], response[0].result[1][sample_idx]) for response in responses]
             scores_turn_1, messages_turn_1, judgements_turn_1 = self.judge.evaluate_answer_batch(questions_1, predictions_1, categories, golds_1)
             scores_turn_2, messages_turn_2, judgements_turn_2 = self.judge.evaluate_answer_batch(questions_2, predictions_2, categories, golds_2)
             score_turn_1_list.append(scores_turn_1)

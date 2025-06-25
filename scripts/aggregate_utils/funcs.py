@@ -43,6 +43,7 @@ def micro_average(latest_results: dict, target: dict, metric_key: str, white_lis
             sample_num = entry.get("sample_num", 0)
             metric_value = entry["metrics"].get(metric_key)
             if metric_value is None:
+                print(f"Warning: {task_key} does not have {metric_key}.")
                 continue
             total_sample += sample_num
             weighted_sum += sample_num * metric_value

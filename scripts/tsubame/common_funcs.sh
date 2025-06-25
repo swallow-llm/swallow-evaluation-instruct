@@ -16,9 +16,23 @@ init_common(){
     export HUGGINGFACE_HUB_CACHE=$HUGGINGFACE_CACHE
     export HF_HOME=$HUGGINGFACE_CACHE
     export HF_TOKEN=$HF_TOKEN
+    export OPENAI_API_KEY=$OPENAI_API_KEY
     export UV_CACHE_DIR=$UV_CACHE
     export VLLM_CACHE_ROOT=$VLLM_CACHE
     export REPO_PATH=$REPO_PATH
+
+    # GPU Settings
+    ## Set NUM_GPUS based on NODE_KIND
+    if [[ $NODE_KIND == "node_q" ]]; then
+        NUM_GPUS=1
+    elif [[ $NODE_KIND == "node_f" ]]; then
+        NUM_GPUS=4
+    else
+        echo "❌ Unknown NODE_KIND: $NODE_KIND"
+        exit 1
+    fi
+    ## Set GPU_MEMORY_UTILIZATION
+    GPU_MEMORY_UTILIZATION=0.9
 
     # Login to HuggingFace
     source "${REPO_PATH}/.common_envs/bin/activate"
@@ -189,9 +203,10 @@ aggregate_result(){
     REPO_PATH=$4
 
     uv run --isolated --project ${REPO_PATH} --locked --extra aggregate_results \
-        python ${REPO_PATH}/scripts/aggregate_results.py --model $MODEL_NAME \
-        --raw-outputs-dir "${RAW_OUTPUTS_DIR}" \
-        --aggregated-outputs-dir $AGGREGATED_OUTPUTS_DIR
+        python ${REPO_PATH}/scripts/aggregate_results.py \
+        --model_name "${MODEL_NAME}" \
+        --raw_outputs_dir "${RAW_OUTPUTS_DIR}" \
+        --aggregated_outputs_dir "${AGGREGATED_OUTPUTS_DIR}"
 
     echo "✅ Result aggregation was successfully done."
 }

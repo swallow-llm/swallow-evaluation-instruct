@@ -19,6 +19,11 @@ GEN_PARAMS_LIST=(
         top_p: 0.95
 EOL
 )
+    [mifeval_ja]=$(cat <<'EOL'
+        temperature: 0.0
+        top_p: 1.0
+EOL
+)
 )
 
 
@@ -34,26 +39,13 @@ MAX_COMPLETION_TOKENS=$8
 
 
 # Setup
-source "${REPO_PATH}/scripts/tsubame/utils.sh"
+source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
 init_common $MODEL_NAME $NODE_KIND $REPO_PATH
 RAW_OUTPUTS_DIR="${REPO_PATH}/lighteval/outputs"
 AGGREGATED_OUTPUTS_DIR="${REPO_PATH}/results/${MODEL_NAME}"
 
 
 # Generation Parameters
-## Set NUM_GPUS based on NODE_KIND
-if [[ $NODE_KIND == "node_q" ]]; then
-    NUM_GPUS=1
-elif [[ $NODE_KIND == "node_f" ]]; then
-    NUM_GPUS=4
-else
-    echo "❌ Unknown NODE_KIND: $NODE_KIND"
-    exit 1
-fi
-
-## Set GPU_MEMORY_UTILIZATION
-GPU_MEMORY_UTILIZATION=0.9
-
 ## Set GEN_PARAMS based on TASK_NAME
 if [[ -v GEN_PARAMS_LIST[$TASK_NAME] ]]; then
     GEN_PARAMS=${GEN_PARAMS_LIST[$TASK_NAME]}
@@ -84,6 +76,7 @@ case $PROVIDER in
     *) echo "❌ Unknown PROVIDER: $PROVIDER" && exit 1 ;;
 esac
 MODEL_CONFIG_PATH="${RAW_OUTPUTS_DIR}/results/${PROVIDER_SUBDIR}${MODEL_NAME}/model_config_${TASK_NAME}.yaml"
+RESULTS_DIR="${RAW_OUTPUTS_DIR}/results/${PROVIDER_SUBDIR}${MODEL_NAME}"
 
 
 # Task Definition
@@ -107,4 +100,4 @@ echo "⌚️ Elapsed time: ${elapsed} seconds"
 
 
 # Aggregate Results
-aggregate_result $MODEL_NAME $RAW_OUTPUTS_DIR $AGGREGATED_OUTPUTS_DIR $REPO_PATH
+aggregate_result "${PROVIDER_SUBDIR}${MODEL_NAME}" "${RESULTS_DIR}" "${AGGREGATED_OUTPUTS_DIR}" "${REPO_PATH}"

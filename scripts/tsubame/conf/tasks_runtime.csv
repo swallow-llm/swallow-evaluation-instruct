@@ -13,3 +13,4 @@ ja_mtbench,japanese_mt_bench,ja/mt_bench,lighteval,12:00:00,24:00:00
 ja_wmt20_en_ja,wmt20:en-ja,ja/wmt20_en_ja,lighteval,12:00:00,24:00:00
 ja_wmt20_ja_en,wmt20:ja-en,ja/wmt20_ja_en,lighteval,12:00:00,24:00:00
 ja_humaneval,swallow_jhumaneval,ja/humaneval,lighteval,12:00:00,24:00:00
+ja_mifeval,mifeval_ja,ja/mifeval,lighteval,12:00:00,24:00:00
