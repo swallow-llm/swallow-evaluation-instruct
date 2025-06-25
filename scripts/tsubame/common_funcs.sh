@@ -16,6 +16,7 @@ init_common(){
     export HUGGINGFACE_HUB_CACHE=$HUGGINGFACE_CACHE
     export HF_HOME=$HUGGINGFACE_CACHE
     export HF_TOKEN=$HF_TOKEN
+    export OPENAI_API_KEY=$OPENAI_API_KEY
     export UV_CACHE_DIR=$UV_CACHE
     export VLLM_CACHE_ROOT=$VLLM_CACHE
     export REPO_PATH=$REPO_PATH
@@ -203,9 +204,9 @@ aggregate_result(){
 
     uv run --isolated --project ${REPO_PATH} --locked --extra aggregate_results \
         python ${REPO_PATH}/scripts/aggregate_results.py \
-        --model_name $MODEL_NAME \
-        --raw-outputs-dir "${RAW_OUTPUTS_DIR}" \
-        --aggregated-outputs-dir $AGGREGATED_OUTPUTS_DIR
+        --model_name "${MODEL_NAME}" \
+        --raw_outputs_dir "${RAW_OUTPUTS_DIR}" \
+        --aggregated_outputs_dir "${AGGREGATED_OUTPUTS_DIR}"
 
     echo "✅ Result aggregation was successfully done."
 }

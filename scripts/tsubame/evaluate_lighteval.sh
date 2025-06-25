@@ -19,6 +19,11 @@ GEN_PARAMS_LIST=(
         top_p: 0.95
 EOL
 )
+    [mifeval_ja]=$(cat <<'EOL'
+        temperature: 0.0
+        top_p: 1.0
+EOL
+)
 )
 
 
@@ -71,6 +76,7 @@ case $PROVIDER in
     *) echo "❌ Unknown PROVIDER: $PROVIDER" && exit 1 ;;
 esac
 MODEL_CONFIG_PATH="${RAW_OUTPUTS_DIR}/results/${PROVIDER_SUBDIR}${MODEL_NAME}/model_config_${TASK_NAME}.yaml"
+RESULTS_DIR="${RAW_OUTPUTS_DIR}/results/${PROVIDER_SUBDIR}${MODEL_NAME}"
 
 
 # Task Definition
@@ -94,4 +100,4 @@ echo "⌚️ Elapsed time: ${elapsed} seconds"
 
 
 # Aggregate Results
-aggregate_result $MODEL_NAME $RAW_OUTPUTS_DIR $AGGREGATED_OUTPUTS_DIR $REPO_PATH
+aggregate_result "${PROVIDER_SUBDIR}${MODEL_NAME}" "${RESULTS_DIR}" "${AGGREGATED_OUTPUTS_DIR}" "${REPO_PATH}"
