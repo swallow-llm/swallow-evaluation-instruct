@@ -125,8 +125,8 @@ def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("model_name", type=str, help="処理対象のモデル名")
-    parser.add_argument("raw_outputs_dir", type=str, help="個別結果ファイルが存在するディレクトリのパス")
-    parser.add_argument("aggregated_outputs_dir", type=str, help="集約結果を保存するディレクトリのパス")
+    parser.add_argument("--model_name", type=str, help="処理対象のモデル名")
+    parser.add_argument("--raw_outputs_dir", type=str, help="個別結果ファイルが存在するディレクトリのパス")
+    parser.add_argument("--aggregated_outputs_dir", type=str, help="集約結果を保存するディレクトリのパス")
     args = parser.parse_args()
     main(**vars(args))
