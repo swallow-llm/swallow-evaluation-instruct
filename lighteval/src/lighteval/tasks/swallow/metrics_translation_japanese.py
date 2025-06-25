@@ -13,7 +13,6 @@ from lighteval.metrics.utils.metric_utils import (
 from lighteval.metrics.metrics_corpus import CorpusLevelTranslationMetric
 from lighteval.metrics.sample_preparator import GenerativeCorpusMetricInput
 from lighteval.tasks.requests import Doc
-from lighteval.utils.utils import extract_final_answer_from_reasoning
 
 from .utils import _regex_extractor
 
@@ -160,8 +159,8 @@ class TranslationPreparator:
         """      
         lst_translated = []
         for pred in predictions:
-            if self.remove_deepseek_r1_style_reasoning_trace:
-                pred = extract_final_answer_from_reasoning(pred)
+            # if self.remove_deepseek_r1_style_reasoning_trace:
+            #     pred = extract_final_answer_from_reasoning(pred)
                 
             _lst_extracted = self.text_extraction_function(text=pred)
             lst_translated.extend(_lst_extracted)
@@ -224,9 +223,6 @@ class JapaneseTranslationPreparator:
         """
         lst_translated = []
         for pred in predictions:
-            if self.remove_deepseek_r1_style_reasoning_trace:
-                pred = extract_final_answer_from_reasoning(pred)
-            
             _lst_extracted = self.text_extraction_function(text=pred)
             lst_translated.extend(_lst_extracted)
 

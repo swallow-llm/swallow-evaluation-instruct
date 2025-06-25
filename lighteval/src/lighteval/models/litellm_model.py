@@ -47,7 +47,6 @@ from lighteval.tasks.requests import (
     LoglikelihoodSingleTokenRequest,
 )
 from lighteval.utils.imports import is_litellm_available
-from lighteval.utils.utils import extract_final_answer_from_reasoning
 
 
 logger = logging.getLogger(__name__)
@@ -342,13 +341,13 @@ class LiteLLMClient(LightevalModel):
 
                     if temperature is not None and temperature == 0 and num_samples > 1:
                         multi_turn_response = self.__call_api(multi_turn_context, return_logits, max_new_tokens, 1, stop_sequence)
-                        gen_text = extract_final_answer_from_reasoning(multi_turn_response.choices[0].message.content)
+                        gen_text = multi_turn_response.choices[0].message.content
                         turn_results.append([gen_text] * num_samples)
                     else:
                         tmp_results = []
                         for i in range(num_samples):
                             multi_turn_response = self.__call_api(multi_turn_context, return_logits, max_new_tokens, 1, stop_sequence)
-                            gen_text = extract_final_answer_from_reasoning(multi_turn_response.choices[0].message.content)
+                            gen_text = multi_turn_response.choices[0].message.content
                             tmp_results.append(gen_text)
                         turn_results.append(tmp_results)
 
