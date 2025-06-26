@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# How-to-use: bash scripts/tsubame/qsub_all.sh
 set -euo pipefail
 
 ########################################################
@@ -56,7 +57,7 @@ echo "🚀 Submitting tasks..."
 
 ## Japanese
 qsub_task ja gpqa
-qsub_task ja jemhopqa
+qsub_task ja jemhopqa_cot
 qsub_task ja math_100
 qsub_task ja mmlu
 qsub_task ja mmlu_prox
@@ -64,12 +65,18 @@ qsub_task ja mtbench
 qsub_task ja wmt20_en_ja
 qsub_task ja wmt20_ja_en
 qsub_task ja humaneval
+qsub_task ja mifeval
 
 ## English
 qsub_task en gpqa
 qsub_task en hellaswag
-qsub_task en mmlu_prox
 qsub_task en mtbench
+qsub_task en gpqa_diamond
+qsub_task en math_500
+qsub_task en aime_2024_2025
+qsub_task en livecodebench_v5_v6
+
 
 ## Optional
-# qsub_task ja jemhopqa_cot
+qsub_task ja jemhopqa
+qsub_task en mmlu_prox

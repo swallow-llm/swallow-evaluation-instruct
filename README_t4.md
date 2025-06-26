@@ -15,7 +15,8 @@
 >   - [2.5 評価結果の確認](#25-評価結果の確認)
 >   - [2.6 評価ログの確認](#26-評価ログの確認)
 >   - [2.7 評価詳細の確認（lightevalを用いた評価の場合のみ）](27-評価詳細の確認（lightevalを用いた評価の場合のみ）)
-
+> - [3. Tips](#3-tips)
+>   - [3.1 タスクを追加するときに](#31-タスクを追加するときに)
 
 ## 概要
 この資料は，岡崎研の評価チームが TSUBAME4 上で評価を行う際に参照することを想定した，内部向けのマニュアルである．
@@ -40,7 +41,7 @@
 | `HF_TOKEN` | HuggingFace のデータセットやモデルのインストール時に用いられるトークン．| Rate Limit の緩和や使用許可が必要なデータセット・モデルを使用する際に必要．|
 
 ### 1.2 評価者固有情報ファイルの名前変更
-1.1 で評価者固有情報を記載したファイルの名前を`.env_template` から `.env` に変更しておく．
+1.1 で評価者固有情報を記載したファイルの名前を`.env_template` から `.env` に変更しておく． \
 これにより評価スクリプトから読み取られるようになり，また，`gitignore` の対象となる．
 > ⚠️ 注意：`.env` には　API キーが含まれているため決してパブリックに公開してはならない．
 
@@ -70,7 +71,9 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 | `MAX_COMPLETION_TOKENS` | 評価するモデルの生成時に渡す引数．出力の最大トークン数の制約である．| モデルの `MAX_MODEL_LENGTH` から自動計算されるので，基本的に指定は不要．必要な場合のみ指定．|
 
 ### 2.2 タスクの設定
-2.1 でモデルの設定を終えたら同ファイル（`swallow-evaluation-instruct-private/scripts/tsubame/qsub_all.sh`）下部の `# Submit tasks` 以降を編集し，評価するタスクを指定する．具体的には，評価しないタスクについてコメントアウトをすれば良い．
+2.1 でモデルの設定を終えたら \
+同ファイル（`swallow-evaluation-instruct-private/scripts/tsubame/qsub_all.sh`）下部の `# Submit tasks` 以降を編集し， \
+評価するタスクを指定する．具体的には，評価しないタスクについてコメントアウトをすれば良い．
 
 ### 2.3 評価の実行
 2.1，2.2 でモデルとタスクの指定を正しく行ったことを確認したのち，以下のスクリプトで評価のジョブを投げることができる．
@@ -89,13 +92,33 @@ bash scripts/tsubame/utils/save_and_check_qstat.sh
 ```
 
 ### 2.5 評価結果の確認
-評価の結果は各モデル用のディレクトリ（`swallow-evaluation-instruct-private/results/{model_publisher}/{model_name}`）以下に`aggregated_results.json`という名前で保存される．
-その中で，`overall`の値をコピーして指定された spreadsheet に貼り付ければ良い．
+評価結果（`aggregated_results.json`）は \
+各モデル用のディレクトリ（`swallow-evaluation-instruct-private/results/{model_publisher}/{model_name}`）以下に保存される． \
+評価担当者は `aggregated_results.json` 内の `overall`の値を，指定された spreadsheet にコピーすれば良い．
 
 
 ### 2.6 評価ログの確認
-評価のログ（標準出力・標準エラー出力）は各モデル用のディレクトリ（`swallow-evaluation-instruct-private/results/{model_publisher}/{model_name}`）以下の言語・タスクごとのディレクトリにそれぞれ `.o` ファイル，`.e` ファイルとして保存される．
+評価のログ（標準出力 `.o` ファイル・標準エラー出力 `.e` ファイル）は \
+各モデル用のディレクトリ（`swallow-evaluation-instruct-private/results/{model_publisher}/{model_name}`）以下の言語・タスクごとに保存される．
 
 
 ### 2.7 評価詳細の確認（lightevalを用いた評価の場合のみ）
-評価結果の詳細は `swallow-evaluation-instruct-private/lighteval/outputs/results` 以下に `.json` ファイルとして，モデルが生成した回答の詳細は `swallow-evaluation-instruction-private/lighteval/outputs/outputs` 以下に `.pqt` ファイルとして保存されている．`.pqt`ファイルは pandas を用いて dataframe として開くことができる．（`swallow-evaluation-instruction-private/scripts/utils/details_viewer.ipynb`参照）
+評価結果の詳細は `swallow-evaluation-instruct-private/lighteval/outputs/results` 以下に `.json` ファイルとして， \
+モデルが生成した回答の詳細は `swallow-evaluation-instruction-private/lighteval/outputs/outputs` 以下に `.pqt` ファイルとして保存されている． \
+`.pqt`ファイルは pandas を用いて dataframe として開くことができる．（`swallow-evaluation-instruction-private/scripts/utils/details_viewer.ipynb`参照）
+
+
+## 3. Tips
+### 3.1 タスクを追加するときに
+タスクを追加する際には `lighteval/src/ligtheval/tasks/swallow/` 以下にタスクの定義を書く． \
+しかし，その操作はあくまで lighteval に対するの操作であり，swallow-evaluation-instruct 用には追加の操作が必要である． \
+以下にそれをまとめる．
+
+| カテゴリ | 必要性 | 操作対象 | 操作内容 |
+| -- | -- | -- | -- |
+| 結果集約（Aggregate）のための操作 | 必須 | `scripts/aggregate_utils/conf.py` | 追加したタスクに対応するメトリクスを定義する| 
+| | 適宜 |`scripts/aggregate_utils/funcs.py` | 追加したタスクのメトリクスに必要な計算を追加することができる |
+| | 適宜 |`scripts/aggregate_utils/white_lists.py` | 追加したタスクのメトリクスの計算に用いるタスクサブセットのサブセットを定義することができる |
+| 評価実行のための操作 | 必須 | `scripts/tsubame/conf` | 追加したタスクについて，`key`（"{言語}_{タスク名}"），`script`（定義したタスク名），`result_dir`（結果・ログの出力先），`framework`（フレームワーク），`hrt_q`（node_qでの想定所要時間），`hrt_f`（node_fでの想定所要時間），を定義する |
+| | 必須 | `scripts/tsubame/qsub_all.sh` | 追加したタスクについて，`qsub_task {言語} {タスク名}` を末尾の適当な箇所に追加する．|
+| | 適宜 | `scripts/tsubame/qsub_all.sh` | 追加したタスクの生成条件を `GEN_PARAMS_LIST` に追加する．|

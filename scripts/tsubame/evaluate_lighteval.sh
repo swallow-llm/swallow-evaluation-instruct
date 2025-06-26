@@ -24,6 +24,11 @@ EOL
         top_p: 1.0
 EOL
 )
+    [lcb:codegeneration_v5_v6]=$(cat <<'EOL'
+        temperature: 0.2
+        top_p: 0.95
+EOL
+)
 )
 
 
