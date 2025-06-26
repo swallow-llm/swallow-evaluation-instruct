@@ -117,7 +117,8 @@ bash scripts/tsubame/utils/save_and_check_qstat.sh
 | カテゴリ | 必要性 | 操作対象 | 操作内容 |
 | -- | -- | -- | -- |
 | 結果集約（Aggregate）のための操作 | 必須 | `scripts/aggregate_utils/conf.py` | 追加したタスクに対応するメトリクスを定義する| 
-| | 任意 |`scripts/aggregate_utils/funcs.py` | 追加したタスクのメトリクスに必要な計算を追加することができる |
-| | 任意 |`scripts/aggregate_utils/white_lists.py` | 追加したタスクのメトリクスの計算に用いるタスクサブセットのサブセットを定義することができる |
+| | 適宜 |`scripts/aggregate_utils/funcs.py` | 追加したタスクのメトリクスに必要な計算を追加することができる |
+| | 適宜 |`scripts/aggregate_utils/white_lists.py` | 追加したタスクのメトリクスの計算に用いるタスクサブセットのサブセットを定義することができる |
 | 評価実行のための操作 | 必須 | `scripts/tsubame/conf` | 追加したタスクについて，`key`（"{言語}_{タスク名}"），`script`（定義したタスク名），`result_dir`（結果・ログの出力先），`framework`（フレームワーク），`hrt_q`（node_qでの想定所要時間），`hrt_f`（node_fでの想定所要時間），を定義する |
-| | 必須 | `scripts/tsubame/qsub_all.sh` | 追加したタスクについて，`qsub_task {言語} {タスク名}` を末尾の適当な箇所に追加する |
+| | 必須 | `scripts/tsubame/qsub_all.sh` | 追加したタスクについて，`qsub_task {言語} {タスク名}` を末尾の適当な箇所に追加する．|
+| | 適宜 | `scripts/tsubame/qsub_all.sh` | 追加したタスクの生成条件を `GEN_PARAMS_LIST` に追加する．|
