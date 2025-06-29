@@ -21,11 +21,13 @@
 # SOFTWARE.
 import os
 from typing import Optional
+import re
 
 import typer
 from typer import Argument, Option
 from typing_extensions import Annotated
 
+from lighteval.models.model_input import GenerationParameters
 
 app = typer.Typer()
 
@@ -468,8 +470,15 @@ def litellm(
     if model_args.endswith(".yaml"):
         model_config = LiteLLMModelConfig.from_path(model_args)
     else:
+        generation_parameters = GenerationParameters.from_model_args(model_args)
+        # We slice out generation_parameters from model_args to avoid double-counting in the LiteLLMMModelConfig
+        model_args = re.sub(r"generation_parameters=\{.*?\},?", "", model_args)
+        if model_args.endswith(","):
+            model_args = model_args[:-1]
+        print(model_args)
         model_args_dict: dict = {k.split("=")[0]: k.split("=")[1] if "=" in k else True for k in model_args.split(",")}
-        model_config = LiteLLMModelConfig(**model_args_dict)
+        
+        model_config = LiteLLMModelConfig(**model_args_dict, generation_parameters=generation_parameters)
 
     pipeline_params = PipelineParameters(
         launcher_type=parallelism_manager,
