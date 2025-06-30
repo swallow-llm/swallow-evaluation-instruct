@@ -173,6 +173,7 @@ class LiteLLMClient(LightevalModel):
 
         # max_n < num_samples の場合は n=1 に設定してAPIをnum_samples回呼び出す
         if max_n is not None and max_n < num_samples:
+            logger.warning(f"Number of parallel generations `n` will be set to 1, and the process will repeat {num_samples} times.")
             responses = []
             for _ in range(num_samples):
                 resp = self._call_litellm_completion(
@@ -258,8 +259,7 @@ class LiteLLMClient(LightevalModel):
         num_samples: int | list[int],
         stop_sequence: list[str] | None = None,
     ):
-        results = []
-
+        
         return_logitss = [return_logits for _ in prompts] if not isinstance(return_logits, list) else return_logits
         max_new_tokenss = [max_new_tokens for _ in prompts] if not isinstance(max_new_tokens, list) else max_new_tokens
         num_sampless = [num_samples for _ in prompts] if not isinstance(num_samples, list) else num_samples
@@ -268,6 +268,7 @@ class LiteLLMClient(LightevalModel):
             len(prompts) == len(return_logitss) == len(max_new_tokenss) == len(num_sampless) == len(stop_sequencess)
         ), f"Length of prompts, return_logitss, max_new_tokenss, num_sampless, stop_sequences, system_prompts should be the same but are {len(prompts)}, {len(return_logitss)}, {len(max_new_tokenss)}, {len(num_sampless)}, {len(stop_sequencess)}"
 
+        results = []
         with ThreadPoolExecutor(self.CONCURENT_CALLS) as executor:
             for entry in tqdm(
                 executor.map(
