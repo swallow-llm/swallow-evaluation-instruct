@@ -22,9 +22,10 @@
 
 import logging
 import time
+from copy import deepcopy
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 import yaml
 from tqdm import tqdm
@@ -56,12 +57,35 @@ if is_litellm_available():
     from litellm import encode
     from litellm.caching.caching import Cache
     from litellm.utils import ModelResponse
+    from litellm import BadRequestError
 
     logging.getLogger("LiteLLM").setLevel(logging.WARNING)
     logging.getLogger("LiteLLM").handlers.clear()
 
     # litellm.cache = Cache(type="disk")  # キャッシュ機能を無効化
 
+
+def merge_model_responses(responses: List[ModelResponse]) -> ModelResponse:
+    """
+    複数の ModelResponse を統合し、choices を連結した新しい ModelResponse を返す。
+    あわせて usage の completion_tokens, estimated_cost, total_tokens も合算する。
+    """
+    if not responses:
+        return None
+    
+    merged_response = deepcopy(responses[0])
+        
+    for resp in responses[1:]:
+        merged_response.choices.extend(resp.choices)
+        if hasattr(merged_response, "usage") and hasattr(resp, "usage"):
+            for key, value in resp.usage:
+                if key == "completion_tokens":
+                    merged_response.usage["completion_tokens"] += value
+                    merged_response.usage["total_tokens"] += value
+                elif key in ("estimated_cost", ):
+                    merged_response.usage[key] += value
+    
+    return merged_response
 
 @dataclass
 class LiteLLMModelConfig:
@@ -144,9 +168,36 @@ class LiteLLMClient(LightevalModel):
 
     def __call_api(self, prompt, return_logits, max_new_tokens, num_samples, stop_sequence):
         """Make API call with retries."""
-        assert self.provider != "deepinfra" or num_samples == 1, "Deepinfra does not support num_samples > 1"
 
-        response = ModelResponse()
+        max_n = getattr(self.generation_parameters, "max_n", None)
+
+        # max_n < num_samples の場合は n=1 に設定してAPIをnum_samples回呼び出す
+        if max_n is not None and max_n < num_samples:
+            logger.warning(f"Number of parallel generations `n` will be set to 1, and the process will repeat {num_samples} times.")
+            responses = []
+            for _ in range(num_samples):
+                resp = self._call_litellm_completion(
+                    prompt=prompt,
+                    return_logits=return_logits,
+                    max_new_tokens=max_new_tokens,
+                    stop_sequence=stop_sequence,
+                    n=1
+                )
+                responses.append(resp)
+            return merge_model_responses(responses)
+        else:
+            return self._call_litellm_completion(
+                prompt=prompt,
+                return_logits=return_logits,
+                max_new_tokens=max_new_tokens,
+                stop_sequence=stop_sequence,
+                n=num_samples
+            )
+
+    def _call_litellm_completion(self, prompt, return_logits, max_new_tokens, stop_sequence, n):
+        """
+        litellm.completion 呼び出し・リトライ処理． self.__call_api() をリネームしただけ
+        """
         for attempt in range(self.API_MAX_RETRY):
             try:
                 stop_sequence = self._prepare_stop_sequence(stop_sequence)
@@ -161,7 +212,7 @@ class LiteLLMClient(LightevalModel):
                     "messages": prompt,
                     "logprobs": return_logits if self.provider == "openai" else None,
                     "base_url": self.base_url,
-                    "n": num_samples,
+                    "n": n,
                     "caching": True,
                     "api_key": self.api_key,
                 }
@@ -176,13 +227,13 @@ class LiteLLMClient(LightevalModel):
                 response = litellm.completion(**kwargs)
 
                 # If response is empty, retry without caching (maybe the error is recoverable and solved with a retry)
-                if response.choices[0].message.content is None:
+                if (response is not None) and (response.choices[0].message.content is None):
                     kwargs["caching"] = False
                     logger.info("Response is empty, retrying without caching")
                     response = litellm.completion(**kwargs)
                 return response
             except litellm.BadRequestError as e:
-                logger.error(f"Error in API call: {e}")
+                logger.error(f"BadRequestError in API call: {e}")
                 if "message" in e.__dict__:
                     error_string = (
                         "The response was filtered due to the prompt triggering Microsoft's content management policy"
@@ -208,8 +259,7 @@ class LiteLLMClient(LightevalModel):
         num_samples: int | list[int],
         stop_sequence: list[str] | None = None,
     ):
-        results = []
-
+        
         return_logitss = [return_logits for _ in prompts] if not isinstance(return_logits, list) else return_logits
         max_new_tokenss = [max_new_tokens for _ in prompts] if not isinstance(max_new_tokens, list) else max_new_tokens
         num_sampless = [num_samples for _ in prompts] if not isinstance(num_samples, list) else num_samples
@@ -218,6 +268,7 @@ class LiteLLMClient(LightevalModel):
             len(prompts) == len(return_logitss) == len(max_new_tokenss) == len(num_sampless) == len(stop_sequencess)
         ), f"Length of prompts, return_logitss, max_new_tokenss, num_sampless, stop_sequences, system_prompts should be the same but are {len(prompts)}, {len(return_logitss)}, {len(max_new_tokenss)}, {len(num_sampless)}, {len(stop_sequencess)}"
 
+        results = []
         with ThreadPoolExecutor(self.CONCURENT_CALLS) as executor:
             for entry in tqdm(
                 executor.map(

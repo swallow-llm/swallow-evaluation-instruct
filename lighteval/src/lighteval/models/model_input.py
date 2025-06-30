@@ -27,6 +27,7 @@ from typing import Optional
 @dataclass
 class GenerationParameters:
     early_stopping: Optional[bool] = None  # vllm, transformers
+    max_n: Optional[int] = None  # litellmで使用．providerが受け付けるn(サンプル数)の上限を指定できる
     repetition_penalty: Optional[float] = None  # vllm, transformers, tgi, sglang
     frequency_penalty: Optional[float] = None  # vllm, tgi, sglang
     length_penalty: Optional[float] = None  # vllm, transformers
