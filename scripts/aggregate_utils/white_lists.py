@@ -435,7 +435,7 @@ MMLU_PRO_ENGLISH_ENGINEERING = [
 
 # MMLU English Subjects
 MMLU_ENGLISH_STEM = [
-    "astronomy", "college_physics", "conceptual_physics", "high_school_physics",
+    "astronomy", "anatomy", "college_physics", "conceptual_physics", "high_school_physics",
     "college_chemistry", "high_school_chemistry",
     "college_biology", "high_school_biology",
     "college_computer_science", "computer_security", "high_school_computer_science", "machine_learning",
@@ -460,7 +460,7 @@ MMLU_ENGLISH_SOCIAL_SCIENCES = [
 MMLU_ENGLISH_OTHER = [
     "global_facts", "miscellaneous", "professional_accounting",
     "business_ethics", "management", "marketing",
-    "anatomy", "clinical_knowledge", "college_medicine", "human_aging", "medical_genetics", "nutrition", "professional_medicine", "virology"
+    "clinical_knowledge", "college_medicine", "human_aging", "medical_genetics", "nutrition", "professional_medicine", "virology"
 ]
 
 # Japanese MT-Bench Subjects

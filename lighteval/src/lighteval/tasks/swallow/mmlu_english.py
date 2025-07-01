@@ -28,6 +28,7 @@ CATEGORIES = {
             "high_school_statistics",
         ],
         "engineering": ["electrical_engineering"],
+        "health": ["anatomy",]
     },
     "humanities": {
         "history": [
@@ -61,8 +62,7 @@ CATEGORIES = {
     "other": {
         "other": ["global_facts", "miscellaneous", "professional_accounting"],
         "business": ["business_ethics", "management", "marketing"],
-        "health": [
-            "anatomy",
+        "health": [            
             "clinical_knowledge",
             "college_medicine",
             "human_aging",
