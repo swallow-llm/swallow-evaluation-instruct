@@ -22,8 +22,8 @@ def compute_char_f1(str_gold, str_pred) -> float:
     https://github.com/huggingface/transformers/blob/v4.9.2/src/transformers/data/metrics/squad_metrics.py
 
     Args:
-        str_gold (_type_): 回答文字列
-        str_pred (_type_): 正解文字列
+        str_gold (_type_): 正解文字列
+        str_pred (_type_): 回答文字列
 
     Returns:
         float: 文字F1
