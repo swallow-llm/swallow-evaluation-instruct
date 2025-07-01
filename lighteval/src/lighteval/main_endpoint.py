@@ -71,6 +71,9 @@ def openai(
     output_dir: Annotated[
         str, Option(help="Output directory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = "results",
+    output_subdir: Annotated[
+        Optional[str], Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
+    ] = None,
     push_to_hub: Annotated[
         bool, Option(help="Push results to the huggingface hub.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = False,
@@ -109,6 +112,7 @@ def openai(
     env_config = EnvConfig(token=TOKEN, cache_dir=cache_dir)
     evaluation_tracker = EvaluationTracker(
         output_dir=output_dir,
+        output_subdir=output_subdir,
         save_details=save_details,
         push_to_hub=push_to_hub,
         push_to_tensorboard=push_to_tensorboard,
@@ -188,6 +192,9 @@ def inference_endpoint(
     output_dir: Annotated[
         str, Option(help="Output directory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = "results",
+    output_subdir: Annotated[
+        Optional[str], Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
+    ] = None,
     push_to_hub: Annotated[
         bool, Option(help="Push results to the huggingface hub.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = False,
@@ -224,6 +231,7 @@ def inference_endpoint(
     env_config = EnvConfig(token=TOKEN, cache_dir=cache_dir)
     evaluation_tracker = EvaluationTracker(
         output_dir=output_dir,
+        output_subdir=output_subdir,
         save_details=save_details,
         push_to_hub=push_to_hub,
         push_to_tensorboard=push_to_tensorboard,
@@ -305,6 +313,9 @@ def tgi(
     output_dir: Annotated[
         str, Option(help="Output directory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = "results",
+    output_subdir: Annotated[
+        Optional[str], Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
+    ] = None,
     push_to_hub: Annotated[
         bool, Option(help="Push results to the huggingface hub.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = False,
@@ -341,6 +352,7 @@ def tgi(
     env_config = EnvConfig(token=TOKEN, cache_dir=cache_dir)
     evaluation_tracker = EvaluationTracker(
         output_dir=output_dir,
+        output_subdir=output_subdir,
         save_details=save_details,
         push_to_hub=push_to_hub,
         push_to_tensorboard=push_to_tensorboard,
@@ -420,6 +432,9 @@ def litellm(
     output_dir: Annotated[
         str, Option(help="Output directory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = "results",
+    output_subdir: Annotated[
+        Optional[str], Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
+    ] = None,
     push_to_hub: Annotated[
         bool, Option(help="Push results to the huggingface hub.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = False,
@@ -457,6 +472,7 @@ def litellm(
     env_config = EnvConfig(token=TOKEN, cache_dir=cache_dir)
     evaluation_tracker = EvaluationTracker(
         output_dir=output_dir,
+        output_subdir=output_subdir,
         save_details=save_details,
         push_to_hub=push_to_hub,
         push_to_tensorboard=push_to_tensorboard,
@@ -538,6 +554,9 @@ def inference_providers(
     output_dir: Annotated[
         str, Option(help="Output directory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = "results",
+    output_subdir: Annotated[
+        Optional[str], Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
+    ] = None,
     push_to_hub: Annotated[
         bool, Option(help="Push results to the huggingface hub.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = False,
@@ -574,6 +593,7 @@ def inference_providers(
     env_config = EnvConfig(token=TOKEN, cache_dir=CACHE_DIR)
     evaluation_tracker = EvaluationTracker(
         output_dir=output_dir,
+        output_subdir=output_subdir,
         save_details=save_details,
         push_to_hub=push_to_hub,
         push_to_tensorboard=push_to_tensorboard,

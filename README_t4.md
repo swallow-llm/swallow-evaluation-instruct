@@ -17,6 +17,9 @@
 >   - [2.7 評価詳細の確認（lightevalを用いた評価の場合のみ）](27-評価詳細の確認（lightevalを用いた評価の場合のみ）)
 > - [3. Tips](#3-tips)
 >   - [3.1 タスクを追加するときに](#31-タスクを追加するときに)
+>   - [3.2 各モデル用のディレクトリについて](#32-モデル固有の生成条件を追加するとき)
+>   - [3.3 各モデル用のディレクトリについて](#33-各モデル用のディレクトリについて)
+
 
 ## 概要
 この資料は，岡崎研の評価チームが TSUBAME4 上で評価を行う際に参照することを想定した，内部向けのマニュアルである．
@@ -25,10 +28,11 @@
 | 日付 | 内容 | 担当 |
 | -- | -- | -- |
 | 2025/06/19 | 初稿 | 齋藤 |
+| 2025/07/01 | custom_settings とタスクの追加に関して追記 | 齋藤 |
 
 ## 1. 環境構築
 ### 1.1 評価者固有情報の登録
-`swallow-evaluation-instruction-private/.env_template` に記されている以下の変数について各評価者の環境に合わせて修正を行う．
+`.env_template` に記されている以下の変数について各評価者の環境に合わせて修正を行う．
 
 | 変数名 | 説明 | 備考 | 
 | -- | -- | -- |
@@ -58,7 +62,7 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 
 ## 2. 評価の実行
 ### 2.1 モデルの設定
-まず，評価を行うモデルについて以下の情報を`swallow-evaluation-instruct-private/scripts/tsubame/qsub_all.sh`の `# Set Args` の欄に書き込む．
+まず，評価を行うモデルについて以下の情報を`scripts/tsubame/qsub_all.sh`の `# Set Args` の欄に書き込む．
 
 | 変数名 | 説明 | 備考 |
 | -- | -- | -- |
@@ -72,7 +76,7 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 
 ### 2.2 タスクの設定
 2.1 でモデルの設定を終えたら \
-同ファイル（`swallow-evaluation-instruct-private/scripts/tsubame/qsub_all.sh`）下部の `# Submit tasks` 以降を編集し， \
+同ファイル（`scripts/tsubame/qsub_all.sh`）下部の `# Submit tasks` 以降を編集し， \
 評価するタスクを指定する．具体的には，評価しないタスクについてコメントアウトをすれば良い．
 
 ### 2.3 評価の実行
@@ -93,22 +97,26 @@ bash scripts/tsubame/utils/save_and_check_qstat.sh
 
 ### 2.5 評価結果の確認
 評価結果（`aggregated_results.json`）は \
-各モデル用のディレクトリ（`swallow-evaluation-instruct-private/results/{model_publisher}/{model_name}`）以下に保存される． \
+各モデル用のディレクトリ（`results/{provider}/{model_publisher}/{model_name}/{custom_settings}`）以下に保存される． \
 評価担当者は `aggregated_results.json` 内の `overall`の値を，指定された spreadsheet にコピーすれば良い．
+
+ちなみに評価結果には評価メトリクスや評価タスクに加え，使用した custom_settings の詳細も記されている． \
+もちろん custom_settings を使用していない場合には何も記されない．
 
 
 ### 2.6 評価ログの確認
 評価のログ（標準出力 `.o` ファイル・標準エラー出力 `.e` ファイル）は \
-各モデル用のディレクトリ（`swallow-evaluation-instruct-private/results/{model_publisher}/{model_name}`）以下の言語・タスクごとに保存される．
+各モデル用のディレクトリ（`results/{provider}/{model_publisher}/{model_name}/{custom_settings}`）以下に言語・タスクごとに保存される．
 
 
 ### 2.7 評価詳細の確認（lightevalを用いた評価の場合のみ）
-評価結果の詳細は `swallow-evaluation-instruct-private/lighteval/outputs/results` 以下に `.json` ファイルとして， \
-モデルが生成した回答の詳細は `swallow-evaluation-instruction-private/lighteval/outputs/outputs` 以下に `.pqt` ファイルとして保存されている． \
-`.pqt`ファイルは pandas を用いて dataframe として開くことができる．（`swallow-evaluation-instruction-private/scripts/utils/details_viewer.ipynb`参照）
+評価結果の詳細は `lighteval/outputs/results` 以下に `.json` ファイルとして， \
+モデルが生成した回答の詳細は `lighteval/outputs/outputs` 以下に `.pqt` ファイルとして保存されている． \
+`.pqt`ファイルは pandas を用いて dataframe として開くことができる． \
+（`scripts/utils/details_viewer.ipynb`参照）
 
 
-## 3. Tips
+## 3. その他
 ### 3.1 タスクを追加するときに
 タスクを追加する際には `lighteval/src/ligtheval/tasks/swallow/` 以下にタスクの定義を書く． \
 しかし，その操作はあくまで lighteval に対するの操作であり，swallow-evaluation-instruct 用には追加の操作が必要である． \
@@ -119,6 +127,35 @@ bash scripts/tsubame/utils/save_and_check_qstat.sh
 | 結果集約（Aggregate）のための操作 | 必須 | `scripts/aggregate_utils/conf.py` | 追加したタスクに対応するメトリクスを定義する| 
 | | 適宜 |`scripts/aggregate_utils/funcs.py` | 追加したタスクのメトリクスに必要な計算を追加することができる |
 | | 適宜 |`scripts/aggregate_utils/white_lists.py` | 追加したタスクのメトリクスの計算に用いるタスクサブセットのサブセットを定義することができる |
-| 評価実行のための操作 | 必須 | `scripts/tsubame/conf` | 追加したタスクについて，`key`（"{言語}_{タスク名}"），`script`（定義したタスク名），`result_dir`（結果・ログの出力先），`framework`（フレームワーク），`hrt_q`（node_qでの想定所要時間），`hrt_f`（node_fでの想定所要時間），を定義する |
+| 評価実行のための操作 | 必須 | `scripts/tsubame/conf/tasks_runtime.csv` | 追加したタスクについて，`key`（"{言語}_{タスク名}"），`script`（定義したタスク名），`result_dir`（結果・ログの出力先），`framework`（フレームワーク），`hrt_q`（node_qでの想定所要時間），`hrt_f`（node_fでの想定所要時間），を定義する |
 | | 必須 | `scripts/tsubame/qsub_all.sh` | 追加したタスクについて，`qsub_task {言語} {タスク名}` を末尾の適当な箇所に追加する．|
-| | 適宜 | `scripts/tsubame/qsub_all.sh` | 追加したタスクの生成条件を `GEN_PARAMS_LIST` に追加する．|
+| | 必須 | `scripts/generation_settings/task_settings.csv` | 追加したタスク固有の生成条件を記す．デフォルトは`temperature=0.0`．キーとバリューは"="で繋ぎ，複数の条件を定義したい場合は","で繋ぐ．|
+
+
+### 3.2 モデル固有の生成条件を追加するとき
+モデルによっては意図した推論をさせるために temperature や system message を指定する必要がある． \
+それらの指定は `scripts/generation_settings/custom_model_settings` 以下に \
+model publisher ごと，model name ごとに .yaml ファイルで定義することができる．
+
+> 例えば，`tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3` についての指定を追加したい場合は \
+> `scripts/generation_settings/custom_model_settings/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3.yaml` \
+> に定義を行えば良い．
+
+具体的な定義の仕方や定義できるパラメタについては \
+`scripts/generation_settings/custom_model_settings/template.yaml` を参照されたい．
+
+
+### 3.3 各モデル用のディレクトリについて
+[2.5 評価結果の確認](#25-評価結果の確認)や[2.6 評価ログの確認](#26-評価ログの確認)で「各モデル用のディレクトリ」として \
+`results/{provider}/{model_publisher}/{model_name}/{custom_settings}` というパスを記しているが，
+このパスに含まれる各要素は以下の通りである．
+
+| 表記 | 意味 |
+| -- | -- |
+| `{provider}` | モデルをserve（立てる）サービスの名前．vllmの場合は`hosted_vllm`，deepinfraの場合は`deepinfra`，openaiの場合は空文字となる．|
+| `{model_publisher}` | Huggingface Model ID を"/"で区切った時の前半部分．モデルを提供する団体を指す．（e.g. `tokyotech-llm`）
+| `{model_name}` | Huggingface Model ID を"/"で区切った時の後半部分．モデル名を指す．（e.g. `Llama-3.1-Swallow-8B-Instruct-v0.3`）
+| `{custom_settings}` | モデル固有の特別な生成条件．指定していない場合は空文字となる． |
+
+なお，`{provider}` と `{custom_settings}` については空文字となりうるが，その場合パス内で空文字は端折られる． \
+（e.g. `results//tokyotech-llm/swallow/` -> `results/tokyotech-llm/swallow`）

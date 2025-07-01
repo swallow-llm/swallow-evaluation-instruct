@@ -1,6 +1,11 @@
 #!/bin/bash
 
 init_common(){
+    # Global variables which will be defined and become available after this function is over:
+    # - NUM_GPUS
+    # - GPU_MEMORY_UTILIZATION
+    # - UV_OPTIONS
+
     # Load Modules
     . /etc/profile.d/modules.sh
 
@@ -52,41 +57,98 @@ init_common(){
 }
 
 
+get_generation_params(){
+    # Global variables which will be defined and become available after this function is over:
+    # - CUSTOM_SETTINGS_PATH
+    # - CUSTOM_SETTINGS_VERSION
+    # - CUSTOM_SETTINGS_SUBDIR
+    # - CUSTOM_SETTINGS_NAME
+    # - SYSTEM_MESSAGE
+    # - MAX_MODEL_LENGTH
+    # - MAX_NEW_TOKENS
+    # - TEMPERATURE
+    # - TOP_P
+    # - GEN_PARAMS
+
+    # Load Args
+    CUSTOM_SETTINGS=$1
+    TASK_NAME=$2
+    REPO_PATH=$3
+    MODEL_NAME=$4
+
+    # Load custom settings from model_conf.yaml
+    local GENERATION_SETTINGS_DIR="${REPO_PATH}/scripts/generation_settings"
+    local TASK_SETTINGS_PATH="${GENERATION_SETTINGS_DIR}/task_settings.csv"
+    local CUSTOM_MODEL_SETTINGS_DIR="${GENERATION_SETTINGS_DIR}/custom_model_settings"
+    readarray -t results < <(uv run --isolated --project ${REPO_PATH} --locked --extra auto_detector python "${GENERATION_SETTINGS_DIR}/setting_manager.py" --model_id "$MODEL_NAME" --task_id "$TASK_NAME" --custom_settings "$CUSTOM_SETTINGS" --task_settings_path "$TASK_SETTINGS_PATH" --custom_model_settings_dir "$CUSTOM_MODEL_SETTINGS_DIR")
+    ## The following scripts are run only when the desired custom settings are found; or no settings are specified.
+
+    CUSTOM_SETTINGS_PATH=${results[0]}
+    CUSTOM_SETTINGS_VERSION=${results[1]}
+    if [[ $CUSTOM_SETTINGS != "" ]]; then
+        CUSTOM_SETTINGS_SUBDIR="/${CUSTOM_SETTINGS}"
+        CUSTOM_SETTINGS_NAME="${CUSTOM_SETTINGS}"
+        echo "🔍 Custom settings '${CUSTOM_SETTINGS}' is found. Use the settings."
+    else
+        CUSTOM_SETTINGS_SUBDIR=""
+        CUSTOM_SETTINGS_NAME=""
+        echo "➖ No custom settings is specified. Use default settings."
+    fi
+
+    SYSTEM_MESSAGE=${results[2]}
+    MAX_MODEL_LENGTH=${results[3]}
+    MAX_NEW_TOKENS=${results[4]}
+    TEMPERATURE=${results[5]}
+    TOP_P=${results[6]}
+
+    rest=( "${results[@]:7}" )
+    GEN_PARAMS=$(printf '%s\n' "${rest[@]}")
+}
+
+
 serve_litellm(){
+    # Global variables which will be defined and become available after this function is over:
+    # - RAW_OUTPUT_DIR
+    # - RAW_RESULT_DIR
+    # - MODEL_NAME_CONFIG
+    # - MAX_MODEL_LENGTH
+    # - MODEL_CONFIG_PATH
+    
     # Load Args
     MODEL_NAME=$1
     PROVIDER=$2
     REPO_PATH=$3
-    GEN_PARAMS=$4
-    TASK_NAME=$5
-    NUM_GPUS=$6
-    GPU_MEMORY_UTILIZATION=$7
-    MAX_MODEL_LENGTH=${8:-}
+    CUSTOM_SETTINGS_SUBDIR=$4
+    GEN_PARAMS=$5
+    TASK_NAME=$6
+    NUM_GPUS=$7
+    GPU_MEMORY_UTILIZATION=$8
+    MAX_MODEL_LENGTH=${9:-}
 
     # Setup based on provider
     RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"
     case $PROVIDER in
         "openai")
-            BASE_URL="https://api.openai.com/v1"
-            MODEL_NAME_CONFIG=$MODEL_NAME
-            RAW_DIR="$RAW_OUTPUT_DIR/results/$MODEL_NAME"
+            local BASE_URL="https://api.openai.com/v1"
+            MODEL_NAME_CONFIG="$MODEL_NAME"
+            RAW_RESULT_DIR="$RAW_OUTPUT_DIR/results/$MODEL_NAME$CUSTOM_SETTINGS_SUBDIR"
             ;;
         "deepinfra")
-            BASE_URL="https://api.deepinfra.com/v1/openai"
+            local BASE_URL="https://api.deepinfra.com/v1/openai"
             MODEL_NAME_CONFIG="deepinfra/$MODEL_NAME"
-            RAW_DIR="$RAW_OUTPUT_DIR/results/deepinfra/$MODEL_NAME"
+            RAW_RESULT_DIR="$RAW_OUTPUT_DIR/results/deepinfra/$MODEL_NAME$CUSTOM_SETTINGS_SUBDIR"
             ;;
         "vllm")
-            BASE_URL="http://localhost:8000/v1"
+            local BASE_URL="http://localhost:8000/v1"
             MODEL_NAME_CONFIG="hosted_vllm/$MODEL_NAME"
-            RAW_DIR="$RAW_OUTPUT_DIR/results/hosted_vllm/$MODEL_NAME"
+            RAW_RESULT_DIR="$RAW_OUTPUT_DIR/results/hosted_vllm/$MODEL_NAME$CUSTOM_SETTINGS_SUBDIR"
             ;;
         *)
             echo "💀 Error: Invalid provider. Must be one of: openai, deepinfra, vllm."
             exit 1
             ;;
     esac
-    mkdir -p "$RAW_DIR"
+    mkdir -p "$RAW_RESULT_DIR"
 
     # Set log level to WARNING
     export LITELLM_LOG_LEVEL=WARNING
@@ -142,10 +204,10 @@ PY
 
         ## Set reasoning-tag parameter
         if [ "${results[1]}" = "true" ]; then
-            REASONING_TAG_PARAMS="--reasoning-tag"
+            local REASONING_TAG_PARAMS="--reasoning-tag"
             echo "🤖 (Auto-detected) reasoning-tag option is set."
         else
-            REASONING_TAG_PARAMS=""
+            local REASONING_TAG_PARAMS=""
             echo "🤖 (Auto-detected) reasoning-tag option is not set."
         fi
 
@@ -180,7 +242,7 @@ PY
 
     # Create YAML file
     ## api_key is only needed for openai and deepinfra
-    MODEL_CONFIG_PATH="$RAW_DIR/model_config_${TASK_NAME}.yaml"
+    MODEL_CONFIG_PATH="$RAW_RESULT_DIR/model_config_${TASK_NAME}.yaml"
     cat >"$MODEL_CONFIG_PATH" <<EOL
 model:
     base_params:
@@ -201,12 +263,18 @@ aggregate_result(){
     RAW_OUTPUTS_DIR=$2
     AGGREGATED_OUTPUTS_DIR=$3
     REPO_PATH=$4
+    CUSTOM_SETTINGS_PATH=$5
+    CUSTOM_SETTINGS_NAME=$6
+    CUSTOM_SETTINGS_VERSION=$7
 
     uv run --isolated --project ${REPO_PATH} --locked --extra aggregate_results \
         python ${REPO_PATH}/scripts/aggregate_results.py \
         --model_name "${MODEL_NAME}" \
-        --raw_outputs_dir "${RAW_OUTPUTS_DIR}" \
-        --aggregated_outputs_dir "${AGGREGATED_OUTPUTS_DIR}"
+        --raw_results_dir "${RAW_OUTPUTS_DIR}" \
+        --aggregated_outputs_dir "${AGGREGATED_OUTPUTS_DIR}" \
+        --used_custom_settings_path "${CUSTOM_SETTINGS_PATH}" \
+        --used_custom_settings_name "${CUSTOM_SETTINGS_NAME}" \
+        --used_custom_settings_version "${CUSTOM_SETTINGS_VERSION}"
 
     echo "✅ Result aggregation was successfully done."
 }

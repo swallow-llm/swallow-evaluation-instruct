@@ -8,13 +8,11 @@ set -euo pipefail
 ## Common Settings
 NODE_KIND="node_"
 MODEL_NAME=""
-SYSTEM_MESSAGE=""
 
 ## Special Settings
-PROVIDER="vllm"             # Default: vllm. A provider to host the model. [vllm, openai, deepinfra]
-PRIORITY="-5"               # Default: -5. A priority of the job. Note that double priority is double cost. [-5, -4, -3]
-MAX_MODEL_LENGTH="-1"       # Default: -1 (Auto: min(32768, model_max_length)). Specify only if auto-detection is not working.
-MAX_COMPLETION_TOKENS="-1"  # Default: -1 (Auto). Specify only if facing some critical issues (e.g. repetition).
+PROVIDER="vllm"             # Default: "vllm". A provider to host the model. ["vllm", "openai", "deepinfra"]
+PRIORITY="-5"               # Default: "-5". A priority of the job. Note that double priority is double cost. ["-5", "-4", "-3"]
+CUSTOM_SETTINGS=""          # Default: "". A custom settings to use.
 
 ########################################################
 
@@ -26,7 +24,17 @@ QSUB_BASE="qsub -g tga-okazaki -l ${NODE_KIND}=1 -p ${PRIORITY}"
 
 # Load .env and define dirs
 source "$(dirname "$0")/../../.env"
-RESULTS_DIR="${REPO_PATH}/results/${MODEL_NAME}"
+case $CUSTOM_SETTINGS in
+    "") CUSTOM_SETTINGS_SUBDIR="" ;;
+    *) CUSTOM_SETTINGS_SUBDIR="/${CUSTOM_SETTINGS}" ;;
+esac
+case $PROVIDER in
+    openai) PROVIDER_SUBDIR="" ;;
+    vllm) PROVIDER_SUBDIR="hosted_vllm/" ;;
+    deepinfra) PROVIDER_SUBDIR="deepinfra/" ;;
+    *) echo "❌ unknown provider ${PROVIDER}"; exit 1 ;;
+esac
+RESULTS_DIR="${REPO_PATH}/results/${PROVIDER_SUBDIR}${MODEL_NAME}${CUSTOM_SETTINGS_SUBDIR}"
 SCRIPTS_DIR="${REPO_PATH}/scripts/tsubame"
 
 # Define qsub-function
@@ -47,7 +55,7 @@ qsub_task() {
 
   # Submit a job
   ${QSUB_BASE[@]} -N "${lang}_${task}" -l h_rt="${h_rt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
-    "${task_name}" "${NODE_KIND}" "${MODEL_NAME}" "${REPO_PATH}" "${SYSTEM_MESSAGE}" "${PROVIDER}" "${MAX_MODEL_LENGTH}" "${MAX_COMPLETION_TOKENS}"
+    "${task_name}" "${NODE_KIND}" "${MODEL_NAME}" "${CUSTOM_SETTINGS}" "${REPO_PATH}" "${PROVIDER}"
 }
 
 ########################################################
@@ -78,5 +86,5 @@ qsub_task en livecodebench_v5_v6
 
 
 ## Optional
-qsub_task ja jemhopqa
-qsub_task en mmlu_prox
+# qsub_task ja jemhopqa
+# qsub_task en mmlu_prox
