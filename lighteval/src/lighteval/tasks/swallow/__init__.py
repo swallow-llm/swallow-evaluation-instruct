@@ -17,6 +17,8 @@ from .gpqa_ja import gpqa_ja_instruct_lighteval
 from .wmt20 import wmt20_enja_swallow, wmt20_jaen_swallow
 from .mmlu_prox_japanese import mmlu_prox_japanese_tasks
 from .mmlu_prox_english import mmlu_prox_english_tasks
+from .mmlu_pro_english import mmlu_pro_english_tasks
+from .mmlu_english import mmlu_english_tasks
 from .english_mt_bench.main import mt_bench_english_swallow_gpt4o
 from .mifeval_ja.main import mifeval_ja
 from .gpqa import gpqa_diamond_instruct_swallow
@@ -44,4 +46,6 @@ SWALLOW_TASKS = [
 SWALLOW_TASKS.extend(JMMLU_SUBSET_TASKS)
 SWALLOW_TASKS.extend(mmlu_prox_japanese_tasks)
 SWALLOW_TASKS.extend(mmlu_prox_english_tasks)
+SWALLOW_TASKS.extend(mmlu_pro_english_tasks)
+SWALLOW_TASKS.extend(mmlu_english_tasks)
 SWALLOW_TASKS.extend(lcb_swallow_tasks)

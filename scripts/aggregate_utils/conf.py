@@ -416,6 +416,228 @@ AGGREGATE_CONF = [
         },
     },
 
+    # MMLU Pro English
+    {
+        "display_name": "mmlu_pro_english_business",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_BUSINESS,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_law",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_LAW,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_psychology",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_PSYCHOLOGY,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_biology",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_BIOLOGY,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_chemistry",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_CHEMISTRY,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_history",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_HISTORY,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_other",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_OTHER,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_health",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_HEALTH,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_economics",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_ECONOMICS,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_math",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_MATH,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_physics",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_PHYSICS,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_computer_science",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_COMPUTER_SCIENCE,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_philosophy",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_PHILOSOPHY,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english_engineering",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_PRO_ENGLISH_ENGINEERING,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_pro_english",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match"
+        },
+        "target": {
+            "task_key": "swallow|mmlu_pro_english|0",
+        },
+    },
+
+    # MMLU English
+    {
+        "display_name": "mmlu_english_stem",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_ENGLISH_STEM,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_english_humanities",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_ENGLISH_HUMANITIES,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_english_social_sciences",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_ENGLISH_SOCIAL_SCIENCES,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_english_other",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match",
+            "white_list": MMLU_ENGLISH_OTHER,
+        },
+        "target": {
+            "task_key": "swallow|mmlu_english|0",
+        },
+    },
+    {
+        "display_name": "mmlu_english",
+        "func": micro_average,
+        "func_args": {
+            "metric_key": "extractive_match"
+        },
+        "target": {
+            "task_key": "swallow|mmlu_english|0",
+        },
+    },
+
     # Japanese MTBench
     {
         "display_name": "japanese_mtbench_coding",
