@@ -753,12 +753,16 @@ def extract_code(model_output: str) -> str:
     return "\n".join(outputlines[indexlines[-2] + 1 : indexlines[-1]])
 
 
-def extract_last_code_block(model_output: str) -> str:
+def extract_last_code_block(model_output: str, fn_name: str) -> str:
     """
-    モデルの出力にける最後のコードブロックを抽出する．
+    モデルの出力における最後のコードブロックを抽出する．
     ただし，文中に現れるコードブロック以外の ``` や，文法的に成立していないコードブロックは無視する．
     """
     md = MarkdownIt()
     tokens = md.parse(model_output)
     codes = [t.content for t in tokens if t.type == "fence"]
+
+    for c in reversed(codes):
+        if f"def {fn_name}" in c:
+            return c
     return codes[-1] if len(codes) > 0 else ""
