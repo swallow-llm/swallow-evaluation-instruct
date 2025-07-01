@@ -89,17 +89,15 @@ class SettingManager:
 
     def search_task_settings(self, task_key: str) -> dict:
         task_settings_oneline = self.task_config.get(task_key, "notfound")
-        if task_settings_oneline == "notfound":
-            if self.verbose: print(f"💀 Task settings for \'{task_key}\' not found in \'{self.task_config_path}\'.")
-            return {}
-        else:
-            if self.verbose: print(f"✅ Task settings for \'{task_key}\' was found.")
-            task_settings = {}
-            for setting in task_settings_oneline.split(","):
-                if "=" in setting:
-                    param, value = setting.split("=")
-                    task_settings[param] = value
-            return task_settings
+        assert task_settings_oneline != "notfound", f"💀 Task settings for \'{task_key}\' not found in \'{self.task_config_path}\'."
+        
+        if self.verbose: print(f"✅ Task settings for \'{task_key}\' was found.")
+        task_settings = {}
+        for setting in task_settings_oneline.split(","):
+            if "=" in setting:
+                param, value = setting.split("=")
+                task_settings[param] = value
+        return task_settings
 
 
     def merge_settings(self, model_settings: dict, task_settings: dict, merge_strategy: str) -> dict:
