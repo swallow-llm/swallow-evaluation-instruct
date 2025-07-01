@@ -97,6 +97,7 @@ class EvaluationTracker:
 
     Args:
         output_dir (`str`): Local folder path where you want results to be saved.
+        output_subdir (`str`, defaults to ""): Output subdirectory for evaluation results.
         save_details (`bool`, defaults to True): If True, details are saved to the `output_dir`.
         push_to_hub (`bool`, defaults to False): If True, details are pushed to the hub.
             Results are pushed to `{hub_results_org}/details__{sanitized model_name}` for the model `model_name`, a public dataset,
@@ -119,6 +120,7 @@ class EvaluationTracker:
     def __init__(
         self,
         output_dir: str,
+        output_subdir: str = "",
         save_details: bool = True,
         push_to_hub: bool = False,
         push_to_tensorboard: bool = False,
@@ -136,6 +138,7 @@ class EvaluationTracker:
 
         self.api = HfApi()
         self.fs, self.output_dir = url_to_fs(output_dir)
+        self.output_subdir = output_subdir.lstrip(os.sep)
 
         self.hub_results_org = hub_results_org  # will also contain tensorboard results
         if hub_results_org in ["", None] and any([push_to_hub, push_to_tensorboard]):
@@ -228,7 +231,7 @@ class EvaluationTracker:
             )
 
     def save_results(self, date_id: str, results_dict: dict):
-        output_dir_results = Path(self.output_dir) / "results" / self.general_config_logger.model_name
+        output_dir_results = Path(self.output_dir) / "results" / self.general_config_logger.model_name / self.output_subdir
         self.fs.mkdirs(output_dir_results, exist_ok=True)
         output_results_file = output_dir_results / f"results_{date_id}.json"
         logger.info(f"Saving results to {output_results_file}")
@@ -236,7 +239,7 @@ class EvaluationTracker:
             f.write(json.dumps(results_dict, cls=EnhancedJSONEncoder, indent=2, ensure_ascii=False))
 
     def _get_details_sub_folder(self, date_id: str):
-        output_dir_details = Path(self.output_dir) / "details" / self.general_config_logger.model_name
+        output_dir_details = Path(self.output_dir) / "details" / self.general_config_logger.model_name / self.output_subdir
         if date_id in ["first", "last"]:
             # Get all folders in output_dir_details
             if not self.fs.exists(output_dir_details):

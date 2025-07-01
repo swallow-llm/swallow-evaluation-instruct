@@ -4,84 +4,26 @@
 set -euo pipefail
 
 
-# Extra Generation Parameters
-## If not specified, DEFAULT_GEN_PARAMS is used.
-## Note that max_new_tokens is automatically set to max_model_length if not specified.
-DEFAULT_GEN_PARAMS=$(cat <<'EOL'
-        temperature: 0.0
-EOL
-)
-declare -A GEN_PARAMS_LIST
-GEN_PARAMS_LIST=(
-    [japanese_mt_bench]=""
-    [swallow_jhumaneval]=$(cat <<'EOL'
-        temperature: 0.2
-        top_p: 0.95
-EOL
-)
-    [mifeval_ja]=$(cat <<'EOL'
-        temperature: 0.0
-        top_p: 1.0
-EOL
-)
-    [lcb:codegeneration_v5_v6]=$(cat <<'EOL'
-        temperature: 0.2
-        top_p: 0.95
-EOL
-)
-)
-
-
 # Load Args
 TASK_NAME=$1
 NODE_KIND=$2
 MODEL_NAME=$3
-REPO_PATH=$4
-SYSTEM_MESSAGE=$5
+CUSTOM_SETTINGS=$4
+REPO_PATH=$5
 PROVIDER=$6
-MAX_MODEL_LENGTH=$7
-MAX_COMPLETION_TOKENS=$8
 
 
 # Setup
 source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
 init_common $MODEL_NAME $NODE_KIND $REPO_PATH
-RAW_OUTPUTS_DIR="${REPO_PATH}/lighteval/outputs"
-AGGREGATED_OUTPUTS_DIR="${REPO_PATH}/results/${MODEL_NAME}"
-
-
-# Generation Parameters
-## Set GEN_PARAMS based on TASK_NAME
-if [[ -v GEN_PARAMS_LIST[$TASK_NAME] ]]; then
-    GEN_PARAMS=${GEN_PARAMS_LIST[$TASK_NAME]}
-else
-    GEN_PARAMS=${DEFAULT_GEN_PARAMS}
-fi
-
-## Set MAX_COMPLETION_TOKENS only if specified
-if [[ "$MAX_COMPLETION_TOKENS" != "-1" ]]; then
-    GEN_PARAMS+="        max_new_tokens: $MAX_COMPLETION_TOKENS
-"
-fi
-
-## Set MODEL_ARGS
-if [[ -n $GEN_PARAMS ]]; then
-  GEN_PARAMS="    generation:
-$GEN_PARAMS"
-fi
+get_generation_params "${CUSTOM_SETTINGS}" "${TASK_NAME}" "${REPO_PATH}" "${MODEL_NAME}"
 echo "⚙️ Generation Parameters: ${GEN_PARAMS}"
+RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"
 
 
 # Serve a LLM by using litellm
-serve_litellm $MODEL_NAME $PROVIDER $REPO_PATH "${GEN_PARAMS}" $TASK_NAME $NUM_GPUS $GPU_MEMORY_UTILIZATION $MAX_MODEL_LENGTH
-case $PROVIDER in
-    "openai") PROVIDER_SUBDIR="" ;;
-    "deepinfra") PROVIDER_SUBDIR="deepinfra/" ;;
-    "vllm") PROVIDER_SUBDIR="hosted_vllm/" ;;
-    *) echo "❌ Unknown PROVIDER: $PROVIDER" && exit 1 ;;
-esac
-MODEL_CONFIG_PATH="${RAW_OUTPUTS_DIR}/results/${PROVIDER_SUBDIR}${MODEL_NAME}/model_config_${TASK_NAME}.yaml"
-RESULTS_DIR="${RAW_OUTPUTS_DIR}/results/${PROVIDER_SUBDIR}${MODEL_NAME}"
+serve_litellm $MODEL_NAME $PROVIDER $REPO_PATH "${CUSTOM_SETTINGS_SUBDIR}" "${GEN_PARAMS}" $TASK_NAME $NUM_GPUS $GPU_MEMORY_UTILIZATION $MAX_MODEL_LENGTH
+AGGREGATED_OUTPUTS_DIR="${REPO_PATH}/results/${MODEL_NAME_CONFIG}${CUSTOM_SETTINGS_SUBDIR}"
 
 
 # Task Definition
@@ -97,7 +39,8 @@ uv run $UV_OPTIONS --extra lighteval \
  lighteval endpoint litellm $MODEL_CONFIG_PATH $TASK_DEF \
     --system-prompt "${SYSTEM_MESSAGE}" \
     --use-chat-template \
-    --output-dir "${RAW_OUTPUTS_DIR}" \
+    --output-dir "${RAW_OUTPUT_DIR}" \
+    --output-subdir "${CUSTOM_SETTINGS_SUBDIR}" \
     --save-details
 end_time=$(date +%s)
 elapsed=$(( end_time - start_time ))
@@ -105,4 +48,4 @@ echo "⌚️ Elapsed time: ${elapsed} seconds"
 
 
 # Aggregate Results
-aggregate_result "${PROVIDER_SUBDIR}${MODEL_NAME}" "${RESULTS_DIR}" "${AGGREGATED_OUTPUTS_DIR}" "${REPO_PATH}"
+aggregate_result "${MODEL_NAME_CONFIG}" "${RAW_RESULT_DIR}" "${AGGREGATED_OUTPUTS_DIR}" "${REPO_PATH}" "${CUSTOM_SETTINGS_PATH}" "${CUSTOM_SETTINGS_NAME}" "${CUSTOM_SETTINGS_VERSION}"
