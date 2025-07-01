@@ -52,7 +52,7 @@ def codegen_metric_passk(predictions: list[str], formatted_doc: Doc, k: int , **
     (This is a modified version of codegen_metric in lcb)
     """
     # Extract generated code snippets
-    generated_code_snippets = [[extract_last_code_block(pred) for pred in predictions]]
+    generated_code_snippets = [[extract_last_code_block(pred, formatted_doc.specific["fn_name"]) for pred in predictions]]
     evaluation_sample = {
         "fn_name": formatted_doc.specific["fn_name"],
         "check_fn": formatted_doc.specific["check_fn"],
