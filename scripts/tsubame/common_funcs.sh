@@ -267,8 +267,8 @@ model:
     base_params:
         model_name: $MODEL_NAME_CONFIG
         base_url: $BASE_URL
+$( [[ $PROVIDER != vllm ]] && printf "        api_key: %s\n" "$API_KEY" )
 $GEN_PARAMS
-$( [[ $PROVIDER != vllm ]] && printf "    api_key: %s\n" "$API_KEY" )
 EOL
     echo "✅ YAML file is created at $MODEL_CONFIG_PATH."
 
