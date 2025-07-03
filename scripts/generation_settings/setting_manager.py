@@ -3,7 +3,7 @@ from pathlib import Path
 import csv
 import yaml
 
-SUPPORTED_PARAMS_AND_DEFAULT_VALUES = [
+SUPPORTED_PARAMS = [
     "system_message",
     "max_model_length",
     "max_new_tokens",
@@ -28,7 +28,7 @@ SHELL_OUTPUT_PARAMETERS = {
     "system_message": "",
 }
 
-assert set(SUPPORTED_PARAMS_AND_DEFAULT_VALUES) == set(CONFIG_YAML_PARAMETERS+list(SHELL_OUTPUT_PARAMETERS.keys())), "💀 CONFIG_YAML_PARAMETERS and SHELL_OUTPUT_PARAMETERS must be a complete subset of SUPPORTED_PARAMS_AND_DEFAULT_VALUES."
+assert set(SUPPORTED_PARAMS) == set(CONFIG_YAML_PARAMETERS+list(SHELL_OUTPUT_PARAMETERS.keys())), "💀 CONFIG_YAML_PARAMETERS and SHELL_OUTPUT_PARAMETERS must be a complete subset of SUPPORTED_PARAMS."
 
 
 class SettingManager:
@@ -107,7 +107,7 @@ class SettingManager:
     def merge_settings(self, model_settings: dict, task_settings: dict, merge_strategy: str) -> dict:
         merged_settings = {}
         if self.verbose: print(f"🔍 Merging settings with merge strategy: {merge_strategy}")
-        for param in SUPPORTED_PARAMS_AND_DEFAULT_VALUES:
+        for param in SUPPORTED_PARAMS:
             if merge_strategy == "model-first":
                 if param in model_settings:
                     merged_settings[param] = model_settings[param]
