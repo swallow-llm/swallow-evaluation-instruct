@@ -9,7 +9,7 @@ from lighteval.tasks.requests import Doc
 from lighteval.utils.language import Language
 
 MATH_JAPANESE_QUERY_TEMPLATE = """
-以下の数学の問題を、わかりやすく、論理的に解いてください。  
+以下の数学の問題を、わかりやすく、論理的に解いてください。
 出力の最後の行は、次の形式にしてください。
 
 回答: $\\boxed{{ANSWER}}$
@@ -23,12 +23,12 @@ MATH_JAPANESE_QUERY_TEMPLATE = """
 
 # 具体例
 """
-以下の数学の問題を、わかりやすく、論理的に解いてください。  
+以下の数学の問題を、わかりやすく、論理的に解いてください。
 出力の最後の行は、次の形式にしてください。
 
 回答: $\boxed{{ANSWER}}$
 
-`ANSWER` には、問題の答えに対する最終的な数式または数値が入ります。  
+`ANSWER` には、問題の答えに対する最終的な数式または数値が入ります。
 
 ステップバイステップで考えてから回答してください。
 
