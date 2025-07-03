@@ -22,6 +22,7 @@ init_common(){
     export HF_HOME=$HUGGINGFACE_CACHE
     export HF_TOKEN=$HF_TOKEN
     export OPENAI_API_KEY=$OPENAI_API_KEY
+    export DEEPINFRA_API_KEY=$DEEPINFRA_API_KEY
     export UV_CACHE_DIR=$UV_CACHE
     export VLLM_CACHE_ROOT=$VLLM_CACHE
     export REPO_PATH=$REPO_PATH
@@ -243,11 +244,19 @@ PY
         wait_time=$((end_time - start_time))
         echo "✅ vLLM server is ready (took ${wait_time} seconds)"
     
-    elif [[ $PROVIDER == "openai" || $PROVIDER == "deepinfra" ]]; then
+    elif [[ $PROVIDER == "openai" ]]; then
         if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" ]]; then
-            echo "❌ You specified ${NODE_KIND} but OpenAI and DeepInfra do not use GPUs. Use CPU nodes instead."
+            echo "❌ You specified ${NODE_KIND} but OpenAI does not use GPUs. Use CPU nodes instead."
             exit 1
         fi
+        API_KEY=$OPENAI_API_KEY
+
+    elif [[ $PROVIDER == "deepinfra" ]]; then
+        if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" ]]; then
+            echo "❌ You specified ${NODE_KIND} but DeepInfra does not use GPUs. Use CPU nodes instead."
+            exit 1
+        fi
+        API_KEY=$DEEPINFRA_API_KEY
     fi
 
     # Create YAML file
