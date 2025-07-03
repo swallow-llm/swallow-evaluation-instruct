@@ -87,10 +87,12 @@ ligiteval の `--tasks` として指定できるように [lighteval/tasks/swall
 ### 英語
 * HellaSwag: `swallow|hellaswag`
 * 英語MT-Bench: `swallow|english_mt_bench`
-* MMLU-Pro: 未実装
+* MMLU-Pro: `swallow|mmlu_pro_english`
 * MMLU-ProX: `swallow|mmlu_prox_english`
-* MMLU: 未実装
-    * 既存実装 helm|mmlu は選択肢だけ出力する短答を想定した実装になってる（Ref. [コード](https://github.com/swallow-llm/swallow-evaluation-instruct-private/blob/main/lighteval/src/lighteval/tasks/default_tasks.py#L10310)）ので，GPQA/MMLU-Proと同じスタイルで実装し直すことを検討中．
+* MMLU: `mmlu_english`
+    * 既存実装 helm|mmlu は選択肢だけ出力する短答を想定した実装になっている（Ref. [コード](https://github.com/swallow-llm/swallow-evaluation-instruct-private/blob/main/lighteval/src/lighteval/tasks/default_tasks.py#L10310)）ので，"考えてから回答する"スタイルで実装し直したもの．  
+
+MMLU, MMLU-Pro, MMLU-ProX はタスクIDが似ていますので取り違えに注意してください．  
 
 以下のベンチマークはligiteval公式実装を微調整したものです．  
 
