@@ -50,7 +50,8 @@
 ### 1.2 評価者固有情報ファイルの名前変更
 1.1 で評価者固有情報を記載したファイルの名前を`.env_template` から `.env` に変更しておく． \
 これにより評価スクリプトから読み取られるようになり，また，`gitignore` の対象となる．
-> ⚠️ 注意：`.env` には　API キーが含まれているため決してパブリックに公開してはならない．
+> ⚠️ 注意： \
+> `.env` には　API キーが含まれているため決してパブリックに公開してはならない．
 
 ### 1.3 環境構築スクリプトの実行
 1.1，1.2 で正しく評価者固有情報が登録できていることを確認した上で，以下のスクリプトを実行し，環境構築を行う．
@@ -69,13 +70,16 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 
 | 変数名 | 説明 | 備考 |
 | -- | -- | -- |
-| `NODE_KIND` | 使いたいTSUBAME4のノード．["node_q", "node_f"] | 13B以下なら"node_q"，13B超なら"node_f"を選ぶと良い．openaiやdeepinfraのようなAPIを使う場合はTSUBAMEでなくてもよい．|
+| `NODE_KIND` | 使いたいTSUBAME4のノード．["node_q", "node_f"] | 13B以下なら"node_q"，13B超なら"node_f"を選ぶと良い．|
 | `MODEL_NAME`| 評価するモデルのHuggingFaceID．| HuggingFaceのモデルカード上部にあるコピーボタンから取得できる．|
 | `SYSTEM_MESSAGE` | 評価するモデルに渡すシステムメッセージ．| 必要な場合のみ指定．|
 | `PROVIDER` | 評価するモデルを serve するための provider．| HuggingFaceのモデルであれば"vllm"（デフォルト），OpenAI のモデルなら"openai"を指定．Deepinfra を使う場合は"deepinfra"を指定する．|
 | `PRIORITY` | 使いたいTSUBAME4における優先度．["-5", "-4", "-3"] | 数値が大きい方がジョブが流れやすくなる．しかし，それに応じて値段が2倍，4倍と高くなるので，指定する場合は要相談．|
 | `MAX_MODEL_LENGTH` | 評価するモデルの生成時に渡す引数．入力と出力の合計の最大値であり，この大きさのKV CACHEが確保される．| モデルのconfigから自動で取得を行うので基本的に指定は不要．自動取得に失敗する場合のみ指定．|
 | `MAX_COMPLETION_TOKENS` | 評価するモデルの生成時に渡す引数．出力の最大トークン数の制約である．| モデルの `MAX_MODEL_LENGTH` から自動計算されるので，基本的に指定は不要．必要な場合のみ指定．|
+
+> 📝 Note： \
+> openaiやdeepinfraのようなAPIを使う場合はTSUBAMEでなくてもよい．
 
 ### 2.2 タスクの設定
 2.1 でモデルの設定を終えたら \
@@ -140,22 +144,25 @@ bash scripts/tsubame/utils/save_and_check_qstat.sh
 それらの指定は `scripts/generation_settings/custom_model_settings` 以下に \
 model publisher ごと，model name ごとに .yaml ファイルで定義することができる．
 
-> 例えば，`tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3` についての指定を追加したい場合は \
-> `scripts/generation_settings/custom_model_settings/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3.yaml` \
-> に定義を行えば良い．
+例えば，`tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3` についての指定を追加したい場合は \
+`scripts/generation_settings/custom_model_settings/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3.yaml` \
+に定義を行えば良い．
 
 具体的な定義の仕方や定義できるパラメタについては \
 `scripts/generation_settings/custom_model_settings/template.yaml` を参照されたい．
 
-temperature が指定された場合は，デフォルトのtemperatureが0になっているベンチマークに対してのみ，指定されたtemperatureを適用してください．  
-MT-BenchやLiveCodeBenchのようにデフォルトのtemperatureが0でないベンチマークは，特別な要求がない限りはそのまま実行してください．  
+> ⚠️注意： \
+> temperature を指定する custom_model_settings は，\
+> デフォルトのtemperatureが0になっているベンチマークに対してのみ，適用すること． \
+> MT-BenchやLiveCodeBenchのようにデフォルトのtemperatureが0でないベンチマークは，\
+> 特別な要求がない限り，custom_model_settings を指定しないで実行すること．
 
-
-なお，意図した推論が必要な場合は，評価依頼を出すときに生成条件を指定するように運用する予定だが，場合によっては依頼者が勘違いや指定漏れをすることがありうる．  
-このため以下のケースに該当するにもかかわらず生成条件の指定がない場合は，依頼者に対して再確認してもらえると助かります．  
-
-* モデルカードで推奨システムメッセージが明示されているにもかかわらず，指定されていない
-* モデルカードで推論モードをonにする条件が明示されているにもかかわらず，指定されていない
+> 🗒️Note: \
+> 特定の推論が必要な場合，原則，評価依頼者が評価依頼時に生成条件を指定する． \
+> しかし，場合によっては依頼者が勘違いや指定漏れをすることがありうる． \
+> そのため以下のケースに該当するにもかかわらず生成条件の指定がない場合は，念の為，依頼者に対して再確認してほしい： 
+> * モデルカードで推奨システムメッセージが明示されているにもかかわらず，指定されていない
+> * モデルカードで推論モードをonにする条件が明示されているにもかかわらず，指定されていない
 
 ### 3.3 各モデル用のディレクトリについて
 [2.5 評価結果の確認](#25-評価結果の確認)や[2.6 評価ログの確認](#26-評価ログの確認)で「各モデル用のディレクトリ」として \
@@ -174,10 +181,11 @@ MT-BenchやLiveCodeBenchのようにデフォルトのtemperatureが0でない�
 
 ### 3.4 特定のproviderでエラーが出る場合の対応
 
-特定のproviderでエラーが出る場合は，provider固有の制限に抵触している可能性があります．  
-たとえば `deepinfra/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8` では 並列応答数 `n` に5以上を指定するとエラーになります（2025年6月時点）．  
-このような場合は，Jupyter Notebookとかを使ってproviderに適当なリクエストを投げてみてください．具体例は以下の通り．  
+特定のproviderでエラーが出る場合は，provider固有の制限に抵触している可能性がある．\ 
+たとえば `deepinfra/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8` では並列応答数 `n` に5以上を指定するとエラーを起こす（2025年6月時点）．   \
+このような場合は，Jupyter Notebookなどを用いてproviderに適当なリクエストを投げて，調査を行なってほしい．
 
+具体例は以下の通り．  
 ```
 # deepinfra/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 の例
 
@@ -207,8 +215,16 @@ responses = litellm.completion(**request_payload)
 
 ### 3.5 並列応答数 `n` を強制的に1にする方法
 
-JHumanEval や LiveCodeBench のように "N回解いて正答率を測定する" ベンチマークでは，並列応答数 `n` をN（たとえばJHumanEvalならN=10）に設定しています．  
-providerが並列応答数を制限していてエラーになる場合は generation_parameters に `max_n` を指定してください．具体例は以下の通り．  
+JHumanEval や LiveCodeBench のように "N回解いて正答率を測定する" ベンチマークでは，\
+並列応答数 `n` をN（たとえばJHumanEvalならN=10）で設定している． \
+providerが並列応答数を制限していてエラーになる場合などは generation_parameters に `max_n` の指定を追加してほしい．
+
+具体例は以下の通り（上：generation_parametersに追記する例．下：手元で検証を行う例．）
+```yaml
+max_n_specified:
+  max_n: "4"
+  version: "1"
+```
 
 ```
 lighteval endpoint litellm \
@@ -219,6 +235,10 @@ lighteval endpoint litellm \
 
 ### 3.6 評価がいつまでたっても終わらない場合
 
-評価がいつまでたっても終わらない場合は，1) repetitionが多発してvLLMのスループットが極端に低下している または 2) 計算資源が足りない のどちらかが疑われます．  
-このような場合はvLLMログを見てスループットの極端な低下やKV Cache不足のWARNING多発を確認してください．Ref. [vLLM Optimization and Tuning](https://docs.vllm.ai/en/latest/configuration/optimization.htm)  
-まずは計算資源の増強で解決したいですがそれが無理な場合は，依頼者に報告したうえで，出力の最大トークン数 `MAX_COMPLETION_TOKENS` を8,192まで縮めてよいです．  
+評価がいつまでたっても終わらない場合は，\
+1 ) repetitionが多発してvLLMのスループットが極端に低下している または 2 ) 計算資源が足りない のどちらかが疑われる． \
+このような場合はvLLMログを見てスループットの極端な低下やKV Cache不足のWARNING多発を確認してほしい．
+- Ref. [vLLM Optimization and Tuning](https://docs.vllm.ai/en/latest/configuration/optimization.htm)
+
+基本的に計算資源の増強で解決したい．\
+しかし，それが難しい場合は，依頼者に報告したうえで，`MAX_MODEL_LENGTH` を8,192まで下げることで解決を図りたい．
