@@ -4,7 +4,7 @@ lighteval: [v0.8.0](https://github.com/huggingface/lighteval/releases/tag/v0.8.0
 
 ## 評価マニュアル
 
-Swallowプロジェクト，特にTSUBAMEでの評価作業に特化したマニュアルはリンク先を参照してください．Ref. [./README_t4.md]
+Swallowプロジェクト，特にTSUBAMEでの評価作業に特化したマニュアルはリンク先を参照してください．Ref. [TSUBAME4を用いた評価方法](./README_t4.md)
 
 ## 実行方法
 [標準的な lighteval の実行方法](https://huggingface.co/docs/lighteval/quicktour)で動かすことができます．  
