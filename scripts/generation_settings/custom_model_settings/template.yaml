@@ -19,11 +19,8 @@ default:
   top_p: 0.95
   version: "1"
 
-reasoning:
-  # reasoning settings.
-  system_message: "You are a helpful reasoning assistant."
-  max_model_length: 8192
-  max_new_tokens: 4096
-  temperature: 1.0
-  top_p: 0.95
+coding:
+  # coding settings.
+  system_message: "You are a helpful coding assistant."
+  max_n: 4
   version: "1"
