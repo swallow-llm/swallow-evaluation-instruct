@@ -29,6 +29,7 @@
 | -- | -- | -- |
 | 2025/06/19 | 初稿 | 齋藤 |
 | 2025/07/01 | custom_settings とタスクの追加に関して追記 | 齋藤 |
+| 2025/07/02 | Provider固有の問題への対処法、モデル固有の生成条件に関する注意、計算が終わらないときの対処法をTipsに追記 | 水木 |
 
 ## 1. 環境構築
 ### 1.1 評価者固有情報の登録
@@ -66,7 +67,7 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 
 | 変数名 | 説明 | 備考 |
 | -- | -- | -- |
-| `NODE_KIND` | 使いたいTSUBAME4のノード．["node_q", "node_f"] | 13B以下なら"node_q"，13B超なら"node_f"を選ぶと良い．|
+| `NODE_KIND` | 使いたいTSUBAME4のノード．["node_q", "node_f"] | 13B以下なら"node_q"，13B超なら"node_f"を選ぶと良い．openaiやdeepinfraのようなAPIを使う場合はTSUBAMEでなくてもよい．|
 | `MODEL_NAME`| 評価するモデルのHuggingFaceID．| HuggingFaceのモデルカード上部にあるコピーボタンから取得できる．|
 | `SYSTEM_MESSAGE` | 評価するモデルに渡すシステムメッセージ．| 必要な場合のみ指定．|
 | `PROVIDER` | 評価するモデルを serve するための provider．| HuggingFaceのモデルであれば"vllm"（デフォルト），OpenAI のモデルなら"openai"を指定．Deepinfra を使う場合は"deepinfra"を指定する．|
@@ -145,6 +146,12 @@ model publisher ごと，model name ごとに .yaml ファイルで定義する�
 `scripts/generation_settings/custom_model_settings/template.yaml` を参照されたい．
 
 
+なお，意図した推論が必要な場合は，評価依頼を出すときに生成条件を指定するように運用する予定だが，場合によっては依頼者が勘違いや指定漏れをすることがありうる．  
+このため以下のケースに該当するにもかかわらず生成条件の指定がない場合は，依頼者に対して再確認してもらえると助かります．  
+
+* モデルカードで推奨システムメッセージが明示されているにもかかわらず，指定されていない
+* モデルカードで推論モードをonにする条件が明示されているにもかかわらず，指定されていない
+
 ### 3.3 各モデル用のディレクトリについて
 [2.5 評価結果の確認](#25-評価結果の確認)や[2.6 評価ログの確認](#26-評価ログの確認)で「各モデル用のディレクトリ」として \
 `results/{provider}/{model_publisher}/{model_name}/{custom_settings}` というパスを記しているが，
@@ -204,3 +211,9 @@ lighteval endpoint litellm \
     "swallow|lcb:codegeneration_v5_6|0|0" \
     ...
 ```
+
+### 3.6 評価がいつまでたっても終わらない場合
+
+評価がいつまでたっても終わらない場合は，1) repetitionが多発してvLLMのスループットが極端に低下している または 2) 計算資源が足りない のどちらかが疑われます．  
+このような場合はvLLMログを見てスループットの極端な低下やKV Cache不足のWARNING多発を確認してください．Ref. [vLLM Optimization and Tuning](https://docs.vllm.ai/en/latest/configuration/optimization.htm)  
+まずは計算資源の増強で解決したいですがそれが無理な場合は，依頼者に報告したうえで，出力の最大トークン数 `MAX_COMPLETION_TOKENS` を8,192まで縮めてよいです．  
