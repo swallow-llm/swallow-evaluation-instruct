@@ -147,6 +147,9 @@ model publisher ごと，model name ごとに .yaml ファイルで定義する�
 具体的な定義の仕方や定義できるパラメタについては \
 `scripts/generation_settings/custom_model_settings/template.yaml` を参照されたい．
 
+temperature が指定された場合は，デフォルトのtemperatureが0になっているベンチマークに対してのみ，指定されたtemperatureを適用してください．  
+MT-BenchやLiveCodeBenchのようにデフォルトのtemperatureが0でないベンチマークは，特別な要求がない限りはそのまま実行してください．  
+
 
 なお，意図した推論が必要な場合は，評価依頼を出すときに生成条件を指定するように運用する予定だが，場合によっては依頼者が勘違いや指定漏れをすることがありうる．  
 このため以下のケースに該当するにもかかわらず生成条件の指定がない場合は，依頼者に対して再確認してもらえると助かります．  
