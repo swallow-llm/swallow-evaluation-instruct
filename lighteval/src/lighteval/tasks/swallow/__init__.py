@@ -25,6 +25,7 @@ from .gpqa import gpqa_diamond_instruct_swallow
 from .aime import aime_24_swallow, aime_25_swallow
 from .math_500 import math_500_swallow
 from .lcb_swallow import lcb_swallow_tasks
+from .lcb_enhanced_swallow import lcb_aug_swallow_tasks
 
 SWALLOW_TASKS = [
     math_100_japanese,
@@ -48,4 +49,4 @@ SWALLOW_TASKS.extend(mmlu_prox_japanese_tasks)
 SWALLOW_TASKS.extend(mmlu_prox_english_tasks)
 SWALLOW_TASKS.extend(mmlu_pro_english_tasks)
 SWALLOW_TASKS.extend(mmlu_english_tasks)
-SWALLOW_TASKS.extend(lcb_swallow_tasks)
+SWALLOW_TASKS.extend(lcb_aug_swallow_tasks)
