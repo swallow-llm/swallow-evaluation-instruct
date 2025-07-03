@@ -32,6 +32,8 @@ init_common(){
         NUM_GPUS=1
     elif [[ $NODE_KIND == "node_f" ]]; then
         NUM_GPUS=4
+    elif [[ $NODE_KIND == *"cpu"* ]]; then
+        NUM_GPUS=0
     else
         echo "❌ Unknown NODE_KIND: $NODE_KIND"
         exit 1
@@ -117,9 +119,10 @@ serve_litellm(){
     CUSTOM_SETTINGS_SUBDIR=$4
     GEN_PARAMS=$5
     TASK_NAME=$6
-    NUM_GPUS=$7
-    GPU_MEMORY_UTILIZATION=$8
-    MAX_MODEL_LENGTH=${9:-}
+    NODE_KIND=$7
+    NUM_GPUS=$8
+    GPU_MEMORY_UTILIZATION=$9
+    MAX_MODEL_LENGTH=${10:-}
 
     # Setup based on provider
     RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"
@@ -151,6 +154,11 @@ serve_litellm(){
 
     # Start VLLM server
     if [ "$PROVIDER" = "vllm" ]; then
+        if [[ $NODE_KIND == *"cpu"* ]]; then
+            echo "❌ VLLM server cannot be started on CPU nodes. Use GPU nodes (node_q or node_f)."
+            exit 1
+        fi
+
         ## Detect max length and reasoning-tag
         readarray -t results < <(uv run --isolated --project ${REPO_PATH}  --locked --extra auto_detector python - "$MODEL_NAME" <<'PY'
 import sys
@@ -234,6 +242,12 @@ PY
         end_time=$(date +%s)
         wait_time=$((end_time - start_time))
         echo "✅ vLLM server is ready (took ${wait_time} seconds)"
+    
+    elif [[ $PROVIDER == "openai" || $PROVIDER == "deepinfra" ]]; then
+        if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" ]]; then
+            echo "❌ You specified ${NODE_KIND} but OpenAI and DeepInfra do not use GPUs. Use CPU nodes instead."
+            exit 1
+        fi
     fi
 
     # Create YAML file
