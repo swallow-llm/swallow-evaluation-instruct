@@ -2,10 +2,9 @@
 
 lighteval: [v0.8.0](https://github.com/huggingface/lighteval/releases/tag/v0.8.0)
 
-## セットアップ
-大井のメモ: 仮装環境はvenvではなく、モジュール間の依存関係の管理が可能なuvなどで管理したい
+## 評価マニュアル
 
-暫定的にPipenvでセットアップできるようにしてますが（後述），uvのほうがよいでしょう．  
+Swallowプロジェクト，特にTSUBAMEでの評価作業に特化したマニュアルはリンク先を参照してください．Ref. [./README_t4.md]
 
 ## 実行方法
 [標準的な lighteval の実行方法](https://huggingface.co/docs/lighteval/quicktour)で動かすことができます．  
