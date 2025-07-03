@@ -23,6 +23,23 @@ lighteval vllm $MODEL_ARGS "swallow|{ベンチマークのID}|0|0" \
 --use-chat-template
 ```
 
+推論型モデルの場合は model_args に reasoning_parser を指定します．  
+これにより出力から推論過程が取り除かれます．Ref. [vLLM Doc: Reasoning Outputs](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)
+
+```
+MODEL="Qwen/Qwen3-4B"
+MAX_MODEL_LENGTH=16384
+TEMPERATURE=0.6
+TOP_P=0.95
+
+MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_MODEL_LENGTH,reasoning_parser=qwen3,generation_parameters={temperature:$TEMPERATURE,top_p:$TOP_P}"
+
+lighteval vllm $MODEL_ARGS "swallow|{ベンチマークのID}|0|0" \
+--system-prompt "${SYSTEM_PROMPT}" \
+--output-dir $OUTPUT_DIR \
+--use-chat-template
+```
+
 ### OpenAIモデル等の評価
 litellmをバックエンドとして指定することにより，OpenAIのように推論APIだけが提供されているモデルも評価できます．  
 NVIDIA NIM や DeepInfra のようなOpenAI互換の推論APIも対応しています．  
@@ -54,7 +71,7 @@ API_KEY="DUMMY"
 vllm serve --model $MODEL \
 --host localhost \
 --port 8000 \
---reasoning-parser deepseek_r1
+--reasoning-parser qwen3
 
 BASE_URL="http://localhost:8000/v1"
 

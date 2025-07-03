@@ -26,6 +26,8 @@ import logging
 import os
 from dataclasses import dataclass
 from typing import Optional
+import importlib_metadata as metadata
+from packaging import version
 
 import torch
 from tqdm import tqdm
@@ -54,6 +56,7 @@ logger = logging.getLogger(__name__)
 if is_vllm_available():
     import ray
     from more_itertools import distribute
+    import vllm
     from vllm import LLM, SamplingParams
     from vllm.distributed.parallel_state import destroy_distributed_environment, destroy_model_parallel
     from vllm.transformers_utils.tokenizer import get_tokenizer
@@ -96,6 +99,7 @@ class VLLMModelConfig:
     )
     pairwise_tokenization: bool = False  # whether to tokenize the context and continuation separately or together.
     generation_parameters: GenerationParameters = None  # sampling parameters to use for generation
+    reasoning_parser: str | None = None # reasoning parser.
 
     subfolder: Optional[str] = None
 
@@ -186,6 +190,13 @@ class VLLMModel(LightevalModel):
             "swap_space": 4,
             "seed": config.seed,
         }
+        if config.reasoning_parser is not None:
+            self.model_args["reasoning_parser"] = config.reasoning_parser
+            # prior to vllm 0.9.0, we also need to specify `enable_reasoning` flag.
+            # Refer to: https://docs.vllm.ai/en/v0.8.5/features/reasoning_outputs.html
+            if version.parse(vllm.__version__) < version.parse("0.9.0"):
+                self.model_args["enable_reasoning"] = True
+                    
         if int(config.data_parallel_size) > 1:
             self.model_args["distributed_executor_backend"] = "ray"
             self._batch_size = "auto"
