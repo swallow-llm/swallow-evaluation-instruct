@@ -29,16 +29,13 @@ init_common(){
 
     # GPU Settings
     ## Set NUM_GPUS based on NODE_KIND
-    if [[ $NODE_KIND == "node_q" ]]; then
-        NUM_GPUS=1
-    elif [[ $NODE_KIND == "node_f" ]]; then
-        NUM_GPUS=4
-    elif [[ $NODE_KIND == *"cpu"* ]]; then
-        NUM_GPUS=0
-    else
-        echo "❌ Unknown NODE_KIND: $NODE_KIND"
-        exit 1
-    fi
+    case $NODE_KIND in
+        "node_q") NUM_GPUS=1 ;;
+        "node_f") NUM_GPUS=4 ;;
+        *"cpu"*) NUM_GPUS=0 ;;
+        *) echo "❌ Unknown NODE_KIND: $NODE_KIND"
+            exit 1
+    esac
     ## Set GPU_MEMORY_UTILIZATION
     GPU_MEMORY_UTILIZATION=0.9
 
@@ -244,19 +241,19 @@ PY
         wait_time=$((end_time - start_time))
         echo "✅ vLLM server is ready (took ${wait_time} seconds)"
     
-    elif [[ $PROVIDER == "openai" ]]; then
+    else
         if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" ]]; then
-            echo "❌ You specified ${NODE_KIND} but OpenAI does not use GPUs. Use CPU nodes instead."
+            echo "❌ You specified ${NODE_KIND} but OpenAI and DeepInfra do not use GPUs. Use CPU nodes instead."
             exit 1
         fi
-        API_KEY=$OPENAI_API_KEY
 
-    elif [[ $PROVIDER == "deepinfra" ]]; then
-        if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" ]]; then
-            echo "❌ You specified ${NODE_KIND} but DeepInfra does not use GPUs. Use CPU nodes instead."
-            exit 1
-        fi
-        API_KEY=$DEEPINFRA_API_KEY
+        case $PROVIDER in
+            "openai") API_KEY=$OPENAI_API_KEY ;;
+            "deepinfra") API_KEY=$DEEPINFRA_API_KEY ;;
+            *) echo "❌ Invalid provider. Must be one of: openai, deepinfra."
+                exit 1
+                ;;
+        esac
     fi
 
     # Create YAML file
