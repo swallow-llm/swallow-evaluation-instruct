@@ -24,8 +24,8 @@ CONFIG_YAML_PARAMETERS = [
 SHELL_OUTPUT_PARAMETERS = {
     # These parameters will be output in the standard output in the order of the list.
     # The order must match the order of the parameters in get_generation_params().
-    "max_model_length": -1,
-    "system_message": "",
+    "max_model_length": -1, # used to serve a LLM with vllm
+    "system_message": "",   # used to launch evaluation with lighteval
 }
 
 assert set(SUPPORTED_PARAMS) == set(CONFIG_YAML_PARAMETERS+list(SHELL_OUTPUT_PARAMETERS.keys())), "💀 CONFIG_YAML_PARAMETERS and SHELL_OUTPUT_PARAMETERS must be a complete subset of SUPPORTED_PARAMS."
