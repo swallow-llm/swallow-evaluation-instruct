@@ -68,7 +68,7 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 | -- | -- | -- |
 | `NODE_KIND` | 使いたいTSUBAME4のノード．["node_q", "node_f"] | 13B以下なら"node_q"，13B超なら"node_f"を選ぶと良い．|
 | `MODEL_NAME`| 評価するモデルのHuggingFaceID．| HuggingFaceのモデルカード上部にあるコピーボタンから取得できる．|
-| `SYSTEM_MESSAGE` | 評価するモデルに渡すシステムメッセージ．| 必要な場合のみ指定．基本的に指定しなくて良い．|
+| `SYSTEM_MESSAGE` | 評価するモデルに渡すシステムメッセージ．| 必要な場合のみ指定．|
 | `PROVIDER` | 評価するモデルを serve するための provider．| HuggingFaceのモデルであれば"vllm"（デフォルト），OpenAI のモデルなら"openai"を指定．Deepinfra を使う場合は"deepinfra"を指定する．|
 | `PRIORITY` | 使いたいTSUBAME4における優先度．["-5", "-4", "-3"] | 数値が大きい方がジョブが流れやすくなる．しかし，それに応じて値段が2倍，4倍と高くなるので，指定する場合は要相談．|
 | `MAX_MODEL_LENGTH` | 評価するモデルの生成時に渡す引数．入力と出力の合計の最大値であり，この大きさのKV CACHEが確保される．| モデルのconfigから自動で取得を行うので基本的に指定は不要．自動取得に失敗する場合のみ指定．|
@@ -159,3 +159,48 @@ model publisher ごと，model name ごとに .yaml ファイルで定義する�
 
 なお，`{provider}` と `{custom_settings}` については空文字となりうるが，その場合パス内で空文字は端折られる． \
 （e.g. `results//tokyotech-llm/swallow/` -> `results/tokyotech-llm/swallow`）
+
+### 3.4 特定のproviderでエラーが出る場合の対応
+
+特定のproviderでエラーが出る場合は，provider固有の制限に抵触している可能性があります．  
+たとえば `deepinfra/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8` では 並列応答数 `n` に5以上を指定するとエラーになります（2025年6月時点）．  
+このような場合は，Jupyter Notebookとかを使ってproviderに適当なリクエストを投げてみてください．具体例は以下の通り．  
+
+```
+# deepinfra/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 の例
+
+import litellm
+
+request_payload = {
+    "model": "deepinfra/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+    "messages": [
+        {
+            "role": "user",
+            "content": (
+                "こんにちは。なにかしゃべって"
+            ),
+        }
+    ],
+    "logprobs": None,
+    "base_url": "https://api.deepinfra.com/v1/openai",
+    "n": 2,
+    "caching": False,
+    "api_key": "DeepInfraのAPIキー",
+    "max_completion_tokens": 512,
+    "temperature": 1.0
+}
+
+responses = litellm.completion(**request_payload)
+```
+
+### 3.5 並列応答数 `n` を強制的に1にする方法
+
+JHumanEval や LiveCodeBench のように "N回解いて正答率を測定する" ベンチマークでは，並列応答数 `n` をN（たとえばJHumanEvalならN=10）に設定しています．  
+providerが並列応答数を制限していてエラーになる場合は generation_parameters に `max_n` を指定してください．具体例は以下の通り．  
+
+```
+lighteval endpoint litellm \
+    "model=$MODEL_NAME,api_key=$API_KEY,base_url=$BASE_URL,generation_parameters={temperature:0.2,top_p:0.95,max_n:4}" \
+    "swallow|lcb:codegeneration_v5_6|0|0" \
+    ...
+```
