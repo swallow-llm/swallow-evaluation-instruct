@@ -70,7 +70,7 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 
 | 変数名 | 説明 | 備考 |
 | -- | -- | -- |
-| `NODE_KIND` | 使いたいTSUBAME4のノード．["node_q", "node_f"] | 13B以下なら"node_q"，13B超なら"node_f"を選ぶと良い．|
+| `NODE_KIND` | 使いたいTSUBAME4のノード．["node_q", "node_f", "cpu_16"] | 13B以下なら"node_q"，13B超なら"node_f"，OpenAIやDeepInfraのAPIを使うなら"cpu_16"を選ぶと良い．|
 | `MODEL_NAME`| 評価するモデルのHuggingFaceID．| HuggingFaceのモデルカード上部にあるコピーボタンから取得できる．|
 | `SYSTEM_MESSAGE` | 評価するモデルに渡すシステムメッセージ．| 必要な場合のみ指定．|
 | `PROVIDER` | 評価するモデルを serve するための provider．| HuggingFaceのモデルであれば"vllm"（デフォルト），OpenAI のモデルなら"openai"を指定．Deepinfra を使う場合は"deepinfra"を指定する．|
