@@ -65,9 +65,6 @@ get_generation_params(){
     # - CUSTOM_SETTINGS_NAME
     # - SYSTEM_MESSAGE
     # - MAX_MODEL_LENGTH
-    # - MAX_NEW_TOKENS
-    # - TEMPERATURE
-    # - TOP_P
     # - GEN_PARAMS
 
     # Load Args
@@ -95,13 +92,12 @@ get_generation_params(){
         echo "➖ No custom settings is specified. Use default settings."
     fi
 
+    # Accept SHELL_OUTPUT_PARAMETERS
     SYSTEM_MESSAGE=${results[2]}
     MAX_MODEL_LENGTH=${results[3]}
-    MAX_NEW_TOKENS=${results[4]}
-    TEMPERATURE=${results[5]}
-    TOP_P=${results[6]}
 
-    rest=( "${results[@]:7}" )
+    # Accept CONFIG_YAML_PARAMETERS
+    rest=( "${results[@]:4}" )
     GEN_PARAMS=$(printf '%s\n' "${rest[@]}")
 }
 

@@ -3,28 +3,32 @@ from pathlib import Path
 import csv
 import yaml
 
-SUPPORTED_PARAMS_AND_DEFAULT_VALUES = {
-    # Make sure this order matches the order of the parameters in commmon_funcs.sh
-    "system_message": "",
-    "max_model_length": -1,
-    "max_new_tokens": -1,
-    "temperature": -1,
-    "top_p": -1,
-}
-
-VLLM_SERVING_PARAMETERS = [
+SUPPORTED_PARAMS_AND_DEFAULT_VALUES = [
+    "system_message",
     "max_model_length",
-]
-
-GENERATION_PARAMETERS = [
     "max_new_tokens",
     "temperature",
     "top_p",
+    "max_n",
 ]
 
-RUN_EVALUATION_PARAMETERS = [
-    "system_message",
+CONFIG_YAML_PARAMETERS = [
+    # These parameters will be printed in the 'generation' section of the config (.yaml) file for litellm.
+    # If not specified, the parameter will be skipped (and use the default value specified by litellm).
+    "max_new_tokens",
+    "temperature",
+    "top_p",
+    "max_n",
 ]
+
+SHELL_OUTPUT_PARAMETERS = {
+    # These parameters will be output in the standard output in the order of the list.
+    # The order must match the order of the parameters in get_generation_params().
+    "max_model_length": -1,
+    "system_message": "",
+}
+
+assert set(SUPPORTED_PARAMS_AND_DEFAULT_VALUES) == set(CONFIG_YAML_PARAMETERS+list(SHELL_OUTPUT_PARAMETERS.keys())), "💀 CONFIG_YAML_PARAMETERS and SHELL_OUTPUT_PARAMETERS must be a complete subset of SUPPORTED_PARAMS_AND_DEFAULT_VALUES."
 
 
 class SettingManager:
@@ -103,7 +107,7 @@ class SettingManager:
     def merge_settings(self, model_settings: dict, task_settings: dict, merge_strategy: str) -> dict:
         merged_settings = {}
         if self.verbose: print(f"🔍 Merging settings with merge strategy: {merge_strategy}")
-        for param in SUPPORTED_PARAMS_AND_DEFAULT_VALUES.keys():
+        for param in SUPPORTED_PARAMS_AND_DEFAULT_VALUES:
             if merge_strategy == "model-first":
                 if param in model_settings:
                     merged_settings[param] = model_settings[param]
@@ -128,7 +132,7 @@ class SettingManager:
     def extract_generation_params(self, settings: dict) -> str:
         generation_params = ""
         for param, value in settings.items():
-            if param in GENERATION_PARAMETERS:
+            if param in CONFIG_YAML_PARAMETERS:
                 generation_params += f"""        {param}: {value}
 """
         if len(generation_params) > 0:
@@ -140,14 +144,10 @@ class SettingManager:
     def serch_settings_shell(self, model_id: str, task_id: str, custom_settings: str, merge_strategy: str):
         # This function is supposed to be used in shell script. 
         # So the output must be printed as standard output in the following order:
-        # - FOUND_MODEL_SETTINGS: 0 (found) or 1 (not found)
         # - CUSTOM_SETTINGS_PATH: path to the custom settings
         # - CUSTOM_SETTINGS_VERSION: version of the custom settings
         # - SYSTEM_MESSAGE: system message
         # - MAX_MODEL_LENGTH: max model length
-        # - MAX_NEW_TOKENS: max new tokens
-        # - TEMPERATURE: temperature
-        # - TOP_P: top-p
         # - GENERATION_PARAMS: generation parameters
 
 
@@ -173,11 +173,11 @@ class SettingManager:
         # print the results (output for shell script)
         print(custom_settings_path)
         print(custom_settings_version)
-        for key in SUPPORTED_PARAMS_AND_DEFAULT_VALUES.keys():  # print the settings each by one line
+        for key in SHELL_OUTPUT_PARAMETERS:  # print the settings each by one line
             if key in merged_settings:
                 print(merged_settings[key])
             else:
-                print(SUPPORTED_PARAMS_AND_DEFAULT_VALUES[key])
+                print(SHELL_OUTPUT_PARAMETERS[key])
         print(generation_params)    # print the generation parameters at the end
 
 
