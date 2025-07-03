@@ -1,5 +1,7 @@
 key,generation_settings
 hellaswag,"temperature=0.0"
+mmlu_english,"temperature=0.0"
+mmlu_pro_english,"temperature=0.0"
 mmlu_prox_english,"temperature=0.0"
 english_mt_bench,""
 swallow_gpqa_ja,"temperature=0.0"

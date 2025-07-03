@@ -1,5 +1,7 @@
 key,script,result_dir,framework,hrt_q,hrt_f
 en_hellaswag,hellaswag,en/hellaswag,lighteval,00:30:00,02:00:00
+en_mmlu,mmlu_english,en/mmlu,lighteval,02:00:00,08:00:00
+en_mmlu_pro,mmlu_pro_english,en/mmlu_pro,lighteval,02:00:00,08:00:00
 en_mmlu_prox,mmlu_prox_english,en/mmlu_prox,lighteval,02:00:00,08:00:00
 en_mtbench,english_mt_bench,en/mt_bench,lighteval,02:00:00,08:00:00
 ja_gpqa,swallow_gpqa_ja,ja/gpqa,lighteval,00:30:00,02:00:00

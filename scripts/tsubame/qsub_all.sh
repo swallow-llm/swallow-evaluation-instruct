@@ -83,7 +83,8 @@ qsub_task en gpqa_diamond
 qsub_task en math_500
 qsub_task en aime_2024_2025
 qsub_task en livecodebench_v5_v6
-
+qsub_task en mmlu
+qsub_task en mmlu_pro
 
 ## Optional
 # qsub_task ja jemhopqa
