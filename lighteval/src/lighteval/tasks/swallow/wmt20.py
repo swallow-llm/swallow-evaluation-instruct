@@ -2,11 +2,10 @@ import ast
 import pycountry
 
 from lighteval.tasks.lighteval_task import LightevalTaskConfig
-from lighteval.metrics.metrics import Metrics
 from lighteval.tasks.requests import Doc
 from lighteval.utils.utils import as_list
 
-from .metrics_translation_japanese import bleu_ja, chrf_ja, ter_ja, bleu_en, chrf_en, ter_en, bleu_ja_nagisa, chrf_ja_nagisa, ter_ja_nagisa
+from .metrics_translation_japanese import bleu_ja, bleu_en, bleu_ja_nagisa
 
 # 英日翻訳用プロンプト
 # 翻訳文の接頭辞は `日本語:` とする
@@ -21,7 +20,7 @@ MACHINE_TRANSLATION_ENJA_QUERY_TEMPLATE = """
 # 日英翻訳用プロンプト
 # 翻訳文の接頭辞は `English:` とする
 MACHINE_TRANSLATION_JAEN_QUERY_TEMPLATE = """
-Translate the following Japanese sentence into English.  
+Translate the following Japanese sentence into English.
 On a new line, output the result in this exact format: `English: <your translation>`
 
 Japanese: {source_text}

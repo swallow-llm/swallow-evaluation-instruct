@@ -328,6 +328,7 @@ wmt20_enja_translation_preparator_nagisa = JapaneseTranslationPreparator(
     text_extraction_function=wmt20_enja_translation_span_extractor,
     extraction_fallback_function=_pass_through,
     segmenter_type="nagisa",
+    remove_deepseek_r1_style_reasoning_trace=True,
     remove_whitespace_tokens=False, lowercase=False, normalize_nfkc=False
 )
 
