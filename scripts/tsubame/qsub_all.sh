@@ -6,8 +6,8 @@ set -euo pipefail
 
 # Set Args
 ## Common Settings
-NODE_KIND="node_"
-MODEL_NAME=""
+NODE_KIND="node_"           # A node kind to use. ["node_q", "node_f", "cpu_16"]
+MODEL_NAME=""               # A model name (HuggingFace ID) to use.
 
 ## Special Settings
 PROVIDER="vllm"             # Default: "vllm". A provider to host the model. ["vllm", "openai", "deepinfra"]
