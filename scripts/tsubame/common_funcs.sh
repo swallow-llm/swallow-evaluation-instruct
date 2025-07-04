@@ -63,8 +63,9 @@ get_generation_params(){
     # - CUSTOM_SETTINGS_VERSION
     # - CUSTOM_SETTINGS_SUBDIR
     # - CUSTOM_SETTINGS_NAME
-    # - SYSTEM_MESSAGE
     # - MAX_MODEL_LENGTH
+    # - REASONING_PARSER
+    # - SYSTEM_MESSAGE
     # - GEN_PARAMS
 
     # Load Args
@@ -93,11 +94,12 @@ get_generation_params(){
     fi
 
     # Accept SHELL_OUTPUT_PARAMETERS
-    SYSTEM_MESSAGE=${results[2]}
-    MAX_MODEL_LENGTH=${results[3]}
+    MAX_MODEL_LENGTH=${results[2]}
+    REASONING_PARSER=${results[3]}
+    SYSTEM_MESSAGE=${results[4]}
 
     # Accept CONFIG_YAML_PARAMETERS
-    rest=( "${results[@]:4}" )
+    rest=( "${results[@]:5}" )
     GEN_PARAMS=$(printf '%s\n' "${rest[@]}")
 }
 
@@ -120,7 +122,8 @@ serve_litellm(){
     NODE_KIND=$7
     NUM_GPUS=$8
     GPU_MEMORY_UTILIZATION=$9
-    MAX_MODEL_LENGTH=${10:-}
+    MAX_MODEL_LENGTH=${10}
+    REASONING_PARSER=${11}
 
     # Setup based on provider
     RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"
@@ -205,41 +208,53 @@ PY
         fi
 
         ## Set reasoning-tag parameter
+        REASONING_PARSER_PARAM=""
         if [ "${results[1]}" = "true" ]; then
-            local REASONING_TAG_PARAMS="--reasoning-tag"
-            echo "🤖 (Auto-detected) reasoning-tag option is set."
+            echo "🤖 (Auto-detected) The specified model supports reasoning-tag."
+            if [ "${REASONING_PARSER}" == "" ]; then
+                echo "💀 The specified model supports reasoning-tag, but no reasoning-parser is specified."
+                exit 1
+            else
+                echo "✅ Reasoning-parser: ${REASONING_PARSER} is used."
+                REASONING_PARSER_PARAM="--reasoning-parser ${REASONING_PARSER}"
+            fi
         else
-            local REASONING_TAG_PARAMS=""
-            echo "🤖 (Auto-detected) reasoning-tag option is not set."
+            echo "🤖 (Auto-detected) The specified model does not support reasoning-tag."
+            if [ "${REASONING_PARSER}" != "" ]; then
+                echo "💀 The specified model does not support reasoning-tag, but a reasoning-parser is specified."
+                exit 1
+            else
+                echo "✅ No reasoning-tag is used."
+            fi
         fi
 
-        ## Start vllm server in background
-        echo "🏗️ Starting vllm server..."
-        uv run --isolated --project ${REPO_PATH} --locked --extra vllm \
-            vllm serve \
-                $MODEL_NAME \
-                --hf-token $HF_TOKEN \
-                --tensor-parallel-size $NUM_GPUS \
-                --max-model-len $MAX_MODEL_LENGTH \
-                --gpu-memory-utilization $GPU_MEMORY_UTILIZATION \
-                --dtype bfloat16 \
-                $REASONING_TAG_PARAMS \
-                1>&2 &
+        # ## Start vllm server in background
+        # echo "🏗️ Starting vllm server..."
+        # uv run --isolated --project ${REPO_PATH} --locked --extra vllm \
+        #     vllm serve \
+        #         $MODEL_NAME \
+        #         --hf-token $HF_TOKEN \
+        #         --tensor-parallel-size $NUM_GPUS \
+        #         --max-model-len $MAX_MODEL_LENGTH \
+        #         --gpu-memory-utilization $GPU_MEMORY_UTILIZATION \
+        #         --dtype bfloat16 \
+        #         $REASONING_PARSER_PARAM \
+        #         1>&2 &
 
-        ## Wait for server to start
-        echo "🔍 Waiting for vllm server to start..."
-        TIMEOUT=3600
-        start_time=$(date +%s)
-        until curl -fs "${BASE_URL%/v1}/health" > /dev/null; do
-            sleep 1
-            if (( $(date +%s) - start_time >= TIMEOUT )); then
-                echo "❌ vLLM server did not become ready within ${TIMEOUT} seconds." >&2
-                exit 1
-            fi
-        done
-        end_time=$(date +%s)
-        wait_time=$((end_time - start_time))
-        echo "✅ vLLM server is ready (took ${wait_time} seconds)"
+        # ## Wait for server to start
+        # echo "🔍 Waiting for vllm server to start..."
+        # TIMEOUT=3600
+        # start_time=$(date +%s)
+        # until curl -fs "${BASE_URL%/v1}/health" > /dev/null; do
+        #     sleep 1
+        #     if (( $(date +%s) - start_time >= TIMEOUT )); then
+        #         echo "❌ vLLM server did not become ready within ${TIMEOUT} seconds." >&2
+        #         exit 1
+        #     fi
+        # done
+        # end_time=$(date +%s)
+        # wait_time=$((end_time - start_time))
+        # echo "✅ vLLM server is ready (took ${wait_time} seconds)"
     
     else
         if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" ]]; then
