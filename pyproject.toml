@@ -24,7 +24,7 @@ lighteval = [
 ]
 
 vllm = [
-  "vllm>=0.8.5.post1", # Set the floor to avoid using SetDevice which has been deprecated since pytorch 2.3.
+  "vllm>=0.9", # Set the floor to use --reasoning-parser without setting --enable-reasoning
 ]
 
 
