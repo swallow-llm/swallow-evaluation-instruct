@@ -31,21 +31,21 @@ TASK_DEF="swallow|${TASK_NAME}|0|0"
 echo "📝 Task: ${TASK_DEF}"
 
 
-# # Run Evaluation
-# cd "${REPO_PATH}/lighteval"
-# echo "🏃 Run Evaluation..."
-# start_time=$(date +%s)
-# uv run $UV_OPTIONS --extra lighteval \
-#  lighteval endpoint litellm $MODEL_CONFIG_PATH $TASK_DEF \
-#     --system-prompt "${SYSTEM_MESSAGE}" \
-#     --use-chat-template \
-#     --output-dir "${RAW_OUTPUT_DIR}" \
-#     --output-subdir "${CUSTOM_SETTINGS_SUBDIR}" \
-#     --save-details
-# end_time=$(date +%s)
-# elapsed=$(( end_time - start_time ))
-# echo "⌚️ Elapsed time: ${elapsed} seconds"
+# Run Evaluation
+cd "${REPO_PATH}/lighteval"
+echo "🏃 Run Evaluation..."
+start_time=$(date +%s)
+uv run $UV_OPTIONS --extra lighteval \
+ lighteval endpoint litellm $MODEL_CONFIG_PATH $TASK_DEF \
+    --system-prompt "${SYSTEM_MESSAGE}" \
+    --use-chat-template \
+    --output-dir "${RAW_OUTPUT_DIR}" \
+    --output-subdir "${CUSTOM_SETTINGS_SUBDIR}" \
+    --save-details
+end_time=$(date +%s)
+elapsed=$(( end_time - start_time ))
+echo "⌚️ Elapsed time: ${elapsed} seconds"
 
 
-# # Aggregate Results
-# aggregate_result "${MODEL_NAME_CONFIG}" "${RAW_RESULT_DIR}" "${AGGREGATED_OUTPUTS_DIR}" "${REPO_PATH}" "${CUSTOM_SETTINGS_PATH}" "${CUSTOM_SETTINGS_NAME}" "${CUSTOM_SETTINGS_VERSION}"
+# Aggregate Results
+aggregate_result "${MODEL_NAME_CONFIG}" "${RAW_RESULT_DIR}" "${AGGREGATED_OUTPUTS_DIR}" "${REPO_PATH}" "${CUSTOM_SETTINGS_PATH}" "${CUSTOM_SETTINGS_NAME}" "${CUSTOM_SETTINGS_VERSION}"

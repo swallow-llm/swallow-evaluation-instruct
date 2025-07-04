@@ -228,33 +228,33 @@ PY
             fi
         fi
 
-        # ## Start vllm server in background
-        # echo "🏗️ Starting vllm server..."
-        # uv run --isolated --project ${REPO_PATH} --locked --extra vllm \
-        #     vllm serve \
-        #         $MODEL_NAME \
-        #         --hf-token $HF_TOKEN \
-        #         --tensor-parallel-size $NUM_GPUS \
-        #         --max-model-len $MAX_MODEL_LENGTH \
-        #         --gpu-memory-utilization $GPU_MEMORY_UTILIZATION \
-        #         --dtype bfloat16 \
-        #         $REASONING_PARSER_PARAM \
-        #         1>&2 &
+        ## Start vllm server in background
+        echo "🏗️ Starting vllm server..."
+        uv run --isolated --project ${REPO_PATH} --locked --extra vllm \
+            vllm serve \
+                $MODEL_NAME \
+                --hf-token $HF_TOKEN \
+                --tensor-parallel-size $NUM_GPUS \
+                --max-model-len $MAX_MODEL_LENGTH \
+                --gpu-memory-utilization $GPU_MEMORY_UTILIZATION \
+                --dtype bfloat16 \
+                $REASONING_PARSER_PARAM \
+                1>&2 &
 
-        # ## Wait for server to start
-        # echo "🔍 Waiting for vllm server to start..."
-        # TIMEOUT=3600
-        # start_time=$(date +%s)
-        # until curl -fs "${BASE_URL%/v1}/health" > /dev/null; do
-        #     sleep 1
-        #     if (( $(date +%s) - start_time >= TIMEOUT )); then
-        #         echo "❌ vLLM server did not become ready within ${TIMEOUT} seconds." >&2
-        #         exit 1
-        #     fi
-        # done
-        # end_time=$(date +%s)
-        # wait_time=$((end_time - start_time))
-        # echo "✅ vLLM server is ready (took ${wait_time} seconds)"
+        ## Wait for server to start
+        echo "🔍 Waiting for vllm server to start..."
+        TIMEOUT=3600
+        start_time=$(date +%s)
+        until curl -fs "${BASE_URL%/v1}/health" > /dev/null; do
+            sleep 1
+            if (( $(date +%s) - start_time >= TIMEOUT )); then
+                echo "❌ vLLM server did not become ready within ${TIMEOUT} seconds." >&2
+                exit 1
+            fi
+        done
+        end_time=$(date +%s)
+        wait_time=$((end_time - start_time))
+        echo "✅ vLLM server is ready (took ${wait_time} seconds)"
     
     else
         if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" ]]; then
