@@ -3,7 +3,7 @@
 ## This script is only for testing or debugging the evaluation scripts on an interactive node (not as a batch job) on TSUBAME.
 ## If you want to check setup-scripts on a login node, to avoid using many resources, you MUST comment out the following blocks:
 ## - `#Start vllm server in background` and `#Wait for server to start` in common_funcs.sh
-## - `#Run evaluation` and `# Aggregate Results` in evaluate_lighteval.sh
+## - `#Run evaluation` in evaluate_lighteval.sh
 set -euo pipefail
 
 ########################################################
