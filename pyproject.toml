@@ -10,6 +10,8 @@ dependencies = []
 [project.optional-dependencies]
 auto_detector = [
   "transformers",
+  "sentencepiece",
+  "protobuf",
 ]
 
 aggregate_results = [
