@@ -904,6 +904,8 @@ aggregate-results = [
     { name = "pandas" },
 ]
 auto-detector = [
+    { name = "protobuf", version = "5.29.5", source = { registry = "https://pypi.org/simple" } },
+    { name = "sentencepiece" },
     { name = "transformers" },
 ]
 lighteval = [
@@ -922,6 +924,8 @@ requires-dist = [
     { name = "lighteval", extras = ["math", "extended-tasks", "litellm"], marker = "extra == 'lighteval'", editable = "lighteval" },
     { name = "openai", marker = "extra == 'lighteval'", specifier = ">=1.40.0" },
     { name = "pandas", marker = "extra == 'aggregate-results'", specifier = ">=2.2.3" },
+    { name = "protobuf", marker = "extra == 'auto-detector'" },
+    { name = "sentencepiece", marker = "extra == 'auto-detector'" },
     { name = "transformers", marker = "extra == 'auto-detector'" },
     { name = "transformers", marker = "extra == 'lighteval'", specifier = ">=4.51.0" },
     { name = "vllm", marker = "extra == 'vllm'", specifier = ">=0.9" },
@@ -2127,9 +2131,10 @@ name = "protobuf"
 version = "5.29.5"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
-    "sys_platform == 'darwin'",
-    "platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra != 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra != 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra != 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra != 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')",
+    "sys_platform == 'darwin' and extra != 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra != 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm'",
+    "platform_machine == 'aarch64' and sys_platform == 'linux' and extra != 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra != 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm'",
+    "extra != 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra != 'extra-32-jalm-evaluation-instruct-private-vllm'",
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/43/29/d09e70352e4e88c9c7a198d5645d7277811448d76c23b00345670f7c8a38/protobuf-5.29.5.tar.gz", hash = "sha256:bc1463bafd4b0929216c35f437a8e28731a2b7fe3d98bb77a600efced5a15c84", size = 425226, upload-time = "2025-05-28T23:51:59.82Z" }
 wheels = [
