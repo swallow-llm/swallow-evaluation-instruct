@@ -175,6 +175,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+
 # Added
 ## eval env
 uv.lock
@@ -184,12 +185,3 @@ pyproject.toml
 results/
 lighteval/outputs/
 scripts/tsubame/utils/qstat_history.out
-
-## cache
-lm_cache/
-.ruff_cache/
-HF_HOME/
-tmp/
-
-## secret
-.env
