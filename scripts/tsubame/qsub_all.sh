@@ -76,7 +76,6 @@ qsub_task ja humaneval
 qsub_task ja mifeval
 
 ## English
-qsub_task en gpqa
 qsub_task en hellaswag
 qsub_task en mtbench
 qsub_task en gpqa_diamond
