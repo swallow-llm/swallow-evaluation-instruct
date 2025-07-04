@@ -174,3 +174,14 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+
+# Added
+## eval env
+uv.lock
+pyproject.toml
+
+## outputs
+results/
+lighteval/outputs/
+scripts/tsubame/utils/qstat_history.out
