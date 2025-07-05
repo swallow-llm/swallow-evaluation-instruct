@@ -96,10 +96,11 @@ get_generation_params(){
     # Accept SHELL_OUTPUT_PARAMETERS
     MAX_MODEL_LENGTH=${results[2]}
     REASONING_PARSER=${results[3]}
-    SYSTEM_MESSAGE=${results[4]}
+    export VLLM_USE_V1=${results[4]}
+    SYSTEM_MESSAGE=${results[5]}
 
     # Accept CONFIG_YAML_PARAMETERS
-    rest=( "${results[@]:5}" )
+    rest=( "${results[@]:6}" )
     GEN_PARAMS=$(printf '%s\n' "${rest[@]}")
 }
 

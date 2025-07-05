@@ -5,12 +5,28 @@ set -euo pipefail
 
 
 # Load Args
-TASK_NAME=$1
-NODE_KIND=$2
-MODEL_NAME=$3
-CUSTOM_SETTINGS=$4
-REPO_PATH=$5
-PROVIDER=$6
+## Default Values
+TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; CUSTOM_SETTINGS=""; REPO_PATH=""; PROVIDER=""
+
+## Parse Args
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --task-name) TASK_NAME="$2";;
+    --node-kind) NODE_KIND="$2";;
+    --model-name) MODEL_NAME="$2";;
+    --repo-path) REPO_PATH="$2";;
+    --custom-settings) CUSTOM_SETTINGS="$2";;   # Optional
+    --provider) PROVIDER="$2";;                 # Optional
+    *) echo "Unknown option: $1" >&2;;
+  esac
+  shift 2
+done
+
+## Check Required Args
+if [[ -z "$TASK_NAME" ]] || [[ -z "$NODE_KIND" ]] || [[ -z "$MODEL_NAME" ]] || [[ -z "$REPO_PATH" ]]; then
+  echo "Error: Missing required arguments. TASK_NAME: '${TASK_NAME}', NODE_KIND: '${NODE_KIND}', MODEL_NAME: '${MODEL_NAME}', REPO_PATH: '${REPO_PATH}'" >&2
+  exit 1
+fi
 
 
 # Setup
@@ -41,7 +57,8 @@ uv run $UV_OPTIONS --extra lighteval \
     --use-chat-template \
     --output-dir "${RAW_OUTPUT_DIR}" \
     --output-subdir "${CUSTOM_SETTINGS_SUBDIR}" \
-    --save-details
+    --save-details \
+    --max-samples 3
 end_time=$(date +%s)
 elapsed=$(( end_time - start_time ))
 echo "⌚️ Elapsed time: ${elapsed} seconds"
