@@ -37,6 +37,15 @@ esac
 RESULTS_DIR="${REPO_PATH}/results/${PROVIDER_SUBDIR}${MODEL_NAME}${CUSTOM_SETTINGS_SUBDIR}"
 SCRIPTS_DIR="${REPO_PATH}/scripts/tsubame"
 
+# Optional Args
+OPTIONAL_ARGS=""
+if [[ -n "${CUSTOM_SETTINGS}" ]]; then
+  OPTIONAL_ARGS="${OPTIONAL_ARGS} --custom-settings ${CUSTOM_SETTINGS}"
+fi
+if [[ -n "${PROVIDER}" ]]; then
+  OPTIONAL_ARGS="${OPTIONAL_ARGS} --provider ${PROVIDER}"
+fi
+
 # Define qsub-function
 qsub_task() {
   # Get args
@@ -55,7 +64,7 @@ qsub_task() {
 
   # Submit a job
   ${QSUB_BASE[@]} -N "${lang}_${task}" -l h_rt="${h_rt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
-    "${task_name}" "${NODE_KIND}" "${MODEL_NAME}" "${CUSTOM_SETTINGS}" "${REPO_PATH}" "${PROVIDER}"
+    --task-name "${task_name}" --node-kind "${NODE_KIND}" --model-name "${MODEL_NAME}" --repo-path "${REPO_PATH}" ${OPTIONAL_ARGS}
 }
 
 ########################################################

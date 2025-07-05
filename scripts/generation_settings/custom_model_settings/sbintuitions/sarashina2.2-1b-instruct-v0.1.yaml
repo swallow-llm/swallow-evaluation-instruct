@@ -13,32 +13,7 @@
 # You should update this value if you make any changes to the settings.
 
 default:
-  # default settings.
-  system_message: "You are a helpful assistant."
-  max_model_length: 1024
-  max_new_tokens: 512
-  temperature: 0.6
-  top_p: 0.95
-  version: "1"
-
-coding:
-  # coding settings.
-  system_message: "You are a helpful coding assistant."
-  max_n: 4
-  version: "1"
-
-reasoning:
-  # settings for reasoning models.
-  system_message: "You are a helpful reasoning assistant."
-  max_model_length: 8192
-  max_new_tokens: 4096
-  temperature: 1.0
-  top_p: 0.95
-  reasoning_parser: "deepseek-r1"
-  version: "1"
-
-flashattn_incompatible:
-  # settings for models incompatible with flashattn v1 (e.g. sarashina2.2-1b-instruct-v0.1).
+  # This model is incompatible with flashattn v1.
   vllm_use_v1: 0
   version: "1"
 
