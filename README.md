@@ -54,7 +54,7 @@ lighteval endpoint litellm \
 
 ### vLLMを直接起動して評価
 [標準的な lighteval の実行方法](https://huggingface.co/docs/lighteval/quicktour)に則って，vLLMを直接起動して動かすことも可能です．  
-ただしvLLMの実行時引数の渡し方に制限がありますので，vLLMで推論APIを立ててからlitellmでAPIを呼び出す動かし方を推奨します．  
+ただし**vLLM実行時引数のサポートが不完全なので，vLLMで推論APIを立ててからlitellmでAPIを呼び出す動かし方を推奨します．**  
 
 ```
 MODEL="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3"
