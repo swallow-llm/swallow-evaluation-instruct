@@ -102,3 +102,9 @@ def batched(iterable, n):
     it = iter(iterable)
     while batch := tuple(islice(it, n)):
         yield batch
+        
+def replace_none_with_empty_string(string_or_none: Union[str, None]) -> str:
+    if string_or_none is None:
+        return ""
+    else:
+        return string_or_none

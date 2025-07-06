@@ -48,7 +48,7 @@ from lighteval.tasks.requests import (
     LoglikelihoodSingleTokenRequest,
 )
 from lighteval.utils.imports import is_litellm_available
-
+from lighteval.models.utils import replace_none_with_empty_string
 
 logger = logging.getLogger(__name__)
 
@@ -213,10 +213,10 @@ class LiteLLMClient(LightevalModel):
                     "logprobs": return_logits if self.provider == "openai" else None,
                     "base_url": self.base_url,
                     "n": n,
-                    "caching": True,
+                    "caching": False,
                     "api_key": self.api_key,
                 }
-                if "o1" in self.model or "o3" in self.model:
+                if self.provider == "openai" and ("o1" in self.model or "o3" in self.model or "o4" in self.model):
                     logger.warning("O* models do not support temperature, top_p, stop sequence. Disabling.")
                 else:
                     kwargs.update(self.generation_parameters.to_litellm_dict())
@@ -226,11 +226,13 @@ class LiteLLMClient(LightevalModel):
 
                 response = litellm.completion(**kwargs)
 
-                # If response is empty, retry without caching (maybe the error is recoverable and solved with a retry)
-                if (response is not None) and (response.choices[0].message.content is None):
-                    kwargs["caching"] = False
-                    logger.info("Response is empty, retrying without caching")
-                    response = litellm.completion(**kwargs)
+                # If response content is null, replace with empty string
+                if response is not None:
+                    for choice in response.choices:
+                        if choice.message.content is None:
+                            logger.info("Response is empty, replacing with empty string.")
+                            choice.message.content = replace_none_with_empty_string(choice.message.content)                    
+                    
                 return response
             except litellm.BadRequestError as e:
                 logger.error(f"BadRequestError in API call: {e}")
@@ -326,7 +328,7 @@ class LiteLLMClient(LightevalModel):
 
             for response in responses:
                 result: list[str] = [choice.message.content for choice in response.choices]
-
+                
                 cur_response = GenerativeResponse(
                     # In empty responses, the model should return an empty string instead of None
                     result=result if result[0] else [""],
