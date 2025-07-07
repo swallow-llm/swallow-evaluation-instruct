@@ -152,8 +152,8 @@ model publisher ごと，model name ごとに .yaml ファイルで定義する�
 `scripts/generation_settings/custom_model_settings/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3.yaml` \
 に定義を行えば良い．
 
-具体的な定義の仕方や定義できるパラメタについては \
-`scripts/generation_settings/custom_model_settings/template.yaml` を参照されたい．
+具体な定義の例や定義できるパラメタについては `scripts/generation_settings/custom_model_settings/template.yaml` に書かれている．\
+必要に応じてこの `template.yaml` を複製するなどして活用してほしい．
 
 > ⚠️注意： \
 > temperature を指定する custom_model_settings は，\
