@@ -22,7 +22,6 @@ lighteval = [
     "lighteval[math,extended_tasks,litellm]",
     "transformers>=4.51.0", # Set the floor to allow evaluation of the latest models: Llama 4, Phi4-Multimodal, DeepSeek-v3, Qwen3.
     "openai>=1.40.0", # Set the floor to avoid using deprecated names.
-    "datasets==2.21.0", # Pinned to force default value of trust_remote_code to True (It has been changed to False since 3.0.0).
 ]
 
 vllm = [

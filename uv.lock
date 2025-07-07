@@ -114,11 +114,11 @@ wheels = [
 
 [[package]]
 name = "airportsdata"
-version = "20250622"
+version = "20250706"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/40/98/5f055f0d3fce23411948c30b6be359bb28821c4919069b2bea3f2af78d70/airportsdata-20250622.tar.gz", hash = "sha256:7adaa4cffdc6e8122d16a63e958ab1eb0b2e57e8c1bf0d10b8218f64067550e6", size = 903216, upload-time = "2025-06-22T06:55:49.743Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/83/e0/311f397752cb15d3772c3856924773eaaab905f922f24ef19739a1de67eb/airportsdata-20250706.tar.gz", hash = "sha256:66d7a03e825d592d85ed650f2c1d4b4302d1c04f8f37a15f1eda29a5e03d4af0", size = 903223, upload-time = "2025-07-06T22:19:23.1Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/24/4daf2c931855ffd9c3fe8cbea133ca0689afaed9d8c0b04597f8e074d79e/airportsdata-20250622-py3-none-any.whl", hash = "sha256:80954c0109bb05fda7c745a1f7ed1d91c29c5fc196ce9b39aa6e8b43617bac4c", size = 912712, upload-time = "2025-06-22T06:55:47.639Z" },
+    { url = "https://files.pythonhosted.org/packages/3a/11/f359cbbde87b88b0f17503e9c17cae6dfc9117b756ce600087306f28f52d/airportsdata-20250706-py3-none-any.whl", hash = "sha256:750e882a75e391572ae859d4cb78cb801f5f2ca71b07849a381670cb01780677", size = 912715, upload-time = "2025-07-06T22:19:21.158Z" },
 ]
 
 [[package]]
@@ -390,13 +390,12 @@ wheels = [
 
 [[package]]
 name = "datasets"
-version = "2.21.0"
+version = "3.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "aiohttp" },
     { name = "dill", version = "0.3.8", source = { registry = "https://pypi.org/simple" } },
     { name = "filelock" },
-    { name = "fsspec", version = "2024.6.1", source = { registry = "https://download.pytorch.org/whl/cu126" }, extra = ["http"], marker = "extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
+    { name = "fsspec", version = "2025.3.0", source = { registry = "https://pypi.org/simple" }, extra = ["http"], marker = "extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
     { name = "huggingface-hub" },
     { name = "multiprocess" },
     { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" } },
@@ -408,9 +407,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "xxhash" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/a5/38719e5cff7aa0537a6be37d21cc1fdd7096e9565e8fce2d46a822e10b5b/datasets-2.21.0.tar.gz", hash = "sha256:998f85a8460f1bd982e5bd058f8a0808eef424249e3df1e8cdd594ccd0dc8ba2", size = 2215317, upload-time = "2024-08-14T06:40:44.314Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1a/89/d3d6fef58a488f8569c82fd293ab7cbd4250244d67f425dcae64c63800ea/datasets-3.6.0.tar.gz", hash = "sha256:1b2bf43b19776e2787e181cfd329cb0ca1a358ea014780c3581e0f276375e041", size = 569336, upload-time = "2025-05-07T15:15:02.659Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/72/b3/33c4ad44fa020e3757e9b2fad8a5de53d9079b501e6bbc45bdd18f82f893/datasets-2.21.0-py3-none-any.whl", hash = "sha256:25e4e097110ce28824b746a107727ada94024cba11db8bc588d468414692b65a", size = 527251, upload-time = "2024-08-14T06:40:39.612Z" },
+    { url = "https://files.pythonhosted.org/packages/20/34/a08b0ee99715eaba118cbe19a71f7b5e2425c2718ef96007c325944a1152/datasets-3.6.0-py3-none-any.whl", hash = "sha256:25000c4a2c0873a710df127d08a202a06eab7bf42441a6bc278b499c2f72cd1b", size = 491546, upload-time = "2025-05-07T15:14:59.742Z" },
 ]
 
 [[package]]
@@ -631,14 +630,15 @@ wheels = [
 
 [[package]]
 name = "fsspec"
-version = "2024.6.1"
-source = { registry = "https://download.pytorch.org/whl/cu126" }
+version = "2025.3.0"
+source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
     "(platform_machine == 'aarch64' and sys_platform == 'linux') or sys_platform == 'darwin'",
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/34/f4/5721faf47b8c499e776bc34c6a8fc17efdf7fdef0b00f398128bc5dcb4ac/fsspec-2025.3.0.tar.gz", hash = "sha256:a935fd1ea872591f2b5148907d103488fc523295e6c64b835cfad8c3eca44972", size = 298491, upload-time = "2025-03-07T21:47:56.461Z" }
 wheels = [
-    { url = "https://download.pytorch.org/whl/fsspec-2024.6.1-py3-none-any.whl", hash = "sha256:3cb443f8bcd2efb31295a5b9fdb02aee81d8452c80d28f97a6d0959e6cee101e" },
+    { url = "https://files.pythonhosted.org/packages/56/53/eb690efa8513166adef3e0669afd31e95ffde69fb3c52ec2ac7223ed6018/fsspec-2025.3.0-py3-none-any.whl", hash = "sha256:efb87af3efa9103f94ca91a7f8cb7a4df91af9f74fc106c9c7ea0efd7277c1b3", size = 193615, upload-time = "2025-03-07T21:47:54.809Z" },
 ]
 
 [package.optional-dependencies]
@@ -811,7 +811,7 @@ version = "0.33.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
-    { name = "fsspec", version = "2024.6.1", source = { registry = "https://download.pytorch.org/whl/cu126" }, marker = "extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
+    { name = "fsspec", version = "2025.3.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
     { name = "fsspec", version = "2025.5.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra != 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
     { name = "hf-xet", marker = "platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'x86_64'" },
     { name = "packaging" },
@@ -909,7 +909,6 @@ auto-detector = [
     { name = "transformers" },
 ]
 lighteval = [
-    { name = "datasets" },
     { name = "lighteval", extra = ["extended-tasks", "litellm", "math"], marker = "extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
     { name = "openai" },
     { name = "transformers" },
@@ -920,7 +919,6 @@ vllm = [
 
 [package.metadata]
 requires-dist = [
-    { name = "datasets", marker = "extra == 'lighteval'", specifier = "==2.21.0" },
     { name = "lighteval", extras = ["math", "extended-tasks", "litellm"], marker = "extra == 'lighteval'", editable = "lighteval" },
     { name = "openai", marker = "extra == 'lighteval'", specifier = ">=1.40.0" },
     { name = "pandas", marker = "extra == 'aggregate-results'", specifier = ">=2.2.3" },
@@ -1051,7 +1049,7 @@ dependencies = [
     { name = "beautifulsoup4" },
     { name = "colorlog" },
     { name = "datasets" },
-    { name = "fsspec", version = "2024.6.1", source = { registry = "https://download.pytorch.org/whl/cu126" } },
+    { name = "fsspec", version = "2025.3.0", source = { registry = "https://pypi.org/simple" } },
     { name = "fuzzywuzzy" },
     { name = "gitpython" },
     { name = "huggingface-hub", extra = ["cli"], marker = "extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
@@ -1158,7 +1156,7 @@ provides-extras = ["litellm", "tgi", "optimum", "quantization", "adapters", "nan
 
 [[package]]
 name = "litellm"
-version = "1.73.6.post1"
+version = "1.74.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -1173,9 +1171,9 @@ dependencies = [
     { name = "tiktoken" },
     { name = "tokenizers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b4/99/889207aa89037da4cb381201918e91b6ab74088d401f9a1b8cfd7b5a48e9/litellm-1.73.6.post1.tar.gz", hash = "sha256:cc221818f572fdd64d22b89fa35e6153bfb4f0f755b68eec7da3542767e6a934", size = 8898978, upload-time = "2025-07-04T00:34:43.73Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/24/1f/eb4a931e7bc5fc7ab398df61df75801a0825dcd7edeecf5ccd07d427c36e/litellm-1.74.0.tar.gz", hash = "sha256:2ee64579568cc81835025db45da6d91ee7ec6706ab4adf1a833866999ed822e7", size = 9095626, upload-time = "2025-07-05T05:16:24.576Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/34/0068ea25da50072d4f36a78299395afa3b3ed1c475be925fe33f8296c977/litellm-1.73.6.post1-py3-none-any.whl", hash = "sha256:c7a9ac5be16e176a8005e9196446b5c0ead0f08436c12a80920734ce6fa604d4", size = 8467486, upload-time = "2025-07-04T00:34:40.685Z" },
+    { url = "https://files.pythonhosted.org/packages/8b/28/ada87d58dc4dfaf8a1858df712b9c21c3775d6c7d303598e9ab3a57a63cf/litellm-1.74.0-py3-none-any.whl", hash = "sha256:f6c41169e0dbf182c2d74a0b9e146f1c67735351a721c8498eea7ec6306be309", size = 8567304, upload-time = "2025-07-05T05:16:21.993Z" },
 ]
 
 [[package]]
@@ -2820,7 +2818,7 @@ resolution-markers = [
 ]
 dependencies = [
     { name = "filelock", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or sys_platform == 'darwin'" },
-    { name = "fsspec", version = "2024.6.1", source = { registry = "https://download.pytorch.org/whl/cu126" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (sys_platform != 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
+    { name = "fsspec", version = "2025.3.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (sys_platform != 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
     { name = "fsspec", version = "2025.5.1", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (platform_machine != 'aarch64' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra != 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra != 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra != 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
     { name = "jinja2", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or sys_platform == 'darwin'" },
     { name = "networkx", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or sys_platform == 'darwin'" },
@@ -2843,7 +2841,7 @@ resolution-markers = [
 ]
 dependencies = [
     { name = "filelock", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')" },
-    { name = "fsspec", version = "2024.6.1", source = { registry = "https://download.pytorch.org/whl/cu126" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
+    { name = "fsspec", version = "2025.3.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
     { name = "fsspec", version = "2025.5.1", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-aggregate-results' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-lighteval') or (extra == 'extra-32-jalm-evaluation-instruct-private-auto-detector' and extra == 'extra-32-jalm-evaluation-instruct-private-vllm')" },
     { name = "jinja2", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')" },
     { name = "networkx", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')" },
@@ -2954,7 +2952,7 @@ wheels = [
 
 [[package]]
 name = "transformers"
-version = "4.53.0"
+version = "4.53.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
@@ -2969,9 +2967,9 @@ dependencies = [
     { name = "tokenizers" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e8/40/f2d2c3bcf5c6135027cab0fd7db52f6149a1c23acc4e45f914c43d362386/transformers-4.53.0.tar.gz", hash = "sha256:f89520011b4a73066fdc7aabfa158317c3934a22e3cd652d7ffbc512c4063841", size = 9177265, upload-time = "2025-06-26T16:10:54.729Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9f/2c/68a0024c311db41bb92d4ec17d22e90b7406a4d28aa18d87662f2bbebcd9/transformers-4.53.1.tar.gz", hash = "sha256:da5a9f66ad480bc2a7f75bc32eaf735fd20ac56af4325ca4ce994021ceb37710", size = 9192189, upload-time = "2025-07-04T08:28:40.571Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5e/0c/68d03a38f6ab2ba2b2829eb11b334610dd236e7926787f7656001b68e1f2/transformers-4.53.0-py3-none-any.whl", hash = "sha256:7d8039ff032c01a2d7f8a8fe0066620367003275f023815a966e62203f9f5dd7", size = 10821970, upload-time = "2025-06-26T16:10:51.505Z" },
+    { url = "https://files.pythonhosted.org/packages/8d/10/8cef2288810a3210659eb3a20711e8387cc35a881a7762ae387806e2d651/transformers-4.53.1-py3-none-any.whl", hash = "sha256:c84f3c3e41c71fdf2c60c8a893e1cd31191b0cb463385f4c276302d2052d837b", size = 10825681, upload-time = "2025-07-04T08:28:37.318Z" },
 ]
 
 [package.optional-dependencies]
@@ -3028,11 +3026,11 @@ wheels = [
 
 [[package]]
 name = "typing-extensions"
-version = "4.14.0"
+version = "4.14.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d1/bc/51647cd02527e87d05cb083ccc402f93e441606ff1f01739a62c8ad09ba5/typing_extensions-4.14.0.tar.gz", hash = "sha256:8676b788e32f02ab42d9e7c61324048ae4c6d844a399eebace3d4979d75ceef4", size = 107423, upload-time = "2025-06-02T14:52:11.399Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/98/5a/da40306b885cc8c09109dc2e1abd358d5684b1425678151cdaed4731c822/typing_extensions-4.14.1.tar.gz", hash = "sha256:38b39f4aeeab64884ce9f74c94263ef78f3c22467c8724005483154c26648d36", size = 107673, upload-time = "2025-07-04T13:28:34.16Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/69/e0/552843e0d356fbb5256d21449fa957fa4eff3bbc135a74a691ee70c7c5da/typing_extensions-4.14.0-py3-none-any.whl", hash = "sha256:a1514509136dd0b477638fc68d6a91497af5076466ad0fa6c338e44e359944af", size = 43839, upload-time = "2025-06-02T14:52:10.026Z" },
+    { url = "https://files.pythonhosted.org/packages/b5/00/d631e67a838026495268c2f6884f3711a15a9a2a96cd244fdaea53b823fb/typing_extensions-4.14.1-py3-none-any.whl", hash = "sha256:d1e1e3b58374dc93031d6eda2420a48ea44a36c2b4766a4fdeb3710755731d76", size = 43906, upload-time = "2025-07-04T13:28:32.743Z" },
 ]
 
 [[package]]
