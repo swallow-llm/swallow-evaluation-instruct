@@ -243,3 +243,6 @@ lighteval endpoint litellm \
 
 基本的に計算資源の増強で解決したい．\
 しかし，それが難しい場合は，依頼者に報告したうえで，`MAX_MODEL_LENGTH` を8,192まで下げることで解決を図りたい．
+
+vLLMログに `Aborted request` が出力されている，またはlightevalログに `Timeout` が出力されている場合は，推論に時間がかかりすぎてAPI呼び出しがタイムアウトしている．  
+この場合は環境変数 `REQUEST_TIMEOUT` （単位は秒）に十分に大きな値を設定すること．
