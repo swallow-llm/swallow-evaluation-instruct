@@ -8,7 +8,7 @@ Swallowプロジェクト，特にTSUBAMEでの評価作業に特化したマニ
 
 
 ## 実行方法
-vLLMで推論APIを立ててからlitellm経由でAPIを呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)のようなvLLMの豊富な機能を活用しながら評価を実行できます．  
+vLLM serveコマンドで推論APIを立ててからlitellm経由でAPIを呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)のようなvLLMの豊富な機能を活用しながら評価を実行できます．  
 実行例は以下の通り．  
 
 ```
@@ -54,7 +54,7 @@ lighteval endpoint litellm \
 
 ### vLLMを直接起動して評価
 [標準的な lighteval の実行方法](https://huggingface.co/docs/lighteval/quicktour)に則って，vLLMを直接起動して動かすことも可能です．  
-ただし**vLLM実行時引数のサポートが不完全なので，vLLMで推論APIを立ててからlitellmでAPIを呼び出す動かし方を推奨します．**  
+ただし**vLLM実行時引数のサポートが不完全なので，冒頭で紹介しているvLLM serveで推論APIを立ててからlitellmで呼び出す動かし方を推奨します．**  
 また **vLLM V0モードのみをサポートしています．** Ref. [vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)
 
 ```
