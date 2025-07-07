@@ -60,6 +60,7 @@ class LoglikelihoodSingleTokenResponse(ModelResponse):
 @dataclass
 class GenerativeResponse(ModelResponse):
     result: list[str] = field(default_factory=str)  # generated text continuation
+    reasoning_content: Optional[list[str]] = None # (Optional) reasoning content of the generated text
     logits: Optional[list[float]] = None  # Generated text logits
 
     def get_result_for_eval(self):
@@ -69,6 +70,7 @@ class GenerativeResponse(ModelResponse):
 @dataclass
 class GenerativeMultiturnResponse(ModelResponse):
     result: list[str] = field(default_factory=list)
+    reasoning_content: Optional[list[str]] = None # (Optional) reasoning content of the generated text
 
     def get_result_for_eval(self):
         return self.result

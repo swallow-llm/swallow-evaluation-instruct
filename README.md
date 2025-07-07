@@ -6,39 +6,31 @@ lighteval: [v0.8.0](https://github.com/huggingface/lighteval/releases/tag/v0.8.0
 
 Swallowプロジェクト，特にTSUBAMEでの評価作業に特化したマニュアルはリンク先を参照してください．Ref. [TSUBAME4を用いた評価方法](./README_t4.md)
 
+
 ## 実行方法
-[標準的な lighteval の実行方法](https://huggingface.co/docs/lighteval/quicktour)で動かすことができます．  
+vLLMで推論APIを立ててからlitellm経由でAPIを呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)のようなvLLMの豊富な機能を活用しながら評価を実行できます．  
+実行例は以下の通り．  
 
 ```
-MODEL="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3"
-SYSTEM_PROMPT="あなたは誠実で優秀な日本人のアシスタントです。"
-MAX_MODEL_LENGTH=8192
-TEMPERATURE=0.0
+MODEL="Qwen/Qwen3-0.6B"
+API_KEY="DUMMY"
 
-MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_MODEL_LENGTH,gpu_memory_utilization=0.8,generation_parameters={temperature:$TEMPERATURE}"
+vllm serve --model $MODEL \
+--host localhost \
+--port 8000 \
+--reasoning-parser qwen3
 
-lighteval vllm $MODEL_ARGS "swallow|{ベンチマークのID}|0|0" \
---system-prompt "${SYSTEM_PROMPT}" \
---output-dir $OUTPUT_DIR \
---use-chat-template
+BASE_URL="http://localhost:8000/v1"
+
+lighteval endpoint litellm \
+"model=$MODEL,api_key=$API_KEY,base_url=$BASE_URL" \
+"lighteval|gpqa:diamond|0|0" \
+--use-chat-template \
+--output-dir $OUTPUT_DIR
 ```
 
-推論型モデルの場合は model_args に reasoning_parser を指定します．  
+**推論型モデルの場合は vLLM起動時に に reasoning_parser を指定してください．**  
 これにより出力から推論過程が取り除かれます．Ref. [vLLM Doc: Reasoning Outputs](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)
-
-```
-MODEL="Qwen/Qwen3-4B"
-MAX_MODEL_LENGTH=16384
-TEMPERATURE=0.6
-TOP_P=0.95
-
-MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_MODEL_LENGTH,reasoning_parser=qwen3,generation_parameters={temperature:$TEMPERATURE,top_p:$TOP_P}"
-
-lighteval vllm $MODEL_ARGS "swallow|{ベンチマークのID}|0|0" \
---system-prompt "${SYSTEM_PROMPT}" \
---output-dir $OUTPUT_DIR \
---use-chat-template
-```
 
 ### OpenAIモデル等の評価
 litellmをバックエンドとして指定することにより，OpenAIのように推論APIだけが提供されているモデルも評価できます．  
@@ -60,28 +52,27 @@ lighteval endpoint litellm \
     --output-dir $OUTPUT_DIR
 ```
 
-### 推論エンジンを分離してオープンウェイトモデルを評価
-オープンウェイトモデルについてもvLLMで推論APIを立ててからlitellm経由でAPIを呼び出すことにより，lightevalと異なる仮想環境や計算機でモデルを走らせて評価できます．  
-実行例は以下の通り．  
+### vLLMを直接起動して評価
+[標準的な lighteval の実行方法](https://huggingface.co/docs/lighteval/quicktour)に則って，vLLMを直接起動して動かすことも可能です．  
+ただし**vLLM実行時引数のサポートが不完全なので，vLLMで推論APIを立ててからlitellmでAPIを呼び出す動かし方を推奨します．**  
+また **vLLM V0モードのみをサポートしています．** Ref. [vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)
 
 ```
-MODEL="Qwen/Qwen3-0.6B"
-API_KEY="DUMMY"
+export VLLM_WORKER_MULTIPROC_METHOD=spawn
+export VLLM_USE_V1=0 # vLLM V0モード
 
-vllm serve --model $MODEL \
---host localhost \
---port 8000 \
---reasoning-parser qwen3
+MODEL="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3"
+SYSTEM_PROMPT="あなたは誠実で優秀な日本人のアシスタントです。"
+MAX_MODEL_LENGTH=8192
+TEMPERATURE=0.0
 
-BASE_URL="http://localhost:8000/v1"
+MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=$MAX_MODEL_LENGTH,gpu_memory_utilization=0.8,generation_parameters={temperature:$TEMPERATURE}"
 
-lighteval endpoint litellm \
-"model=$MODEL,api_key=$API_KEY,base_url=$BASE_URL" \
-"lighteval|gpqa:diamond|0|0" \
---use-chat-template \
---output-dir $OUTPUT_DIR
+lighteval vllm $MODEL_ARGS "swallow|{ベンチマークのID}|0|0" \
+--system-prompt "${SYSTEM_PROMPT}" \
+--output-dir $OUTPUT_DIR \
+--use-chat-template
 ```
-
 
 ## ベンチマーク一覧
 ligiteval の `--tasks` として指定できるように [lighteval/tasks/swallow](./lighteval/src/lighteval/tasks/swallow/) 以下に各種ベンチマークを実装しています．  
