@@ -22,6 +22,7 @@
 
 import logging
 import time
+import math
 from copy import deepcopy
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
@@ -58,6 +59,7 @@ if is_litellm_available():
     from litellm.caching.caching import Cache
     from litellm.utils import ModelResponse
     from litellm import BadRequestError
+    logger.info(f"LiteLLM default request timeout: {litellm.DEFAULT_REQUEST_TIMEOUT}")
 
     logging.getLogger("LiteLLM").setLevel(logging.WARNING)
     logging.getLogger("LiteLLM").handlers.clear()
@@ -224,7 +226,7 @@ class LiteLLMClient(LightevalModel):
                 if kwargs.get("max_completion_tokens", None) is None:
                     kwargs["max_completion_tokens"] = max_new_tokens
 
-                response = litellm.completion(**kwargs)
+                response = litellm.completion(**kwargs, timeout=litellm.DEFAULT_REQUEST_TIMEOUT)
 
                 # If response content is null, replace with empty string
                 if response is not None:
@@ -271,7 +273,8 @@ class LiteLLMClient(LightevalModel):
         ), f"Length of prompts, return_logitss, max_new_tokenss, num_sampless, stop_sequences, system_prompts should be the same but are {len(prompts)}, {len(return_logitss)}, {len(max_new_tokenss)}, {len(num_sampless)}, {len(stop_sequencess)}"
 
         results = []
-        with ThreadPoolExecutor(self.CONCURENT_CALLS) as executor:
+        n_concurrency = math.ceil(self.CONCURENT_CALLS / num_samples)
+        with ThreadPoolExecutor(n_concurrency) as executor:
             for entry in tqdm(
                 executor.map(
                     self.__call_api,
@@ -279,7 +282,7 @@ class LiteLLMClient(LightevalModel):
                     return_logitss,
                     max_new_tokenss,
                     num_sampless,
-                    stop_sequencess,
+                    stop_sequencess
                 ),
                 total=len(prompts),
             ):
