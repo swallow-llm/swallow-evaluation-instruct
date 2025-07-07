@@ -79,13 +79,19 @@ def aug_codegen_metric(predictions: list[str], formatted_doc: Doc, **kwargs) -> 
     }
     # This is a list of lists because
     evaluation_sample = [{"input_output": json.dumps(evaluation_sample)}]
-
-    metrics, _ = codegen_metrics(
+    
+    metrics, results = codegen_metrics(
         evaluation_sample,
         generated_code_snippets,
         k_list=[1],  # Only run for Pass@1
         num_process_evaluate=8,
     )
+    
+    # Save results in the formatted_doc
+    formatted_doc.specific["extracted_predictions"] = generated_code_snippets[0]
+    formatted_doc.specific["results"] = json.dumps(results[0])
+    formatted_doc.specific["context"] = formatted_doc.ctx
+    
     return metrics["pass@1"]
 
 
