@@ -3,6 +3,7 @@ from typing import Union, Optional
 from vllm import LLM
 from vllm.reasoning import ReasoningParserManager, ReasoningParser
 from vllm.entrypoints.openai.protocol import ChatCompletionRequest
+from lighteval.models.utils import replace_none_with_empty_string
 
 # Sourced from vLLM unittest run_reasoning_extraction() method.
 # Ref. https://github.com/vllm-project/vllm/blob/v0.9.1/tests/reasoning/utils.py#L35
@@ -11,6 +12,7 @@ def run_reasoning_extraction(model_output: str, reasoning_parser: str,
                             hf_tokenizer: Optional["transformers.PreTrainedTokenizer"] = None,
                             request: Union[ChatCompletionRequest, None] = None,
                             streaming: bool = False,
+                            replace_none_response_with_empty_string = True
 ) -> tuple[Optional[str], Optional[str]]:
     if streaming:
         raise NotImplementedError(f"Improvised reasoning extractor does not support streaming output.")
@@ -23,6 +25,7 @@ def run_reasoning_extraction(model_output: str, reasoning_parser: str,
         tokenizer = vllm_engine.get_tokenizer()
         model = getattr(tokenizer, "name_or_path", "dummy")
     
+    # ToDo: もしも非対応のモデルが現れた場合はここに reasoning-parser を追加してください．
     reasoner_cls = ReasoningParserManager.get_reasoning_parser(reasoning_parser) 
     obj_reasoning_parser = reasoner_cls(tokenizer=tokenizer)
     if request is None:
@@ -30,6 +33,10 @@ def run_reasoning_extraction(model_output: str, reasoning_parser: str,
     
     reasoning, content = run_reasoning_extraction_nonstreaming(
         obj_reasoning_parser, model_output, request)
+    if replace_none_response_with_empty_string:
+        reasoning = replace_none_with_empty_string(reasoning)
+        content = replace_none_with_empty_string(content)
+    
     return reasoning, content
     
 def run_reasoning_extraction_nonstreaming(
