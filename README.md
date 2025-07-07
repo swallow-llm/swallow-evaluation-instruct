@@ -55,8 +55,12 @@ lighteval endpoint litellm \
 ### vLLMを直接起動して評価
 [標準的な lighteval の実行方法](https://huggingface.co/docs/lighteval/quicktour)に則って，vLLMを直接起動して動かすことも可能です．  
 ただし**vLLM実行時引数のサポートが不完全なので，vLLMで推論APIを立ててからlitellmでAPIを呼び出す動かし方を推奨します．**  
+また **vLLM V0モードのみをサポートしています．** Ref. [vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)
 
 ```
+export VLLM_WORKER_MULTIPROC_METHOD=spawn
+export VLLM_USE_V1=0 # vLLM V0モード
+
 MODEL="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3"
 SYSTEM_PROMPT="あなたは誠実で優秀な日本人のアシスタントです。"
 MAX_MODEL_LENGTH=8192
