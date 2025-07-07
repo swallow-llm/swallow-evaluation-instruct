@@ -154,7 +154,6 @@ shot数，メトリック，CoT有無などの詳細な評価設定は，以下�
 * 仮想環境の構築： `pipenv install --dev --skip-lock`
     * 本来は `--skip-lock` を指定せずにモジュール間の依存関係を完全に管理すべきなんですが，vLLM, pytorch, cuda の3つが絡むと容易に依存関係のresolveに失敗するみたいです．
 * 仮想環境を有効化： `pipenv shell`
-* extractive_match_metric の単体テストを実行： `pipenv run test_extractive_match`
 * 仮想環境を抜ける： `exit`
 * 仮想環境を削除する： `pipenv --rm`
 
