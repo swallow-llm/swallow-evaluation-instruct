@@ -73,11 +73,14 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 | -- | -- | -- |
 | `NODE_KIND` | 使いたいTSUBAME4のノード．["node_q", "node_f", "cpu_16"] | 13B以下なら"node_q"，13B超なら"node_f"，OpenAIやDeepInfraのAPIを使うなら"cpu_16"を選ぶと良い．|
 | `MODEL_NAME`| 評価するモデルのHuggingFaceID．| HuggingFaceのモデルカード上部にあるコピーボタンから取得できる．|
-| `SYSTEM_MESSAGE` | 評価するモデルに渡すシステムメッセージ．| 必要な場合のみ指定．|
 | `PROVIDER` | 評価するモデルを serve するための provider．| HuggingFaceのモデルであれば"vllm"（デフォルト），OpenAI のモデルなら"openai"を指定．Deepinfra を使う場合は"deepinfra"を指定する．|
 | `PRIORITY` | 使いたいTSUBAME4における優先度．["-5", "-4", "-3"] | 数値が大きい方がジョブが流れやすくなる．しかし，それに応じて値段が2倍，4倍と高くなるので，指定する場合は要相談．|
 | `MAX_MODEL_LENGTH` | 評価するモデルの生成時に渡す引数．入力と出力の合計の最大値であり，この大きさのKV CACHEが確保される．| モデルのconfigから自動で取得を行うので基本的に指定は不要．自動取得に失敗する場合のみ指定．|
 | `MAX_COMPLETION_TOKENS` | 評価するモデルの生成時に渡す引数．出力の最大トークン数の制約である．| モデルの `MAX_MODEL_LENGTH` から自動計算されるので，基本的に指定は不要．必要な場合のみ指定．|
+
+> 📝 Note: \
+> 以下の変数は custom model setetings で設定するように変更した．(参照： [3.2 モデル固有の生成条件を追加するとき](#32-モデル固有の生成条件を追加するとき) ）
+> `SYSTEM_MESSAGE`，`MAX_MODEL_LENGTH`，`MAX_NEW_TOKENS`
 
 > 📝 Note： \
 > openaiやdeepinfraのようなAPIを使う場合はTSUBAMEでなくてもよい．
