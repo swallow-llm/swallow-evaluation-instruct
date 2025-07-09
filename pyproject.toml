@@ -1,5 +1,5 @@
 [project]
-name = "jalm-evaluation-instruct-private"
+name = "swallow-evaluation-instruct-private"
 version = "0.0.1"
 description = "beta"
 readme = "README.md"
