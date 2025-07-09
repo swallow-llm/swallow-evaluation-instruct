@@ -912,7 +912,7 @@ requires-dist = [
     { name = "sentencepiece", marker = "extra == 'auto-detector'" },
     { name = "transformers", marker = "extra == 'auto-detector'" },
     { name = "transformers", marker = "extra == 'lighteval'", specifier = ">=4.51.0,<4.53.0" },
-    { name = "vllm", marker = "extra == 'vllm'", specifier = ">=0.9" },
+    { name = "vllm", marker = "extra == 'vllm'", specifier = ">=0.9,<0.10.0" },
 ]
 provides-extras = ["auto-detector", "aggregate-results", "lighteval", "vllm"]
 
