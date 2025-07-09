@@ -5,24 +5,40 @@ set -euo pipefail
 
 
 # Load Args
-TASK_NAME=$1
-NODE_KIND=$2
-MODEL_NAME=$3
-CUSTOM_SETTINGS=$4
-REPO_PATH=$5
-PROVIDER=$6
+## Default Values
+TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; CUSTOM_SETTINGS=""; REPO_PATH=""; PROVIDER=""
+
+## Parse Args
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --task-name) TASK_NAME="$2";;
+    --node-kind) NODE_KIND="$2";;
+    --model-name) MODEL_NAME="$2";;
+    --repo-path) REPO_PATH="$2";;
+    --custom-settings) CUSTOM_SETTINGS="$2";;   # Optional
+    --provider) PROVIDER="$2";;                 # Optional
+    *) echo "Unknown option: $1" >&2;;
+  esac
+  shift 2
+done
+
+## Check Required Args
+if [[ -z "$TASK_NAME" ]] || [[ -z "$NODE_KIND" ]] || [[ -z "$MODEL_NAME" ]] || [[ -z "$REPO_PATH" ]]; then
+  echo "Error: Missing required arguments. TASK_NAME: '${TASK_NAME}', NODE_KIND: '${NODE_KIND}', MODEL_NAME: '${MODEL_NAME}', REPO_PATH: '${REPO_PATH}'" >&2
+  exit 1
+fi
 
 
 # Setup
 source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
-init_common $MODEL_NAME $NODE_KIND $REPO_PATH
+init_common "${MODEL_NAME}" "${NODE_KIND}" "${REPO_PATH}"
 get_generation_params "${CUSTOM_SETTINGS}" "${TASK_NAME}" "${REPO_PATH}" "${MODEL_NAME}"
 echo "⚙️ Generation Parameters: ${GEN_PARAMS}"
 RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"
 
 
 # Serve a LLM by using litellm
-serve_litellm $MODEL_NAME $PROVIDER $REPO_PATH "${CUSTOM_SETTINGS_SUBDIR}" "${GEN_PARAMS}" $TASK_NAME $NODE_KIND $NUM_GPUS $GPU_MEMORY_UTILIZATION $MAX_MODEL_LENGTH
+serve_litellm "${MODEL_NAME}" "${PROVIDER}" "${REPO_PATH}" "${CUSTOM_SETTINGS_SUBDIR}" "${GEN_PARAMS}" "${TASK_NAME}" "${NODE_KIND}" "${NUM_GPUS}" "${GPU_MEMORY_UTILIZATION}" "${MAX_MODEL_LENGTH}" "${REASONING_PARSER}"
 AGGREGATED_OUTPUTS_DIR="${REPO_PATH}/results/${MODEL_NAME_CONFIG}${CUSTOM_SETTINGS_SUBDIR}"
 
 

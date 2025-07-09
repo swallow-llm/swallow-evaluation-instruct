@@ -32,6 +32,7 @@
 | 2025/06/19 | 初稿 | 齋藤 |
 | 2025/07/01 | custom_settings とタスクの追加に関して追記 | 齋藤 |
 | 2025/07/02 | Provider固有の問題への対処法、モデル固有の生成条件に関する注意、計算が終わらないときの対処法をTipsに追記 | 水木 |
+| 2025/07/07 | custom_model_settings に関する追記・修正 | 齋藤 |
 
 ## 1. 環境構築
 ### 1.1 評価者固有情報の登録
@@ -45,6 +46,7 @@
 | `UV_CACHE` | UV のパッケージインストールなどに関するキャッシュを保存しておくディレクトリ．| 容量はそこまで大きくならないことが想定されるが，念の為 `/gs/bs/` 以下のディレクトリを指定するとよい．|
 | `VLLM_CACHE` | VLLM の動作に関するキャッシュを保存しておくディレクトリ．| 容量がどれほど占められるかは把握していないが，念の為`/gs/bs/` 以下のディレクトリを指定するとよい．|
 | `OPENAI_API_KEY` | MT-Bench の評価における LLM-as-a-judge で OpanAI のモデルを使用するときや，OpenAI のモデルを評価するよきに使用する． | Swallow project 用の API を指定すること．お金を消費するので要注意．|
+| `DEEPINFRA_API_KEY` | DeepInfra のモデルを評価するよきに使用する． | Swallow project 用の API を指定すること．お金を消費するので要注意．|
 | `HF_TOKEN` | HuggingFace のデータセットやモデルのインストール時に用いられるトークン．| Rate Limit の緩和や使用許可が必要なデータセット・モデルを使用する際に必要．|
 
 ### 1.2 評価者固有情報ファイルの名前変更
@@ -72,11 +74,12 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 | -- | -- | -- |
 | `NODE_KIND` | 使いたいTSUBAME4のノード．["node_q", "node_f", "cpu_16"] | 13B以下なら"node_q"，13B超なら"node_f"，OpenAIやDeepInfraのAPIを使うなら"cpu_16"を選ぶと良い．|
 | `MODEL_NAME`| 評価するモデルのHuggingFaceID．| HuggingFaceのモデルカード上部にあるコピーボタンから取得できる．|
-| `SYSTEM_MESSAGE` | 評価するモデルに渡すシステムメッセージ．| 必要な場合のみ指定．|
 | `PROVIDER` | 評価するモデルを serve するための provider．| HuggingFaceのモデルであれば"vllm"（デフォルト），OpenAI のモデルなら"openai"を指定．Deepinfra を使う場合は"deepinfra"を指定する．|
 | `PRIORITY` | 使いたいTSUBAME4における優先度．["-5", "-4", "-3"] | 数値が大きい方がジョブが流れやすくなる．しかし，それに応じて値段が2倍，4倍と高くなるので，指定する場合は要相談．|
-| `MAX_MODEL_LENGTH` | 評価するモデルの生成時に渡す引数．入力と出力の合計の最大値であり，この大きさのKV CACHEが確保される．| モデルのconfigから自動で取得を行うので基本的に指定は不要．自動取得に失敗する場合のみ指定．|
-| `MAX_COMPLETION_TOKENS` | 評価するモデルの生成時に渡す引数．出力の最大トークン数の制約である．| モデルの `MAX_MODEL_LENGTH` から自動計算されるので，基本的に指定は不要．必要な場合のみ指定．|
+
+> 📝 Note: \
+> 以下の変数は custom model setetings で設定するように変更した．(参照： [3.2 モデル固有の生成条件を追加するとき](#32-モデル固有の生成条件を追加するとき) ）
+> `SYSTEM_MESSAGE`，`MAX_MODEL_LENGTH`，`MAX_NEW_TOKENS`
 
 > 📝 Note： \
 > openaiやdeepinfraのようなAPIを使う場合はTSUBAMEでなくてもよい．
@@ -148,8 +151,9 @@ model publisher ごと，model name ごとに .yaml ファイルで定義する�
 `scripts/generation_settings/custom_model_settings/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3.yaml` \
 に定義を行えば良い．
 
-具体的な定義の仕方や定義できるパラメタについては \
-`scripts/generation_settings/custom_model_settings/template.yaml` を参照されたい．
+具体的な定義の例や定義できるパラメタについては　\
+`scripts/generation_settings/custom_model_settings/template.yaml` に書かれている．\
+必要に応じてこの `template.yaml` を複製するなどして活用してほしい．
 
 > ⚠️注意： \
 > temperature を指定する custom_model_settings は，\
@@ -242,3 +246,6 @@ lighteval endpoint litellm \
 
 基本的に計算資源の増強で解決したい．\
 しかし，それが難しい場合は，依頼者に報告したうえで，`MAX_MODEL_LENGTH` を8,192まで下げることで解決を図りたい．
+
+vLLMログに `Aborted request` が出力されている，またはlightevalログに `Timeout` が出力されている場合は，推論に時間がかかりすぎてAPI呼び出しがタイムアウトしている．  
+この場合は環境変数 `REQUEST_TIMEOUT` （単位は秒）に十分に大きな値を設定すること．

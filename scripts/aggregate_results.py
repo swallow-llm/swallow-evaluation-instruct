@@ -7,9 +7,16 @@ from typing import Any
 
 from aggregate_utils.conf import AGGREGATE_CONF
 
-def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
-    # raw_outputs_dir 内のすべての JSON ファイルを取得する
-    pattern = os.path.join(raw_outputs_dir, "*.json")
+def main(
+        model_name: str,
+        raw_results_dir: str,
+        aggregated_outputs_dir: str,
+        used_custom_settings_path: str,
+        used_custom_settings_name: str,
+        used_custom_settings_version: str,
+        ):
+    # raw_results_dir 内のすべての JSON ファイルを取得する
+    pattern = os.path.join(raw_results_dir, "*.json")
     all_results_files: list[str] = glob.glob(pattern)
 
     # 各結果ファイルからタスク名，メトリクス，必要時間，実行日時を抽出し集約する
@@ -93,7 +100,12 @@ def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
         "model": model_name,
         "results": {},
         "overall": "",
-        "tasks": []
+        "tasks": [],
+        "custom_settings": {
+            "path": used_custom_settings_path,
+            "name": used_custom_settings_name,
+            "version": used_custom_settings_version,
+        },
     }
     for conf in AGGREGATE_CONF:
         display_name = conf['display_name']
@@ -126,7 +138,11 @@ def main(model_name: str, raw_outputs_dir: str, aggregated_outputs_dir: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_name", type=str, help="処理対象のモデル名")
-    parser.add_argument("--raw_outputs_dir", type=str, help="個別結果ファイルが存在するディレクトリのパス")
+    parser.add_argument("--raw_results_dir", type=str, help="個別結果ファイルが存在するディレクトリのパス")
     parser.add_argument("--aggregated_outputs_dir", type=str, help="集約結果を保存するディレクトリのパス")
+
+    parser.add_argument("--used_custom_settings_path", type=str, help="使用したカスタム設定ファイルのパス")
+    parser.add_argument("--used_custom_settings_name", type=str, help="使用したカスタム設定の名前")
+    parser.add_argument("--used_custom_settings_version", type=str, help="使用したカスタム設定のバージョン")
     args = parser.parse_args()
     main(**vars(args))

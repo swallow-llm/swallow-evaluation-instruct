@@ -26,6 +26,8 @@ import logging
 import os
 from dataclasses import dataclass
 from typing import Optional
+import importlib_metadata as metadata
+from packaging import version
 
 import torch
 from tqdm import tqdm
@@ -46,6 +48,7 @@ from lighteval.tasks.requests import (
 )
 from lighteval.utils.imports import is_vllm_available
 from lighteval.utils.utils import EnvConfig, as_list
+from lighteval.models.vllm.utils import run_reasoning_extraction
 
 
 logger = logging.getLogger(__name__)
@@ -54,6 +57,7 @@ logger = logging.getLogger(__name__)
 if is_vllm_available():
     import ray
     from more_itertools import distribute
+    import vllm
     from vllm import LLM, SamplingParams
     from vllm.distributed.parallel_state import destroy_distributed_environment, destroy_model_parallel
     from vllm.transformers_utils.tokenizer import get_tokenizer
@@ -96,6 +100,7 @@ class VLLMModelConfig:
     )
     pairwise_tokenization: bool = False  # whether to tokenize the context and continuation separately or together.
     generation_parameters: GenerationParameters = None  # sampling parameters to use for generation
+    reasoning_parser: str | None = None # reasoning parser.
 
     subfolder: Optional[str] = None
 
@@ -186,6 +191,13 @@ class VLLMModel(LightevalModel):
             "swap_space": 4,
             "seed": config.seed,
         }
+        if config.reasoning_parser is not None:
+            self.model_args["reasoning_parser"] = config.reasoning_parser
+            # prior to vllm 0.9.0, we also need to specify `enable_reasoning` flag.
+            # Refer to: https://docs.vllm.ai/en/v0.8.5/features/reasoning_outputs.html
+            if version.parse(vllm.__version__) < version.parse("0.9.0"):
+                self.model_args["enable_reasoning"] = True
+                    
         if int(config.data_parallel_size) > 1:
             self.model_args["distributed_executor_backend"] = "ray"
             self._batch_size = "auto"
@@ -302,15 +314,26 @@ class VLLMModel(LightevalModel):
 
                 # num_samples個分の回答を格納
                 gen_texts = []
+                gen_reasoning_contents = []
                 gen_ids_list = []
                 for vllm_output in vllm_outputs:
                     gen_ids = vllm_output.token_ids
                     gen_text = vllm_output.text
+                    # reasoningモデルの場合は、最終的な回答を抽出
+                    if self._config.reasoning_parser is not None:                    
+                        reasoning, content = run_reasoning_extraction(model_output=gen_text, reasoning_parser=self._config.reasoning_parser, hf_tokenizer=self.tokenizer)
+                        
+                        gen_text = content
+                        reasoning_content = reasoning
+                    else:
+                        reasoning_content = None                    
+                    
                     for term in stop_tokens:
                         if term in gen_text:
                             gen_text = gen_text.split(term)[0]
                     gen_texts.append(gen_text)
                     gen_ids_list.append(gen_ids)
+                    gen_reasoning_contents.append(reasoning_content)
 
                 # prev_generationは1つ目の回答を使う
                 prev_generation = gen_texts[0] if gen_texts else ""
@@ -321,6 +344,7 @@ class VLLMModel(LightevalModel):
             results.append(
                 GenerativeMultiturnResponse(
                     result=turn_results,
+                    reasoning_content=None if self._config.reasoning_parser is None else gen_reasoning_contents,
                     input_tokens=turn_inputs,
                     generated_tokens=turn_gen_ids,
                     truncated_tokens_count=0,
@@ -351,7 +375,7 @@ class VLLMModel(LightevalModel):
 
         dataset = GenerativeTaskDataset(requests=requests, num_dataset_splits=self.DATASET_SPLITS)
         results = []
-
+        
         for _ in tqdm(
             dataset.splits_start_end_iterator(),
             total=dataset.num_dataset_splits,
@@ -374,6 +398,9 @@ class VLLMModel(LightevalModel):
 
             context = [c.context for c in dataset]
             tokenized = self.tokenizer(context, add_special_tokens=self.add_special_tokens)
+            
+            if returns_logits and (self._config.reasoning_parser is not None):
+                raise AttributeError(f"You cannot specify returns_logits=True and reasoning_parser simultaneously.")
 
             # The main question for this step is the following:
             # Would we rather truncate the prompt to allow generation to go to max_new_tokens, at the risk
@@ -415,16 +442,26 @@ class VLLMModel(LightevalModel):
             for vllm_output in vllm_outputs:
                 output_token_ids = [outputs.token_ids for outputs in vllm_output.outputs]
                 logprobs = [output.logprobs for output in vllm_output.outputs] or []
-                logprobs = [logprob[token_id].logprob for token_id, logprob in zip(output_token_ids[0], logprobs[0])]
-                result = [output.text for output in vllm_output.outputs]
+                logprobs = [logprob[token_id].logprob for token_id, logprob in zip(output_token_ids[0], logprobs[0])]                
                 input_token_ids = vllm_output.prompt_token_ids
-
+                
+                if self._config.reasoning_parser is not None:
+                    result = []; reasoning_content = []
+                    for output in vllm_output.outputs:
+                        reasoning, content = run_reasoning_extraction(model_output=output.text, reasoning_parser=self._config.reasoning_parser, hf_tokenizer=self.tokenizer)
+                        result.append(content)
+                        reasoning_content.append(reasoning)
+                else:
+                    result = [output.text for output in vllm_output.outputs]
+                    reasoning_content = None
+                    
                 cur_response = GenerativeResponse(
                     result=result,
+                    reasoning_content=reasoning_content,
                     logits=logprobs,
                     generated_tokens=list(output_token_ids),
                     input_tokens=input_token_ids,
-                )
+                )                
                 results.append(cur_response)
 
         return dataset.get_original_order(results)

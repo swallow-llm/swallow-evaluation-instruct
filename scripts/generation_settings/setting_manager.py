@@ -10,6 +10,8 @@ SUPPORTED_PARAMS = [
     "temperature",
     "top_p",
     "max_n",
+    "reasoning_parser",
+    "vllm_use_v1",
 ]
 
 CONFIG_YAML_PARAMETERS = [
@@ -25,6 +27,8 @@ SHELL_OUTPUT_PARAMETERS = {
     # These parameters will be output in the standard output in the order of the list.
     # The order must match the order of the parameters in get_generation_params().
     "max_model_length": -1, # used to serve a LLM with vllm
+    "reasoning_parser": "", # used to serve a LLM with vllm
+    "vllm_use_v1": 1,       # used to serve a LLM with vllm
     "system_message": "",   # used to launch evaluation with lighteval
 }
 
