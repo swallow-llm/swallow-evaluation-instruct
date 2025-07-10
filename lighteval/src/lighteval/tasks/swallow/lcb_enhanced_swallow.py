@@ -3,6 +3,8 @@
 # LiveCodeBench swallowカスタム強化版
 
 from typing import Any
+from functools import partial
+
 import numpy as np
 from aenum import extend_enum
 from datasets import get_dataset_config_names
@@ -65,10 +67,10 @@ def extract_last_code_block(model_output: str) -> str:
     return codes[-1] if len(codes) > 0 else model_output
 
 
-def aug_codegen_metric(predictions: list[str], formatted_doc: Doc, **kwargs) -> float:
-    """Estimates the Pass@1 metric for the code generation task.
+def aug_codegen_metric_passk(predictions: list[str], formatted_doc: Doc, k: int , **kwargs) -> float:
+    """Estimates the Pass@k metric for the code generation task.
     Extract the code from each prediction, Runs it for each sample and generations,
-    and computes the Pass@1 over the outputs.
+    and computes the Pass@k over the outputs.
     """
     # Extract generated code snippets
     generated_code_snippets = [[extract_last_code_block(pred) for pred in predictions]]  # noqa: F841
@@ -83,7 +85,7 @@ def aug_codegen_metric(predictions: list[str], formatted_doc: Doc, **kwargs) -> 
     metrics, results = codegen_metrics(
         evaluation_sample,
         generated_code_snippets,
-        k_list=[1],  # Only run for Pass@1
+        k_list=[k],
         num_process_evaluate=8,
     )
     
@@ -92,26 +94,40 @@ def aug_codegen_metric(predictions: list[str], formatted_doc: Doc, **kwargs) -> 
     formatted_doc.specific["results"] = json.dumps(results[0])
     formatted_doc.specific["context"] = formatted_doc.ctx
     
-    return metrics["pass@1"]
+    return metrics[f"pass@{k}"]
 
+## Create metrics for different k values
+NUM_SAMPLES = 10
 
-
-# metricだけサンプル数10で新規定義
-lcb_aug_codegenmetric_pass_at_k_n10 = SampleLevelMetric(
-    metric_name="codegen_pass@1:10",
+codegen_metric_passk_1 = partial(aug_codegen_metric_passk, k=1)
+lcb_aug_codegenmetric_passk_1 = SampleLevelMetric(
+    metric_name=f"codegen_pass@1:{NUM_SAMPLES}",
     category=MetricCategory.GENERATIVE_SAMPLING,
     use_case=MetricUseCase.REASONING,
     higher_is_better=True,
-    sample_level_fn=aug_codegen_metric,
+    sample_level_fn=codegen_metric_passk_1,
     corpus_level_fn=np.mean,
 )
-extend_enum(Metrics, "lcb_aug_codegenmetric_pass_at_k_n10", lcb_aug_codegenmetric_pass_at_k_n10)
+
+codegen_metric_passk_10 = partial(aug_codegen_metric_passk, k=10)
+lcb_aug_codegenmetric_passk_10 = SampleLevelMetric(
+    metric_name=f"codegen_pass@1:{NUM_SAMPLES}",
+    category=MetricCategory.GENERATIVE_SAMPLING,
+    use_case=MetricUseCase.REASONING,
+    higher_is_better=True,
+    sample_level_fn=codegen_metric_passk_10,
+    corpus_level_fn=np.mean,
+)
+
+## Register both metrics
+extend_enum(Metrics, "lcb_aug_pass_1", lcb_aug_codegenmetric_passk_1)
+extend_enum(Metrics, "lcb_aug_pass_10", lcb_aug_codegenmetric_passk_10)
 
 configs = get_dataset_config_names("livecodebench/code_generation_lite", trust_remote_code=True)
 
 lcb_aug_swallow_tasks = []
 for subset in configs:
-    name = "lcb_aug:codegeneration" if subset == "v4_v5" else f"lcb_aug:codegeneration_{subset}"
+    name = "lcb_aug:codegeneration" if subset == "v5_v6" else f"lcb_aug:codegeneration_{subset}"
     task = LightevalTaskConfig(
         name=name,
         suite=["swallow"],
@@ -121,7 +137,7 @@ for subset in configs:
         hf_avail_splits=["test"],
         evaluation_splits=["test"],
         generation_size=None,
-        metric=[Metrics.lcb_aug_codegenmetric_pass_at_k_n10],
+        metric=[Metrics.lcb_aug_pass_1, Metrics.lcb_aug_pass_10],
         stop_sequence=[],
         trust_dataset=True,
         version=0,
