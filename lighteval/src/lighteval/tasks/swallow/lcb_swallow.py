@@ -21,7 +21,7 @@ lcb_codegenmetric_pass_at_k_n10 = SampleLevelMetric(
 )
 extend_enum(Metrics, "lcb_codegenmetric_pass_at_k_n10", lcb_codegenmetric_pass_at_k_n10)
 
-configs = get_dataset_config_names("livecodebench/code_generation_lite", trust_remote_code=True)
+configs = get_dataset_config_names("livecodebench/code_generation_lite")
 
 lcb_swallow_tasks = []
 for subset in configs:
