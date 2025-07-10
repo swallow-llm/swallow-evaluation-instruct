@@ -77,6 +77,7 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 | `PROVIDER` | 評価するモデルを serve するための provider．| HuggingFaceのモデルであれば"vllm"（デフォルト），OpenAI のモデルなら"openai"を指定．Deepinfra を使う場合は"deepinfra"を指定する．|
 | `PRIORITY` | 使いたいTSUBAME4における優先度．["-5", "-4", "-3"] | 数値が大きい方がジョブが流れやすくなる．しかし，それに応じて値段が2倍，4倍と高くなるので，指定する場合は要相談．|
 | `CUSTOM_SETTINGS` | 使いたい custom model settings の名前．| 例：`default`，`reasoning`，`code`． |
+| `PREDOWNLOAD_MODEL` | ジョブを投げる前に HuggingFace からモデルをダウンロードするかどうかの設定．| OpenAI や DeepInfra のモデルを評価する場合は必ず `false` にすること． |
 
 > 📝 Note: \
 > 以下の変数は custom model setetings で設定するように変更した．(参照： [3.2 モデル固有の生成条件を追加するとき](#32-モデル固有の生成条件を追加するとき) ）\
