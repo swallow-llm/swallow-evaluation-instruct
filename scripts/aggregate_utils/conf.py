@@ -1094,9 +1094,9 @@ AGGREGATE_CONF = [
         }
     },
     # LiveCodeBench v5 & v6 の設問
-    # 指標名を Pass@1:10 （=10回試行で推定したPass@1）に変更した
+    # 指標名を Pass@k:10 （=10回試行で推定したPass@1）に変更した
     {
-        "display_name": "livecodebench_v5_v6",
+        "display_name": "livecodebench_v5_v6_pass@1",
         "func": pick,
         "func_args": {
             'metric_key': 'codegen_pass@1:10'
@@ -1105,5 +1105,14 @@ AGGREGATE_CONF = [
             'task_key': 'swallow|lcb:codegeneration_v5_v6|0'
         }
     },
-    # ToDo: MMLU-Pro, MMLU の追加
+    {
+        "display_name": "livecodebench_v5_v6_pass@10",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'codegen_pass@10:10'
+        }, 
+        'target': {
+            'task_key': 'swallow|lcb:codegeneration_v5_v6|0'
+        }
+    },
 ]
