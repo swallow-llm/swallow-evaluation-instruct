@@ -7,7 +7,7 @@
 # - top_p
 # - max_n
 # - reasoning_parser (Set a proper parser if the model supports reasoning tags. Available parsers: https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)
-# - vllm_use_v1 (Set 0 if the model is incompatible with FlashAttention-2. Official documentation: https://docs.vllm.ai/en/stable/configuration/env_vars.html)
+# - vllm_use_v1 (This option will be deprecated. Please don't use it. Official documentation: https://docs.vllm.ai/en/stable/configuration/env_vars.html)
 
 # 'version' is the version of the custom settings.
 # You should update this value if you make any changes to the settings.
@@ -35,10 +35,5 @@ reasoning:
   temperature: 1.0
   top_p: 0.95
   reasoning_parser: "deepseek-r1"
-  version: "1"
-
-flashattn_incompatible:
-  # settings for models incompatible with flashattn v1 (e.g. sarashina2.2-1b-instruct-v0.1).
-  vllm_use_v1: 0
   version: "1"
 
