@@ -79,7 +79,7 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 | `CUSTOM_SETTINGS` | 使いたい custom model settings の名前．| 例：`default`，`reasoning`，`code`． |
 
 > 📝 Note: \
-> 以下の変数は custom model setetings で設定するように変更した．(参照： [3.2 モデル固有の生成条件を追加するとき](#32-モデル固有の生成条件を追加するとき) ）
+> 以下の変数は custom model setetings で設定するように変更した．(参照： [3.2 モデル固有の生成条件を追加するとき](#32-モデル固有の生成条件を追加するとき) ）\
 > `SYSTEM_MESSAGE`，`MAX_MODEL_LENGTH`，`MAX_NEW_TOKENS`
 
 > 📝 Note： \
