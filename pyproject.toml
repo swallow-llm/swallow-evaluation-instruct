@@ -19,9 +19,10 @@ aggregate_results = [
 ]
 
 lighteval = [
-    "lighteval[math,extended_tasks,litellm]",
+    "lighteval[math,extended_tasks,litellm,vllm]",
     "transformers>=4.51.0,<4.53.0", # Set the floor to allow evaluation of the latest models; Set the ceiling to avoid collapsing Gemma3's generation.
     "openai>=1.40.0", # Set the floor to avoid using deprecated names.
+    "datasets<4.0.0", # Set the ceiling to avoid errors due to breaking changes
 ]
 
 vllm = [

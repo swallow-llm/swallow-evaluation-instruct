@@ -63,6 +63,7 @@ source "${REPO_PATH}/.common_envs/bin/activate"
 echo "📥 Installing utilities..."
 uv pip install --upgrade pip setuptools wheel
 uv pip install pre-commit huggingface_hub[cli]
+uv pip install pandas pyarrow fastparquet ipykernel
 deactivate
 
 echo "🔗 Added virtual-env bin dir to PATH in .bashrc"
