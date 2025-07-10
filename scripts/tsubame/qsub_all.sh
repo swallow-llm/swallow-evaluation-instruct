@@ -13,6 +13,7 @@ MODEL_NAME=""               # A model name (HuggingFace ID) to use.
 PROVIDER="vllm"             # Default: "vllm". A provider to host the model. ["vllm", "openai", "deepinfra"]
 PRIORITY="-5"               # Default: "-5". A priority of the job. Note that double priority is double cost. ["-5", "-4", "-3"]
 CUSTOM_SETTINGS=""          # Default: "". A custom setting name to use. (e.g. "reasoning", "coding", "flashattn_incompatible")
+PREDOWNLOAD_MODEL="true"    # Default: "true". A pre-download model name to use. (e.g. "meta-llama/Llama-3.1-8B-Instruct")
 
 ########################################################
 
@@ -44,6 +45,17 @@ if [[ -n "${CUSTOM_SETTINGS}" ]]; then
 fi
 if [[ -n "${PROVIDER}" ]]; then
   OPTIONAL_ARGS="${OPTIONAL_ARGS} --provider ${PROVIDER}"
+fi
+
+# Pre-download the model
+if [ ${PREDOWNLOAD_MODEL} = "true" ]; then
+  source "${REPO_PATH}/.common_envs/bin/activate"
+  echo "🤖 Downloading ${MODEL_NAME} ..."
+  huggingface-cli download $MODEL_NAME --cache-dir $HUGGINGFACE_CACHE --token $HF_TOKEN
+  deactivate
+  echo "✅ \`${MODEL_NAME}\` was successfully downloaded at \`${HUGGINGFACE_CACHE}\`."
+else
+  echo "⏭️ Skipping pre-downloading model."
 fi
 
 # Define qsub-function
