@@ -111,7 +111,7 @@ lcb_aug_codegenmetric_passk_1 = SampleLevelMetric(
 
 codegen_metric_passk_10 = partial(aug_codegen_metric_passk, k=10)
 lcb_aug_codegenmetric_passk_10 = SampleLevelMetric(
-    metric_name=f"codegen_pass@1:{NUM_SAMPLES}",
+    metric_name=f"codegen_pass@10:{NUM_SAMPLES}",
     category=MetricCategory.GENERATIVE_SAMPLING,
     use_case=MetricUseCase.REASONING,
     higher_is_better=True,
