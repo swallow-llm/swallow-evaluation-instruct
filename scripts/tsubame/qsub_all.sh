@@ -49,6 +49,10 @@ fi
 
 # Pre-download the model
 if [ ${PREDOWNLOAD_MODEL} = "true" ]; then
+  if [ ${PROVIDER} != "vllm" ]; then
+    echo "☠️ Error: Pre-downloading is only supported for vLLM. Please set PREDOWNLOAD_MODEL=false."
+    exit 1
+  fi
   source "${REPO_PATH}/.common_envs/bin/activate"
   echo "🤖 Downloading ${MODEL_NAME} ..."
   huggingface-cli download $MODEL_NAME --cache-dir $HUGGINGFACE_CACHE --token $HF_TOKEN
