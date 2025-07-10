@@ -16,7 +16,7 @@ MODEL_NAME=""               # A model name (HuggingFace ID) to use.
 ## Special Settings
 PROVIDER="vllm"             # Default: vllm. A provider to host the model. [vllm, openai, deepinfra]
 PRIORITY="-5"               # Default: -5. A priority of the job. Note that double priority is double cost. [-5, -4, -3]
-CUSTOM_SETTINGS=""          # Default: "". A custom settings to use.
+CUSTOM_SETTINGS=""          # Default: "". A custom setting name to use. (e.g. "reasoning", "coding", "flashattn_incompatible")
 
 ## Task Settings
 lang=""
