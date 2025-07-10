@@ -1,5 +1,5 @@
 [project]
-name = "jalm-evaluation-instruct-private"
+name = "swallow-evaluation-instruct-private"
 version = "0.0.1"
 description = "beta"
 readme = "README.md"
@@ -19,13 +19,14 @@ aggregate_results = [
 ]
 
 lighteval = [
-    "lighteval[math,extended_tasks,litellm]",
-    "transformers>=4.51.0", # Set the floor to allow evaluation of the latest models: Llama 4, Phi4-Multimodal, DeepSeek-v3, Qwen3.
+    "lighteval[math,extended_tasks,litellm,vllm]",
+    "transformers>=4.51.0,<4.53.0", # Set the floor to allow evaluation of the latest models; Set the ceiling to avoid collapsing Gemma3's generation.
     "openai>=1.40.0", # Set the floor to avoid using deprecated names.
+    "datasets<4.0.0", # Set the ceiling to avoid errors due to breaking changes
 ]
 
 vllm = [
-  "vllm>=0.9", # Set the floor to use --reasoning-parser without setting --enable-reasoning
+  "vllm>=0.9,<0.10.0", # Set the floor to use --reasoning-parser without setting --enable-reasoning; Set the ceiling to use vllm v0 engine.
 ]
 
 

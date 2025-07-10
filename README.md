@@ -8,7 +8,7 @@ Swallowプロジェクト，特にTSUBAMEでの評価作業に特化したマニ
 
 
 ## 実行方法
-vLLMで推論APIを立ててからlitellm経由でAPIを呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)のようなvLLMの豊富な機能を活用しながら評価を実行できます．  
+vLLM serveコマンドで推論APIを立ててからlitellm経由でAPIを呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)のようなvLLMの豊富な機能を活用しながら評価を実行できます．  
 実行例は以下の通り．  
 
 ```
@@ -54,7 +54,7 @@ lighteval endpoint litellm \
 
 ### vLLMを直接起動して評価
 [標準的な lighteval の実行方法](https://huggingface.co/docs/lighteval/quicktour)に則って，vLLMを直接起動して動かすことも可能です．  
-ただし**vLLM実行時引数のサポートが不完全なので，vLLMで推論APIを立ててからlitellmでAPIを呼び出す動かし方を推奨します．**  
+ただし**vLLM実行時引数のサポートが不完全なので，冒頭で紹介しているvLLM serveで推論APIを立ててからlitellmで呼び出す動かし方を推奨します．**  
 また **vLLM V0モードのみをサポートしています．** Ref. [vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)
 
 ```
@@ -96,8 +96,8 @@ ligiteval の `--tasks` として指定できるように [lighteval/tasks/swall
 * 英語MT-Bench: `swallow|english_mt_bench`
 * MMLU-Pro: `swallow|mmlu_pro_english`
 * MMLU-ProX: `swallow|mmlu_prox_english`
-* MMLU: `mmlu_english`
-    * 既存実装 helm|mmlu は選択肢だけ出力する短答を想定した実装になっている（Ref. [コード](https://github.com/swallow-llm/swallow-evaluation-instruct-private/blob/main/lighteval/src/lighteval/tasks/default_tasks.py#L10310)）ので，"考えてから回答する"スタイルで実装し直したもの．  
+* MMLU: `swallow|mmlu_english`
+    * 既存実装 `helm|mmlu` は選択肢だけ出力する短答を想定した実装になっている（Ref. [コード](https://github.com/swallow-llm/swallow-evaluation-instruct-private/blob/main/lighteval/src/lighteval/tasks/default_tasks.py#L10310)）ので，"考えてから回答する"スタイルで実装し直したもの．  
 
 MMLU, MMLU-Pro, MMLU-ProX はタスクIDが似ていますので取り違えに注意してください．  
 
@@ -154,7 +154,6 @@ shot数，メトリック，CoT有無などの詳細な評価設定は，以下�
 * 仮想環境の構築： `pipenv install --dev --skip-lock`
     * 本来は `--skip-lock` を指定せずにモジュール間の依存関係を完全に管理すべきなんですが，vLLM, pytorch, cuda の3つが絡むと容易に依存関係のresolveに失敗するみたいです．
 * 仮想環境を有効化： `pipenv shell`
-* extractive_match_metric の単体テストを実行： `pipenv run test_extractive_match`
 * 仮想環境を抜ける： `exit`
 * 仮想環境を削除する： `pipenv --rm`
 

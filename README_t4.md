@@ -19,7 +19,7 @@
 >   - [3.1 タスクを追加するときに](#31-タスクを追加するときに)
 >   - [3.2 モデル固有の生成条件を追加するとき](#32-モデル固有の生成条件を追加するとき)
 >   - [3.3 各モデル用のディレクトリについて](#33-各モデル用のディレクトリについて)
->   - [3.4 各モデル用のディレクトリについて](#34-特定のproviderでエラーが出る場合の対応)
+>   - [3.4 特定のproviderでエラーが出る場合の対応](#34-特定のproviderでエラーが出る場合の対応)
 >   - [3.5 並列応答数を強制的に1にする方法](#35-並列応答数を強制的に1にする方法)
 >   - [3.6 評価がいつまでたっても終わらない場合](#36-評価がいつまでたっても終わらない場合)
 
@@ -76,9 +76,11 @@ bash scripts/tsubame/environment/setup_t4_uv_envs.sh
 | `MODEL_NAME`| 評価するモデルのHuggingFaceID．| HuggingFaceのモデルカード上部にあるコピーボタンから取得できる．|
 | `PROVIDER` | 評価するモデルを serve するための provider．| HuggingFaceのモデルであれば"vllm"（デフォルト），OpenAI のモデルなら"openai"を指定．Deepinfra を使う場合は"deepinfra"を指定する．|
 | `PRIORITY` | 使いたいTSUBAME4における優先度．["-5", "-4", "-3"] | 数値が大きい方がジョブが流れやすくなる．しかし，それに応じて値段が2倍，4倍と高くなるので，指定する場合は要相談．|
+| `CUSTOM_SETTINGS` | 使いたい custom model settings の名前．| 例：`default`，`reasoning`，`code`． |
+| `PREDOWNLOAD_MODEL` | ジョブを投げる前に HuggingFace からモデルをダウンロードするかどうかの設定．| OpenAI や DeepInfra のモデルを評価する場合は必ず `false` にすること． |
 
 > 📝 Note: \
-> 以下の変数は custom model setetings で設定するように変更した．(参照： [3.2 モデル固有の生成条件を追加するとき](#32-モデル固有の生成条件を追加するとき) ）
+> 以下の変数は custom model setetings で設定するように変更した．(参照： [3.2 モデル固有の生成条件を追加するとき](#32-モデル固有の生成条件を追加するとき) ）\
 > `SYSTEM_MESSAGE`，`MAX_MODEL_LENGTH`，`MAX_NEW_TOKENS`
 
 > 📝 Note： \
@@ -240,12 +242,39 @@ lighteval endpoint litellm \
 ### 3.6 評価がいつまでたっても終わらない場合
 
 評価がいつまでたっても終わらない場合は，\
-1 ) repetitionが多発してvLLMのスループットが極端に低下している または 2 ) 計算資源が足りない のどちらかが疑われる． \
-このような場合はvLLMログを見てスループットの極端な低下やKV Cache不足のWARNING多発を確認してほしい．
+1 ) 並列処理数が少なすぎる 2 ) repetitionが多発してvLLMのスループットが極端に低下している または 3 ) 計算資源が足りない が疑われる． \
+このような場合はGPUステータスやvLLMログを見て，スループットの極端な低下やKV Cache不足のWARNING多発など原因の手がかりを確認してほしい．
 - Ref. [vLLM Optimization and Tuning](https://docs.vllm.ai/en/latest/configuration/optimization.htm)
 
-基本的に計算資源の増強で解決したい．\
-しかし，それが難しい場合は，依頼者に報告したうえで，`MAX_MODEL_LENGTH` を8,192まで下げることで解決を図りたい．
+#### 1) 並列処理数が少なすぎる
+
+`nvidia-smi` コマンド等で表示できるGPUステータスで使用率が80%未満の場合は，推論リクエストの並列処理数を増やして高速化できる． \
+．環境変数 `LITELLM_CONCURRENT_CALLS` で指定し，vLLMログに表示される "Avg generation throughput" の値が大きくなれば効果あり．  
+
+> 🗒️ Note： \
+> デフォルト値は20．
+
+並列処理数の目安は 8Bパラメータ を H100 MEM80GB x1 で推論するケースで 50--100 くらい．  
+ぴったり最適化する意味はあまりないので，GPU枚数やGPUメモリ容量に比例および，モデルパラメータ数に反比例させて大雑把に調整するとよい．
+
+OpenAIなどの外部プロバイダで推論する場合も同じく `LITELLM_CONCURRENT_CALLS` で並列処理数を増やせる．
+APIのレートリミットを確認しながら50--100くらいに調整してみてほしい．
+
+> ⚠️ 注意： \
+> 並列応答数 `n` > 1 のベンチマークについては，実際の並列処理数が `LITELLM_CONCURRENT_CALLS` / `n` と少なくなる．  
+> 例えば n=10 なら `LITELLM_CONCURRENT_CALLS` で指定した並列処理数の10分の1になるので注意．
+
+#### 2) repetitionが多発してスループットが極端に低下している
+
+max-samples=10くらいに設定してモデルが生成した回答を眺めてみて，延々と同じ文字列を繰り返すrepetitionが起きているかを確認してほしい．  
+経験的には推論型モデル，および LiveCodeBench や MATH-500 など数学・科学のベンチマークでrepetitionが起きやすい．  
+
+> 🗒️ Note: \
+> repetitionの問題は，基本的には計算資源の増強で解決したい．\
+> それが難しい場合には，依頼者に報告したうえで，`MAX_MODEL_LENGTH` を8,192まで下げることで解決を図ってほしい．\
+> 推論型モデルの場合は temperature を0.6に上げたり top_p を0.95に下げたりする選択肢もあるが，モデル間の公平性が損なわれるので最後の手段である．
+
+#### 3 ) 計算資源が足りない
 
 vLLMログに `Aborted request` が出力されている，またはlightevalログに `Timeout` が出力されている場合は，推論に時間がかかりすぎてAPI呼び出しがタイムアウトしている．  
 この場合は環境変数 `REQUEST_TIMEOUT` （単位は秒）に十分に大きな値を設定すること．

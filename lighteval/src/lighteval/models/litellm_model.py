@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
 import logging
 import time
 import math
@@ -49,7 +50,7 @@ from lighteval.tasks.requests import (
     LoglikelihoodSingleTokenRequest,
 )
 from lighteval.utils.imports import is_litellm_available
-from lighteval.models.utils import replace_none_with_empty_string
+from lighteval.models.utils import replace_none_with_empty_string, replace_none_content_with_reasoning_content
 
 logger = logging.getLogger(__name__)
 
@@ -143,7 +144,7 @@ class LiteLLMClient(LightevalModel):
         self.API_MAX_RETRY = 5
         self.API_RETRY_SLEEP = 3
         self.API_RETRY_MULTIPLIER = 2
-        self.CONCURENT_CALLS = 20  # 100 leads to hitting Anthropic rate limits
+        self.CONCURENT_CALLS = int(os.getenv("LITELLM_CONCURRENT_CALLS", 20))  # 100 leads to hitting Anthropic rate limits
 
         self._tokenizer = encode
         self.pairwise_tokenization = False
@@ -232,9 +233,8 @@ class LiteLLMClient(LightevalModel):
                 if response is not None:
                     for choice in response.choices:
                         if choice.message.content is None:
-                            logger.info("Response is empty, replacing with empty string.")
-                            choice.message.content = replace_none_with_empty_string(choice.message.content)                    
-                    
+                            logger.info("Response is empty, replacing with reasoning content.")
+                            choice.message.content = replace_none_content_with_reasoning_content(choice.message)
                 return response
             except litellm.BadRequestError as e:
                 logger.error(f"BadRequestError in API call: {e}")

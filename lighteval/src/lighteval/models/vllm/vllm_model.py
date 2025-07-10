@@ -321,7 +321,12 @@ class VLLMModel(LightevalModel):
                     gen_text = vllm_output.text
                     # reasoningモデルの場合は、最終的な回答を抽出
                     if self._config.reasoning_parser is not None:                    
-                        reasoning, content = run_reasoning_extraction(model_output=gen_text, reasoning_parser=self._config.reasoning_parser, hf_tokenizer=self.tokenizer)
+                        reasoning, content = run_reasoning_extraction(
+                            model_output=gen_text,
+                            reasoning_parser=self._config.reasoning_parser,
+                            hf_tokenizer=self.tokenizer,
+                            replace_none_content_with_reasoning_content=True
+                        )
                         
                         gen_text = content
                         reasoning_content = reasoning
@@ -448,7 +453,12 @@ class VLLMModel(LightevalModel):
                 if self._config.reasoning_parser is not None:
                     result = []; reasoning_content = []
                     for output in vllm_output.outputs:
-                        reasoning, content = run_reasoning_extraction(model_output=output.text, reasoning_parser=self._config.reasoning_parser, hf_tokenizer=self.tokenizer)
+                        reasoning, content = run_reasoning_extraction(
+                            model_output=output.text,
+                            reasoning_parser=self._config.reasoning_parser,
+                            hf_tokenizer=self.tokenizer,
+                            replace_none_content_with_reasoning_content=True
+                        )
                         result.append(content)
                         reasoning_content.append(reasoning)
                 else:

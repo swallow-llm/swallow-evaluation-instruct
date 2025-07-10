@@ -27,7 +27,7 @@ from typing import Optional, Union
 import torch
 from huggingface_hub import HfApi
 from transformers import AutoConfig
-
+from litellm.types.utils import Message
 
 def _get_dtype(dtype: Union[str, torch.dtype, None], config: Optional[AutoConfig] = None) -> Optional[torch.dtype]:
     """
@@ -108,3 +108,24 @@ def replace_none_with_empty_string(string_or_none: Union[str, None]) -> str:
         return ""
     else:
         return string_or_none
+    
+def replace_none_content_with_reasoning_content(message: Message) -> str:
+    """
+    MessageオブジェクトのcontentがNoneの場合、reasoning_content属性を返します。
+    両方ともNoneの場合は空文字列を返します。
+
+    Args:
+        message (Message): contentおよびreasoning_content属性を持つMessageオブジェクト
+
+    Returns:
+        str: contentがNoneでなければそのまま、contentがNoneかつreasoning_contentが存在すればその値、どちらもNoneなら空文字列
+    """
+    if message is None:
+        return ""
+    if message.content is None:
+        response = getattr(message, "reasoning_content", "")
+        response = "" if response is None else response
+    else:
+        response = message.content
+    
+    return response
