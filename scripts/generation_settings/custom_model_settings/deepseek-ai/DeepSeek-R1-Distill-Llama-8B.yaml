@@ -14,11 +14,11 @@
 reasoning:
   temperature: 0.6
   top_p: 0.95
-  reasoning_parser: "deepseek-r1"
+  reasoning_parser: "deepseek_r1"
   version: "1"
 
 
 reasoning_no_temp:
   top_p: 0.95
-  reasoning_parser: "deepseek-r1"
+  reasoning_parser: "deepseek_r1"
   version: "1"
