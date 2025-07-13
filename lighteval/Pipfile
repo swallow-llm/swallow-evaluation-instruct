@@ -41,6 +41,7 @@ markdown-it-py = "*"
 beautifulsoup4 = "<5.0.0"
 openai = ">=1.4.0"
 more-itertools = "*"
+datasets = "<4.0.0"
 
 [dev-packages]
 lighteval = { path = "./", editable = true, extras = ["tests", "multilingual", "math", "extended_tasks"] }
