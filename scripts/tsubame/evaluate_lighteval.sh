@@ -53,11 +53,11 @@ echo "🏃 Run Evaluation..."
 start_time=$(date +%s)
 uv run $UV_OPTIONS --extra lighteval \
  lighteval endpoint litellm $MODEL_CONFIG_PATH $TASK_DEF \
-    --system-prompt "${SYSTEM_MESSAGE}" \
     --use-chat-template \
     --output-dir "${RAW_OUTPUT_DIR}" \
     --output-subdir "${CUSTOM_SETTINGS_SUBDIR}" \
-    --save-details
+    --save-details \
+    ${OPTIONAL_ARGS_FOR_LIGHTEVAL}
 end_time=$(date +%s)
 elapsed=$(( end_time - start_time ))
 echo "⌚️ Elapsed time: ${elapsed} seconds"
