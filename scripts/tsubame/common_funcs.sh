@@ -112,6 +112,7 @@ serve_litellm(){
     # - MODEL_NAME_CONFIG
     # - MAX_MODEL_LENGTH
     # - MODEL_CONFIG_PATH
+    # - VLLM_SERVER_PID
     
     # Load Args
     MODEL_NAME=$1
@@ -244,6 +245,7 @@ PY
                 --dtype bfloat16 \
                 $REASONING_PARSER_PARAM \
                 1>&2 &
+        VLLM_SERVER_PID=$!
 
         ## Wait for server to start
         echo "🔍 Waiting for vllm server to start..."
@@ -290,6 +292,28 @@ EOL
 
     # Serving is done
     echo "🎉 Serving is done."
+}
+
+
+stop_vllm_server(){
+    # Load Args
+    local vllm_pid=$1
+
+    # Stop vllm server
+    kill $vllm_pid 2>/dev/null
+
+    echo "🔍 Waiting for VLLM server to stop..."
+    KILL_WAIT_TIME=10
+    for ((i=0; i<KILL_WAIT_TIME; i++)); do
+        kill -0 "$vllm_pid" 2>/dev/null || break
+        sleep 1
+    done
+
+    if kill -0 "$vllm_pid" 2>/dev/null; then
+        echo "❌ VLLM server is still running. Force killing it..."
+        kill -9 "$vllm_pid"
+    fi
+    echo "✅ VLLM server is stopped."
 }
 
 

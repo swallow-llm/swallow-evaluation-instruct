@@ -63,5 +63,9 @@ elapsed=$(( end_time - start_time ))
 echo "⌚️ Elapsed time: ${elapsed} seconds"
 
 
+# Stop VLLM Server
+stop_vllm_server "${VLLM_SERVER_PID}"
+
+
 # Aggregate Results
 aggregate_result "${MODEL_NAME_CONFIG}" "${RAW_RESULT_DIR}" "${AGGREGATED_OUTPUTS_DIR}" "${REPO_PATH}" "${CUSTOM_SETTINGS_PATH}" "${CUSTOM_SETTINGS_NAME}" "${CUSTOM_SETTINGS_VERSION}"
