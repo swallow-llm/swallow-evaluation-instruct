@@ -92,7 +92,6 @@ def codegen_metric_passk(predictions: list[str], formatted_doc: Doc, k: int , **
     # Save results in the formatted_doc
     formatted_doc.specific["extracted_predictions"] = generated_code_snippets[0]
     formatted_doc.specific["results"] = json.dumps(results[0])
-    formatted_doc.specific["context"] = formatted_doc.ctx
     
     return metrics[f"pass@{k}"]
 
