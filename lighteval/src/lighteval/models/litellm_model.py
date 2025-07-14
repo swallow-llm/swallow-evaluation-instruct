@@ -224,6 +224,12 @@ class LiteLLMClient(LightevalModel):
                 else:
                     kwargs.update(self.generation_parameters.to_litellm_dict())
 
+                # reasoning_effort をサポートするモデルのみ追加
+                if litellm.supports_reasoning(model=self.model):
+                    if getattr(self.generation_parameters, "reasoning_effort", None) is not None:
+                        kwargs["reasoning_effort"] = self.generation_parameters.reasoning_effort
+                        logger.info(f"Set reasoning_effort: {self.generation_parameters.reasoning_effort}")
+
                 if kwargs.get("max_completion_tokens", None) is None:
                     kwargs["max_completion_tokens"] = max_new_tokens
 
