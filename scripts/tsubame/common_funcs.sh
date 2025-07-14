@@ -301,7 +301,18 @@ stop_vllm_server(){
 
     # Stop vllm server
     kill $vllm_pid 2>/dev/null
-    wait $vllm_pid 2>/dev/null
+
+    echo "🔍 Waiting for VLLM server to stop..."
+    KILL_WAIT_TIME=10
+    for ((i=0; i<KILL_WAIT_TIME; i++)); do
+        kill -0 "$vllm_pid" 2>/dev/null || break
+        sleep 1
+    done
+
+    if kill -0 "$vllm_pid" 2>/dev/null; then
+        echo "❌ VLLM server is still running. Force killing it..."
+        kill -9 "$vllm_pid"
+    fi
     echo "✅ VLLM server is stopped."
 }
 
