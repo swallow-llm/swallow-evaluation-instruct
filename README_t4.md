@@ -127,6 +127,18 @@ bash scripts/tsubame/utils/save_and_check_qstat.sh
 `.pqt`ファイルは pandas を用いて dataframe として開くことができる． \
 （`scripts/utils/details_viewer.ipynb`参照）
 
+これらのjsonファイルおよびpqtファイルを共有したい場合は，lightevalに搭載されているHuggingFace Datasets自動アップロード機能を使うとよい．Ref. [Saving and reading results](https://huggingface.co/docs/lighteval/v0.8.0/en/saving-and-reading-results)
+コマンドは以下の通り．事前にHuggingFace CLIによる認証を済ませておくこと．  
+なおDatasetsはデフォルトでprivate設定なので，意図しない限りインターネットに公開されることはない．  
+
+```
+lighteval endpoint litellm \
+    (中略)
+    --save-details \
+    --push-to-hub \
+    --results-org "{あなたが属しているHuggingFace Organization ID}" # たとえば　tokyotech-llm
+```
+
 
 ## 3. その他
 ### 3.1 タスクを追加するときに
