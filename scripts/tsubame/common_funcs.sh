@@ -243,20 +243,21 @@ PY
 
         ## Search for an available port
         echo "🔍 Searching for an available port..."
-        used_ports=$(ss -ltn4 | awk 'NR>1 {split($4,a,":"); print a[length(a)]}' | sort -u)
-
-        START_PORT=8000; END_PORT=8100;
-        for p in $(seq "$START_PORT" "$END_PORT"); do
-            if ! grep -qx "$p" <<<"$used_ports"; then
-                port=$p
+        START_PORT=10000; END_PORT=49151
+        current_port=$START_PORT
+        while (( current_port <= END_PORT )); do
+            if ! nc -z 127.0.0.1 "$current_port" 2>/dev/null; then
+                port=$current_port
                 break
             fi
+            (( current_port++ ))
         done
 
-        if [[ -z $port ]]; then
-            echo "💀 Error: No free port between $START_PORT and $END_PORT." >&2
+        if [[ -z ${port-} ]]; then
+            echo "💀 Error: No free port between $START_PORT and $END_PORT."
             exit 1
         fi
+
         echo "✅ Found free port: $port"
         BASE_URL=${BASE_URL//\{port\}/$port}
 
@@ -278,7 +279,7 @@ PY
         echo "🔍 Waiting for vLLM server to become healthy..."
         start_time=$(date +%s)
         TIMEOUT=3600
-        until curl -fs "$current_base_url/health" >/dev/null 2>&1; do
+        until curl -fs "${BASE_URL%/v1}/health" >/dev/null 2>&1; do
             if ! kill -0 "$VLLM_SERVER_PID" 2>/dev/null; then
                 echo "💀 Error: vLLM process exited during startup." >&2
                 exit 1
@@ -289,7 +290,7 @@ PY
             fi
             sleep 1
         done
-        echo "✅ vLLM server is ready on port $port"
+        echo "✅ vLLM server is ready on port $port (took $(($(date +%s) - start_time))s)"
 
         # Set cleanup function for abnormal termination
         cleanup_vllm() {
