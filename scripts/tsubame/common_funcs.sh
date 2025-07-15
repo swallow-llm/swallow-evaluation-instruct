@@ -148,7 +148,8 @@ serve_litellm(){
             RAW_RESULT_DIR="$RAW_OUTPUT_DIR/results/deepinfra/$MODEL_NAME$CUSTOM_SETTINGS_SUBDIR"
             ;;
         "vllm")
-            local BASE_URL="http://localhost:8000/v1"
+            # {port} will be replaced with the actual port number
+            local BASE_URL="http://localhost:{port}/v1"
             MODEL_NAME_CONFIG="hosted_vllm/$MODEL_NAME"
             RAW_RESULT_DIR="$RAW_OUTPUT_DIR/results/hosted_vllm/$MODEL_NAME$CUSTOM_SETTINGS_SUBDIR"
             ;;
@@ -240,41 +241,74 @@ PY
             fi
         fi
 
-        ## Start vllm server in background
-        echo "🏗️ Starting vllm server..."
-        uv run --isolated --project ${REPO_PATH} --locked --extra vllm \
-            vllm serve \
-                $MODEL_NAME \
-                --hf-token $HF_TOKEN \
-                --tensor-parallel-size $NUM_GPUS \
-                --max-model-len $MAX_MODEL_LENGTH \
-                --gpu-memory-utilization $GPU_MEMORY_UTILIZATION \
-                --dtype bfloat16 \
-                $REASONING_PARSER_PARAM \
-                1>&2 &
-        VLLM_SERVER_PID=$!
+        ## Search for an available port
+        echo "🔍 Searching for an available port..."
+        used_ports=$(ss -ltn4 | awk 'NR>1 {split($4,a,":"); print a[length(a)]}' | sort -u)
 
-        ## Wait for server to start
-        echo "🔍 Waiting for vllm server to start..."
-        TIMEOUT=3600
-        start_time=$(date +%s)
-        until curl -fs "${BASE_URL%/v1}/health" > /dev/null; do
-            sleep 1
-            if (( $(date +%s) - start_time >= TIMEOUT )); then
-                echo "❌ vLLM server did not become ready within ${TIMEOUT} seconds." >&2
-                exit 1
+        START_PORT=8000; END_PORT=8100;
+        for p in $(seq "$START_PORT" "$END_PORT"); do
+            if ! grep -qx "$p" <<<"$used_ports"; then
+                port=$p
+                break
             fi
         done
-        end_time=$(date +%s)
-        wait_time=$((end_time - start_time))
-        echo "✅ vLLM server is ready (took ${wait_time} seconds)"
-    
+
+        if [[ -z $port ]]; then
+            echo "💀 Error: No free port between $START_PORT and $END_PORT." >&2
+            exit 1
+        fi
+        echo "✅ Found free port: $port"
+        BASE_URL=${BASE_URL//\{port\}/$port}
+
+
+        ## Start vllm server
+        uv run --isolated --project "$REPO_PATH" --locked --extra vllm \
+            vllm serve "$MODEL_NAME" \
+                --port "$port" \
+                --hf-token "$HF_TOKEN" \
+                --tensor-parallel-size "$NUM_GPUS" \
+                --max-model-len "$MAX_MODEL_LENGTH" \
+                --gpu-memory-utilization "$GPU_MEMORY_UTILIZATION" \
+                --dtype bfloat16 \
+                ${REASONING_PARSER_PARAM} \
+                >/dev/null 2>&1 &
+        VLLM_SERVER_PID=$!
+
+        ## Wait for vLLM server to become healthy
+        echo "🔍 Waiting for vLLM server to become healthy..."
+        start_time=$(date +%s)
+        TIMEOUT=3600
+        until curl -fs "$current_base_url/health" >/dev/null 2>&1; do
+            if ! kill -0 "$VLLM_SERVER_PID" 2>/dev/null; then
+                echo "💀 Error: vLLM process exited during startup." >&2
+                exit 1
+            fi
+            if (( $(date +%s) - start_time >= TIMEOUT )); then
+                echo "💀 Error: vLLM server did not become ready within ${TIMEOUT}s." >&2
+                exit 1
+            fi
+            sleep 1
+        done
+        echo "✅ vLLM server is ready on port $port"
+
+        # Set cleanup function for abnormal termination
+        cleanup_vllm() {
+            [[ -n ${VLLM_SERVER_PID:-} ]] && stop_vllm_server "$VLLM_SERVER_PID"
+        }
+        trap cleanup_vllm EXIT INT TERM
+
     else
+        ## Set dummy values for VLLM_SERVER_PID and VLLM_SERVER_PORT
+        VLLM_SERVER_PID=""
+        VLLM_SERVER_PORT=""
+
+        ## Check the node kind
         if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" ]]; then
             echo "❌ You specified ${NODE_KIND} but OpenAI and DeepInfra do not use GPUs. Use CPU nodes instead."
             exit 1
         fi
 
+        ## Set the api key
         case $PROVIDER in
             "openai") API_KEY=$OPENAI_API_KEY ;;
             "deepinfra") API_KEY=$DEEPINFRA_API_KEY ;;
@@ -305,6 +339,12 @@ EOL
 stop_vllm_server(){
     # Load Args
     local vllm_pid=$1
+
+    # Check if the vLLM server is running
+    if ! kill -0 "$vllm_pid" 2>/dev/null; then
+        echo "✅ vLLM PID $vllm_pid is already not running. Do nothing." >&2
+        return 0
+    fi
 
     # Stop vllm server
     kill $vllm_pid 2>/dev/null
