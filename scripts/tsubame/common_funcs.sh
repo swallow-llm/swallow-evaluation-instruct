@@ -65,8 +65,9 @@ get_generation_params(){
     # - CUSTOM_SETTINGS_NAME
     # - MAX_MODEL_LENGTH
     # - REASONING_PARSER
-    # - SYSTEM_MESSAGE
+    # - SYSTEM_MESSAGE (Optional: will be included in OPTIONAL_ARGS_FOR_LIGHTEVAL)
     # - GEN_PARAMS
+    # - OPTIONAL_ARGS_FOR_LIGHTEVAL
 
     # Load Args
     CUSTOM_SETTINGS=$1
@@ -102,6 +103,12 @@ get_generation_params(){
     # Accept CONFIG_YAML_PARAMETERS
     rest=( "${results[@]:6}" )
     GEN_PARAMS=$(printf '%s\n' "${rest[@]}")
+
+    # Prepare optional arguments for lighteval
+    OPTIONAL_ARGS_FOR_LIGHTEVAL=""
+    if [[ $SYSTEM_MESSAGE != "" ]]; then
+        OPTIONAL_ARGS_FOR_LIGHTEVAL+="--system-prompt ${SYSTEM_MESSAGE}"
+    fi
 }
 
 
