@@ -106,7 +106,8 @@ MMLU, MMLU-Pro, MMLU-ProX はタスクIDが似ていますので取り違えに�
 * GPQA: `swallow|gpqa:diamond`
 * MATH-500: `swallow|math_500`
 * AIME 2024--2025: `swallow|aime:24, lighteval|aime:25`
-* LiveCodeBench v5 & v6 追加設問: `swallow|lcb:codegeneration_v5_v6`
+* LiveCodeBench v5 & v6 追加設問: `swallow|lcb:codegeneration_v5_v6`  
+   * `v5_v6` の部分を変更して任意のサブセットを指定できます．  
 
 ## ベンチマークごとの詳細な評価設定
 shot数，メトリック，CoT有無などの詳細な評価設定は，以下の資料を参照してください．  

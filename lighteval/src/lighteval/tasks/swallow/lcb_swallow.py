@@ -126,7 +126,7 @@ configs = get_dataset_config_names("livecodebench/code_generation_lite", trust_r
 
 lcb_swallow_tasks = []
 for subset in configs:
-    name = "lcb:codegeneration" if subset == "v5_v6" else f"lcb:codegeneration_{subset}"
+    name = f"lcb:codegeneration_{subset}"
     task = LightevalTaskConfig(
         name=name,
         suite=["swallow"],
