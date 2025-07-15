@@ -64,7 +64,9 @@ echo "⌚️ Elapsed time: ${elapsed} seconds"
 
 
 # Stop VLLM Server
-stop_vllm_server "${VLLM_SERVER_PID}"
+if [[ -n $VLLM_SERVER_PID ]]; then
+    stop_vllm_server "${VLLM_SERVER_PID}"
+fi
 
 
 # Aggregate Results
