@@ -72,8 +72,8 @@ def openai(
         str, Option(help="Output directory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = "results",
     output_subdir: Annotated[
-        Optional[str], Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
-    ] = None,
+        str, Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
+    ] = "",
     push_to_hub: Annotated[
         bool, Option(help="Push results to the huggingface hub.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = False,
@@ -193,8 +193,8 @@ def inference_endpoint(
         str, Option(help="Output directory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = "results",
     output_subdir: Annotated[
-        Optional[str], Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
-    ] = None,
+        str, Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
+    ] = "",
     push_to_hub: Annotated[
         bool, Option(help="Push results to the huggingface hub.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = False,
@@ -314,8 +314,8 @@ def tgi(
         str, Option(help="Output directory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = "results",
     output_subdir: Annotated[
-        Optional[str], Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
-    ] = None,
+        str, Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
+    ] = "",
     push_to_hub: Annotated[
         bool, Option(help="Push results to the huggingface hub.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = False,
@@ -433,8 +433,8 @@ def litellm(
         str, Option(help="Output directory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = "results",
     output_subdir: Annotated[
-        Optional[str], Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
-    ] = None,
+        str, Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
+    ] = "",
     push_to_hub: Annotated[
         bool, Option(help="Push results to the huggingface hub.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = False,
@@ -555,8 +555,8 @@ def inference_providers(
         str, Option(help="Output directory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = "results",
     output_subdir: Annotated[
-        Optional[str], Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
-    ] = None,
+        str, Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
+    ] = "",
     push_to_hub: Annotated[
         bool, Option(help="Push results to the huggingface hub.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = False,

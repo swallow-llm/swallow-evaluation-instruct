@@ -71,6 +71,9 @@ def vllm(
     output_dir: Annotated[
         str, Option(help="Output directory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = "results",
+    output_subdir: Annotated[
+        str, Option(help="Output subdirectory for evaluation results.", rich_help_panel=HELP_PANEL_NAME_2)
+    ] = "",
     push_to_hub: Annotated[
         bool, Option(help="Push results to the huggingface hub.", rich_help_panel=HELP_PANEL_NAME_2)
     ] = False,
@@ -110,6 +113,7 @@ def vllm(
 
     evaluation_tracker = EvaluationTracker(
         output_dir=output_dir,
+        output_subdir=output_subdir,
         save_details=save_details,
         push_to_hub=push_to_hub,
         push_to_tensorboard=push_to_tensorboard,
