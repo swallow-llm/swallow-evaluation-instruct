@@ -116,6 +116,7 @@ serve_litellm(){
     # Global variables which will be defined and become available after this function is over:
     # - RAW_OUTPUT_DIR
     # - RAW_RESULT_DIR
+    # - AGGREGATED_OUTPUTS_DIR
     # - MODEL_NAME_CONFIG
     # - MAX_MODEL_LENGTH
     # - MODEL_CONFIG_PATH
@@ -159,6 +160,9 @@ serve_litellm(){
             ;;
     esac
     mkdir -p "$RAW_RESULT_DIR"
+
+    AGGREGATED_OUTPUTS_DIR="${REPO_PATH}/results/${MODEL_NAME_CONFIG}${CUSTOM_SETTINGS_SUBDIR}"    
+    mkdir -p "$AGGREGATED_OUTPUTS_DIR"
 
     # Set log level to WARNING
     export LITELLM_LOG_LEVEL=WARNING
@@ -263,6 +267,9 @@ PY
 
 
         ## Start vllm server
+        source "${REPO_PATH}/scripts/tsubame/conf/load_config.sh"
+        result_subdir=$(script_result "${TASK_NAME}")
+        vllm_log_file="${AGGREGATED_OUTPUTS_DIR}/${result_subdir}/${result_subdir//\//_}.vllm${JOB_ID}"
         uv run --isolated --project "$REPO_PATH" --locked --extra vllm \
             vllm serve "$MODEL_NAME" \
                 --port "$port" \
@@ -272,7 +279,7 @@ PY
                 --gpu-memory-utilization "$GPU_MEMORY_UTILIZATION" \
                 --dtype bfloat16 \
                 ${REASONING_PARSER_PARAM} \
-                >/dev/null 2>&1 &
+                2>&1 > "$vllm_log_file" &
         VLLM_SERVER_PID=$!
 
         ## Wait for vLLM server to become healthy

@@ -4,10 +4,14 @@ CSV="$CONF_DIR/tasks_runtime.csv"
 
 # key, col_index -> 対応セル
 _field() {
-  awk -F',' -v key="$1" -v col="$2" '
+  local key="$1"
+  local output_col="$2"
+  local match_col="${3:-1}"
+
+  awk -F',' -v key="$key" -v mcol="$match_col" -v ocol="$output_col" '
     NR==1 {next}
     {for(i=1;i<=NF;i++) gsub(/^[ \t\r]+|[ \t\r]+$/, "", $i)}
-    $1==key {print $col; found=1; exit}
+    $mcol==key {print $ocol; found=1; exit}
     END{exit !found}                    # 見つからなければ exit 1
   ' "$CSV"
 }
@@ -18,3 +22,4 @@ task_script()  { _field "$1" 2; }
 task_result()  { _field "$1" 3; }
 task_framework() { _field "$1" 4; }
 hrt()          { _field "$2" "$( [ "$1" = node_q ] && echo 5 || echo 6 )"; }
+script_result() { _field "$1" 3 2; }
