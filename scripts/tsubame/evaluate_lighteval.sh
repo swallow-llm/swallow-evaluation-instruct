@@ -56,7 +56,6 @@ uv run $UV_OPTIONS --extra lighteval \
     --output-dir "${RAW_OUTPUT_DIR}" \
     --output-subdir "${CUSTOM_SETTINGS_SUBDIR}" \
     --save-details \
-    --max-samples 1 \
     ${OPTIONAL_ARGS_FOR_LIGHTEVAL}
 end_time=$(date +%s)
 elapsed=$(( end_time - start_time ))
