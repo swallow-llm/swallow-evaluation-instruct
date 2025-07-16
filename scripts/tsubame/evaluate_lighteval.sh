@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#& -m abe
+#$ -m abe
 set -euo pipefail
 
 
