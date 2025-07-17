@@ -47,7 +47,6 @@ from lighteval.tasks.swallow.japanese_mt_bench.judge_prompt_templates import (
     gpt_judge_prompt_mt_bench_for_single_v1_multi_turn,
     gpt_judge_prompt_mt_bench_for_single_v1_with_ref_multi_turn,
 )
-from lighteval.utils.utils import extract_final_answer_from_reasoning
 
 
 logger = logging.getLogger(__name__)
@@ -115,6 +114,13 @@ def gpt_judge_mt_bench_prompt(question, answer, options, gold):
         raise ValueError(f"Unsupported question type: {type(question)}")
 
 
+def mt_bench_corpus_level_fn(score_list: list[float]) -> float:
+    score_list = [score for score in score_list if score != -1]
+    if not score_list:
+        raise ValueError("No valid scores found in the list.")
+    return np.mean(score_list) / 10
+
+
 # Markdownからテキスト部分を抜き出す関数
 def extract_plain_text(markdown_text: str) -> str:
     # MarkdownをHTMLに変換
@@ -167,7 +173,10 @@ def compute_japanese_ratio_sample(
     for sample_idx in range(len(sample_ids)):
         category = formatted_docs[sample_idx].specific["category"]
         # 1ターン目と2ターン目は区別しないで連結する
-        prediction = [(responses[sample_idx][0].result[0][turn], responses[sample_idx][0].result[1][turn]) for turn in range(len(responses[sample_idx][0].result[0]))]
+        prediction = [
+            (responses[sample_idx][0].result[0][turn], responses[sample_idx][0].result[1][turn])
+            for turn in range(len(responses[sample_idx][0].result[0]))
+        ]
         metrics.append(
             {
                 f"japanese_ratio_{category}": prediction,
@@ -214,8 +223,10 @@ llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
         judge_backend="openai",
         short_judge_name="gpt-4o",
     ).compute,
-    corpus_level_fn={f"judge_score_{category}_turn_1_avg": np.mean for category in ["overall"] + CATEGORIRES}
-    | {f"judge_score_{category}_turn_2_avg": np.mean for category in ["overall"] + CATEGORIRES},
+    corpus_level_fn={
+        f"judge_score_{category}_turn_1_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES
+    }
+    | {f"judge_score_{category}_turn_2_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES},
 )
 
 mt_bench_japanese_swallow_gpt4o = LightevalTaskConfig(
