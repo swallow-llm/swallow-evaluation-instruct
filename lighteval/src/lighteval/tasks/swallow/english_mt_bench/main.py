@@ -105,6 +105,13 @@ def gpt_judge_mt_bench_prompt(question, answer, options, gold):
         raise ValueError(f"Unsupported question type: {type(question)}")
 
 
+def mt_bench_corpus_level_fn(score_list: list[float]) -> float:
+    score_list = [score for score in score_list if score != -1]
+    if not score_list:
+        raise ValueError("No valid scores found in the list.")
+    return np.mean(score_list) / 10
+
+
 llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
     metric_name=[f"judge_score_{category}_turn_1" for category in ["overall"] + CATEGORIRES]
     + [f"judge_score_{category}_turn_2" for category in ["overall"] + CATEGORIRES],
@@ -119,8 +126,10 @@ llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
         judge_backend="openai",
         short_judge_name="gpt-4o",
     ).compute,
-    corpus_level_fn={f"judge_score_{category}_turn_1_avg": np.mean for category in ["overall"] + CATEGORIRES}
-    | {f"judge_score_{category}_turn_2_avg": np.mean for category in ["overall"] + CATEGORIRES},
+    corpus_level_fn={
+        f"judge_score_{category}_turn_1_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES
+    }
+    | {f"judge_score_{category}_turn_2_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES},
 )
 
 mt_bench_english_swallow_gpt4o = LightevalTaskConfig(
