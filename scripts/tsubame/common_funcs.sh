@@ -139,20 +139,21 @@ serve_litellm(){
     RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"
     case $PROVIDER in
         "openai")
+            # MODEL_NAME is supposed to have 'openai/' prefix.
             local BASE_URL="https://api.openai.com/v1"
             MODEL_NAME_CONFIG="$MODEL_NAME"
-            RAW_RESULT_DIR="$RAW_OUTPUT_DIR/results/$MODEL_NAME$CUSTOM_SETTINGS_SUBDIR"
+            RAW_RESULT_DIR="$RAW_OUTPUT_DIR/results/$MODEL_NAME_CONFIG$CUSTOM_SETTINGS_SUBDIR"
             ;;
         "deepinfra")
             local BASE_URL="https://api.deepinfra.com/v1/openai"
             MODEL_NAME_CONFIG="deepinfra/$MODEL_NAME"
-            RAW_RESULT_DIR="$RAW_OUTPUT_DIR/results/deepinfra/$MODEL_NAME$CUSTOM_SETTINGS_SUBDIR"
+            RAW_RESULT_DIR="$RAW_OUTPUT_DIR/results/$MODEL_NAME_CONFIG$CUSTOM_SETTINGS_SUBDIR"
             ;;
         "vllm")
             # {port} will be replaced with the actual port number
             local BASE_URL="http://localhost:{port}/v1"
             MODEL_NAME_CONFIG="hosted_vllm/$MODEL_NAME"
-            RAW_RESULT_DIR="$RAW_OUTPUT_DIR/results/hosted_vllm/$MODEL_NAME$CUSTOM_SETTINGS_SUBDIR"
+            RAW_RESULT_DIR="$RAW_OUTPUT_DIR/results/$MODEL_NAME_CONFIG$CUSTOM_SETTINGS_SUBDIR"
             ;;
         *)
             echo "💀 Error: Invalid provider. Must be one of: openai, deepinfra, vllm."
