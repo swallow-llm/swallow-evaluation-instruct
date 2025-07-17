@@ -111,25 +111,21 @@ class SettingManager:
     def merge_settings(self, model_settings: dict, task_settings: dict, merge_strategy: str) -> dict:
         merged_settings = {}
         if self.verbose: print(f"🔍 Merging settings with merge strategy: {merge_strategy}")
+        
+        strategies = {
+            "model-first": (model_settings, task_settings),
+            "task-first": (task_settings, model_settings),
+        }
+        if merge_strategy not in strategies:
+            raise ValueError(f"Invalid merge strategy: {merge_strategy}")
+        primary, secondary = strategies[merge_strategy]
+
         for param in SUPPORTED_PARAMS:
-            if merge_strategy == "model-first":
-                if param in model_settings:
-                    merged_settings[param] = model_settings[param]
-                elif param in task_settings:
-                    merged_settings[param] = task_settings[param]
-                else:
-                    pass
-
-            elif merge_strategy == "task-first":
-                if param in task_settings:
-                    merged_settings[param] = task_settings[param]
-                elif param in model_settings:
-                    merged_settings[param] = model_settings[param]
-                else:
-                    pass
-
-            else:
-                raise ValueError(f"Invalid merge strategy: {merge_strategy}")
+            for src in (primary, secondary):
+                if param in src:
+                    if src[param] is None: pass # No specification of the parameter
+                    merged_settings[param] = src[param]
+                    break
         return merged_settings
     
 
