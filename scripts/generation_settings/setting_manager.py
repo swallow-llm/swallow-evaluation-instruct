@@ -123,7 +123,7 @@ class SettingManager:
         for param in SUPPORTED_PARAMS:
             for src in (primary, secondary):
                 if param in src:
-                    if src[param] is None: pass # No specification of the parameter
+                    if src[param] is None: continue # No specification of the parameter
                     merged_settings[param] = src[param]
                     break
         return merged_settings
