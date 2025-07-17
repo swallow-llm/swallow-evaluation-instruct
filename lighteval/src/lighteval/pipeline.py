@@ -471,6 +471,31 @@ class Pipeline:
             run_model = self.model.get_method_from_request_type(request_type=request_type)
             responses = run_model(requests, override_bs=self.pipeline_parameters.override_batch_size)
 
+            # Sanity check for generative requests
+            if request_type in {RequestType.GREEDY_UNTIL,
+                                RequestType.GREEDY_UNTIL_MULTI_TURN}:
+                
+                # Check1: Number of responses and requests are the same
+                if len(responses) != len(requests):
+                    logger.warning(
+                        f"Mismatch: {len(requests)} docs but {len(responses)} responses "
+                        f"for {request_type}"
+                    )
+
+                # Check2: All responses are not empty strings
+                def _is_empty(r):
+                    if isinstance(r, GenerativeResponse):
+                        return not r.result.strip()
+                    if isinstance(r, GenerativeMultiturnResponse):
+                        return all(not t.strip() for t in r.result)
+                    return False
+                empty_idx = [i for i, r in enumerate(responses) if _is_empty(r)]
+                if empty_idx:
+                    logger.warning(
+                        f"Empty generation text in {len(empty_idx)}/{len(responses)} "
+                        f"{request_type} responses (first idx: {empty_idx[:5]})."
+                    )
+
             # Storing the responses associated to the same samples together
             for response, request in zip(responses, requests):
                 for metric_category in request.metric_categories:
