@@ -12,6 +12,8 @@
 # 'version' is the version of the custom settings.
 # You should update this value if you make any changes to the settings.
 
+# If you want to unset a parameter explicitly, set it to 'null'.
+
 default:
   # default settings.
   system_message: "You are a helpful assistant."
@@ -25,6 +27,8 @@ coding:
   # coding settings.
   system_message: "You are a helpful coding assistant."
   max_n: 4
+  temperature: null
+  top_p: null
   version: "1"
 
 reasoning:

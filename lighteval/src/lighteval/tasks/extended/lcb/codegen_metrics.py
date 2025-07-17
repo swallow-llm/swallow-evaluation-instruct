@@ -729,6 +729,16 @@ def compute_metrics_from_results(results, k_list: list[int] = [1, 5]) -> dict[st
         correct.append(sum(all_correct))
     total = np.array(total)
     correct = np.array(correct)
+
+    max_k = max(k_list)
+    insufficient = [tid for tid, t in zip(task_ids, total) if t < max_k]
+    if insufficient:
+        raise ValueError(
+            f"Error: Cannot compute pass@{max_k}: "
+            f"the following tasks have fewer than {max_k} samples: {insufficient} "
+            f"(samples per task: {dict(zip(task_ids, total))})"
+        )
+
     detail_pass_at_k = {
         f"pass@{k}": estimate_pass_at_k(total, correct, k).tolist() for k in k_list if (total >= k).all()
     }
