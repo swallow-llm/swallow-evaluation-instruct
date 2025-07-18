@@ -1,6 +1,7 @@
 #!/bin/bash
 #$ -cwd
-#$ -m abe
+#% -m abe
+# Replace % with $ if you want to receive emails when jobs start & finish, and errors occur.
 set -euo pipefail
 
 
