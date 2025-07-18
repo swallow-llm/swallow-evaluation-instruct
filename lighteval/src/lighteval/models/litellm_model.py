@@ -337,10 +337,11 @@ class LiteLLMClient(LightevalModel):
 
             for response in responses:
                 result: list[str] = [choice.message.content for choice in response.choices]
+                # In empty responses, the model should return an empty string instead of None
+                result = ["" if text is None else text for text in result]
                 
-                cur_response = GenerativeResponse(
-                    # In empty responses, the model should return an empty string instead of None
-                    result=result if result[0] else [""],
+                cur_response = GenerativeResponse(                    
+                    result=result,
                     logits=None,
                     generated_tokens=[],
                     input_tokens=[],
