@@ -35,7 +35,7 @@ fi
 # Setup
 source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
 init_common "${MODEL_NAME}" "${NODE_KIND}" "${REPO_PATH}"
-init_service "${SERVICE}" "${CUDA_VISIBLE_DEVICES}" "${CUSTOM_JOB_ID}"
+init_service "${SERVICE}" "${NUM_GPUS}" "${CUDA_VISIBLE_DEVICES}" "${CUSTOM_JOB_ID}"
 get_generation_params "${CUSTOM_SETTINGS}" "${TASK_NAME}" "${REPO_PATH}" "${MODEL_NAME}"
 echo "⚙️ Generation Parameters: ${GEN_PARAMS}"
 RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"

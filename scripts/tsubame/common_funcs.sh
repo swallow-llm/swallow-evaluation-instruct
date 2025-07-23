@@ -72,10 +72,13 @@ extract_gpu_num_from_node_kind(){
 
 
 init_service(){
+    # Special initialization for services. Make sure to call this function after init_common.
+
     # Load Args
     SERVICE=$1
-    CUDA_VISIBLE_DEVICES=$2
-    CUSTOM_JOB_ID=$3
+    NUM_GPUS=$2
+    CUDA_VISIBLE_DEVICES=$3
+    CUSTOM_JOB_ID=$4
 
     # Run special initialization based on the service
     case $SERVICE in
@@ -86,8 +89,8 @@ init_service(){
 
         "local")
             export JOB_ID="${CUSTOM_JOB_ID}"
-            if [[ -z $CUDA_VISIBLE_DEVICES ]]; then
-                echo "💀 Error: CUDA_VISIBLE_DEVICES is not set. Please set CUDA_VISIBLE_DEVICES to use local GPUs."
+            if [[ -z $CUDA_VISIBLE_DEVICES || $(echo "$CUDA_VISIBLE_DEVICES" | tr ',' '\n' | wc -l) -ne $NUM_GPUS ]]; then
+                echo "💀 Error: CUDA_VISIBLE_DEVICES is not set or does not match NUM_GPUS. Please set CUDA_VISIBLE_DEVICES appropriately. (CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES, NUM_GPUS: $NUM_GPUS)"
                 exit 1
             fi
             ;;
