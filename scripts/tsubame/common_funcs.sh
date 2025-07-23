@@ -72,13 +72,12 @@ extract_gpu_num_from_node_kind(){
 
 
 init_service(){
-    # Global variables which will be defined and become available after this function is over:
-
+    # Load Args
     SERVICE=$1
-    NODE_KIND=$2
-    PRIORITY=$3
-    CUDA_VISIBLE_DEVICES=$4
+    CUDA_VISIBLE_DEVICES=$2
+    CUSTOM_JOB_ID=$3
 
+    # Run special initialization based on the service
     case $SERVICE in
         "tsubame")
             export TMPDIR=/local/${JOB_ID}
@@ -86,7 +85,7 @@ init_service(){
             ;;
 
         "local")
-            get_random_job_id
+            export JOB_ID="${CUSTOM_JOB_ID}"
             if [[ -z $CUDA_VISIBLE_DEVICES ]]; then
                 echo "💀 Error: CUDA_VISIBLE_DEVICES is not set. Please set CUDA_VISIBLE_DEVICES to use local GPUs."
                 exit 1

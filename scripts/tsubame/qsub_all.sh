@@ -6,26 +6,23 @@ set -euo pipefail
 
 # Set Args
 ## Common Settings
-NODE_KIND="node_"           # A node kind to use. Tsubame: ["node_q", "node_f", "cpu_16"], Local: ["cpu", "gpu_*" (*: GPU number)]
+NODE_KIND=""                # A node kind to use. Tsubame: ["node_q", "node_f", "cpu_16"], Local: ["cpu", "gpu_*" (*: GPU number)]
 MODEL_NAME=""               # A model name (HuggingFace ID) to use.
 
 ## Special Settings
 PROVIDER="vllm"             # Default: "vllm". A provider to host the model. ["vllm", "openai", "deepinfra"]
-PRIORITY="-5"               # Default: "-5". A priority of the job. Note that double priority is double cost. ["-5", "-4", "-3"]
 CUSTOM_SETTINGS=""          # Default: "". A custom setting name to use. (e.g. "reasoning", "coding", "flashattn_incompatible")
 PREDOWNLOAD_MODEL="true"    # Default: "true". A pre-download a model before qsub.
 
 ## Environmental Settings
-SERVICE="tsubame"           # Default: "tsubame". A service to use. ["tsubame", "local"]
-CUDA_VISIBLE_DEVICES=""     # Default: "". A CUDA_VISIBLE_DEVICES to use (Only for local). [e.g. "0,1"]
+SERVICE=""                  # A service to use. ["tsubame", "local"]
+PRIORITY="-5"               # Default: "-5". A priority of the job. Note that double priority is double cost. ["-5", "-4", "-3"] (Only for TSUBAME)
+CUDA_VISIBLE_DEVICES=""     # Default: "". A CUDA_VISIBLE_DEVICES to use. [e.g. "0,1"] (Only for local)
 
 ########################################################
 
 # Load task-definition
 source "$(dirname "$0")/conf/load_config.sh"
-
-# Initialize based on the service
-init_service "${SERVICE}" "${NODE_KIND}" "${PRIORITY}"
 
 # Load .env and define dirs
 source "$(dirname "$0")/../../.env"
@@ -45,10 +42,10 @@ SCRIPTS_DIR="${REPO_PATH}/scripts/tsubame"
 # Optional Args
 OPTIONAL_ARGS=""
 if [[ -n "${CUSTOM_SETTINGS}" ]]; then
-  OPTIONAL_ARGS="${OPTIONAL_ARGS} --custom-settings ${CUSTOM_SETTINGS}"
+  OPTIONAL_ARGS="${OPTIONAL_ARGS} --custom-settings '${CUSTOM_SETTINGS}'"
 fi
 if [[ -n "${PROVIDER}" ]]; then
-  OPTIONAL_ARGS="${OPTIONAL_ARGS} --provider ${PROVIDER}"
+  OPTIONAL_ARGS="${OPTIONAL_ARGS} --provider '${PROVIDER}'"
 fi
 
 # Pre-download the model
@@ -68,6 +65,7 @@ fi
 
 # Define qsub-function
 last_submit_time=""
+source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
 qsub_task() {
   # Get args
   local lang=$1 task=$2
@@ -84,8 +82,8 @@ qsub_task() {
   mkdir -p "${OUTDIR}"
 
   # Safety check for local jobs
-  if [[ SERVICE == "local" && -n $last_submit_time ]]; then
-    if [[ $(( $(date +%s) - last_submit_time )) -lt 30 ]]; then
+  if [[ "${SERVICE}" == "local" && -n "${last_submit_time}" ]]; then
+    if [[ $(( (date +%s) - last_submit_time )) -lt 30 ]]; then
       echo "💀 Error: Local jobs cannot be submitted continuously. Please reset CUDA_VISIBLE_DEVICES appropriately and submit one task at a time."
       exit 1
     fi
@@ -96,16 +94,17 @@ qsub_task() {
   case $SERVICE in
     "tsubame")
       qsub -g tga-okazaki -l ${NODE_KIND}=1 -p ${PRIORITY}-N "${job_name}" -l h_rt="${h_rt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
-        --task-name "${task_name}" --node-kind "${NODE_KIND}" --model-name "${MODEL_NAME}" --repo-path "${REPO_PATH}" ${OPTIONAL_ARGS}
+        --task-name "${task_name}" --node-kind "${NODE_KIND}" --model-name "${MODEL_NAME}" --repo-path "${REPO_PATH}" --service "${SERVICE}" ${OPTIONAL_ARGS}
       ;;
 
     "local")
+      get_random_job_id
       local session_name="${job_name}_${JOB_ID}"
       tmux new-session -d -s "${session_name}" bash -c "
         set -euo pipefail
         export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES} && bash "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
-          --task-name \"${task_name}\" --node-kind \"${NODE_KIND}\" --model-name \"${MODEL_NAME}\" --repo-path \"${REPO_PATH}\" ${OPTIONAL_ARGS} \
-          > \"${OUTDIR}/${job_name}.o${JOB_ID}\" 2> \"${OUTDIR}/${job_name}.e${JOB_ID}\"
+          --task-name '${task_name}' --node-kind '${NODE_KIND}' --model-name '${MODEL_NAME}' --repo-path '${REPO_PATH}' --service '${SERVICE}' --custom-job-id '${JOB_ID}' ${OPTIONAL_ARGS} \
+          > '${OUTDIR}/${job_name}.o${JOB_ID}' 2> '${OUTDIR}/${job_name}.e${JOB_ID}'
       "
       echo "✅ Local job ${job_name} was successfully submitted to tmux session ${session_name}."
   esac

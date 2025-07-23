@@ -7,7 +7,7 @@ set -euo pipefail
 
 # Load Args
 ## Default Values
-TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; CUSTOM_SETTINGS=""; REPO_PATH=""; PROVIDER=""
+TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; REPO_PATH=""; SERVICE=""; CUSTOM_SETTINGS=""; PROVIDER=""; CUSTOM_JOB_ID=""
 
 ## Parse Args
 while [[ $# -gt 0 ]]; do
@@ -16,16 +16,18 @@ while [[ $# -gt 0 ]]; do
     --node-kind) NODE_KIND="$2";;
     --model-name) MODEL_NAME="$2";;
     --repo-path) REPO_PATH="$2";;
+    --service) SERVICE="$2";;
     --custom-settings) CUSTOM_SETTINGS="$2";;   # Optional
     --provider) PROVIDER="$2";;                 # Optional
+    --custom-job-id) CUSTOM_JOB_ID="$2";;       # Optional
     *) echo "Unknown option: $1" >&2;;
   esac
   shift 2
 done
 
 ## Check Required Args
-if [[ -z "$TASK_NAME" ]] || [[ -z "$NODE_KIND" ]] || [[ -z "$MODEL_NAME" ]] || [[ -z "$REPO_PATH" ]]; then
-  echo "Error: Missing required arguments. TASK_NAME: '${TASK_NAME}', NODE_KIND: '${NODE_KIND}', MODEL_NAME: '${MODEL_NAME}', REPO_PATH: '${REPO_PATH}'" >&2
+if [[ -z "$TASK_NAME" ]] || [[ -z "$NODE_KIND" ]] || [[ -z "$MODEL_NAME" ]] || [[ -z "$REPO_PATH" ]] || [[ -z "$SERVICE" ]]; then
+  echo "Error: Missing required arguments. TASK_NAME: '${TASK_NAME}', NODE_KIND: '${NODE_KIND}', MODEL_NAME: '${MODEL_NAME}', REPO_PATH: '${REPO_PATH}', SERVICE: '${SERVICE}'" >&2
   exit 1
 fi
 
@@ -33,6 +35,7 @@ fi
 # Setup
 source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
 init_common "${MODEL_NAME}" "${NODE_KIND}" "${REPO_PATH}"
+init_service "${SERVICE}" "${CUDA_VISIBLE_DEVICES}" "${CUSTOM_JOB_ID}"
 get_generation_params "${CUSTOM_SETTINGS}" "${TASK_NAME}" "${REPO_PATH}" "${MODEL_NAME}"
 echo "⚙️ Generation Parameters: ${GEN_PARAMS}"
 RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"
