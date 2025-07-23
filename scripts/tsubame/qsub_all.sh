@@ -6,7 +6,7 @@ set -euo pipefail
 
 # Set Args
 ## Common Settings
-NODE_KIND="node_"           # A node kind to use. ["node_q", "node_f", "cpu_16"]
+NODE_KIND="node_"           # A node kind to use. Tsubame: ["node_q", "node_f", "cpu_16"], Local: ["cpu", "gpu_*" (*: GPU number)]
 MODEL_NAME=""               # A model name (HuggingFace ID) to use.
 
 ## Special Settings
@@ -15,13 +15,17 @@ PRIORITY="-5"               # Default: "-5". A priority of the job. Note that do
 CUSTOM_SETTINGS=""          # Default: "". A custom setting name to use. (e.g. "reasoning", "coding", "flashattn_incompatible")
 PREDOWNLOAD_MODEL="true"    # Default: "true". A pre-download a model before qsub.
 
+## Environmental Settings
+SERVICE="tsubame"           # Default: "tsubame". A service to use. ["tsubame", "local"]
+CUDA_VISIBLE_DEVICES=""     # Default: "". A CUDA_VISIBLE_DEVICES to use (Only for local). [e.g. "0,1"]
+
 ########################################################
 
 # Load task-definition
 source "$(dirname "$0")/conf/load_config.sh"
 
-# Define a qsub-command
-QSUB_BASE="qsub -g tga-okazaki -l ${NODE_KIND}=1 -p ${PRIORITY}"
+# Initialize based on the service
+init_service "${SERVICE}" "${NODE_KIND}" "${PRIORITY}"
 
 # Load .env and define dirs
 source "$(dirname "$0")/../../.env"
@@ -63,6 +67,7 @@ else
 fi
 
 # Define qsub-function
+last_submit_time=""
 qsub_task() {
   # Get args
   local lang=$1 task=$2
@@ -78,9 +83,33 @@ qsub_task() {
   OUTDIR="${RESULTS_DIR}/${result_dir}"
   mkdir -p "${OUTDIR}"
 
+  # Safety check for local jobs
+  if [[ SERVICE == "local" && -n $last_submit_time ]]; then
+    if [[ $(( $(date +%s) - last_submit_time )) -lt 30 ]]; then
+      echo "💀 Error: Local jobs cannot be submitted continuously. Please reset CUDA_VISIBLE_DEVICES appropriately and submit one task at a time."
+      exit 1
+    fi
+  fi
+
   # Submit a job
-  ${QSUB_BASE[@]} -N "${lang}_${task}" -l h_rt="${h_rt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
-    --task-name "${task_name}" --node-kind "${NODE_KIND}" --model-name "${MODEL_NAME}" --repo-path "${REPO_PATH}" ${OPTIONAL_ARGS}
+  local job_name="${lang}_${task}"
+  case $SERVICE in
+    "tsubame")
+      qsub -g tga-okazaki -l ${NODE_KIND}=1 -p ${PRIORITY}-N "${job_name}" -l h_rt="${h_rt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
+        --task-name "${task_name}" --node-kind "${NODE_KIND}" --model-name "${MODEL_NAME}" --repo-path "${REPO_PATH}" ${OPTIONAL_ARGS}
+      ;;
+
+    "local")
+      local session_name="${job_name}_${JOB_ID}"
+      tmux new-session -d -s "${session_name}" bash -c "
+        set -euo pipefail
+        export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES} && bash "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
+          --task-name \"${task_name}\" --node-kind \"${NODE_KIND}\" --model-name \"${MODEL_NAME}\" --repo-path \"${REPO_PATH}\" ${OPTIONAL_ARGS} \
+          > \"${OUTDIR}/${job_name}.o${JOB_ID}\" 2> \"${OUTDIR}/${job_name}.e${JOB_ID}\"
+      "
+      echo "✅ Local job ${job_name} was successfully submitted to tmux session ${session_name}."
+  esac
+  last_submit_time=$(date +%s)
 }
 
 ########################################################

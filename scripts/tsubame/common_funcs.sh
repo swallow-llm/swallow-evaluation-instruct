@@ -6,9 +6,6 @@ init_common(){
     # - GPU_MEMORY_UTILIZATION
     # - UV_OPTIONS
 
-    # Load Modules
-    . /etc/profile.d/modules.sh
-
     # Load Args
     MODEL_NAME=$1
     NODE_KIND=$2
@@ -17,7 +14,6 @@ init_common(){
     # Load and Set Vars
     source "${REPO_PATH}/.env"
     export PATH="$HOME/.local/bin:$PATH" # for uv, add local bin to PATH
-    export TMPDIR=/local/${JOB_ID}
     export HUGGINGFACE_HUB_CACHE=$HUGGINGFACE_CACHE
     export HF_HOME=$HUGGINGFACE_CACHE
     export HF_TOKEN=$HF_TOKEN
@@ -33,7 +29,8 @@ init_common(){
         "node_q") NUM_GPUS=1 ;;
         "node_f") NUM_GPUS=4 ;;
         *"cpu"*) NUM_GPUS=0 ;;
-        *) echo "❌ Unknown NODE_KIND: $NODE_KIND"
+        *"gpu"*) extract_gpu_num_from_node_kind "$NODE_KIND" ;;
+        *) echo "❌ Unsupported NODE_KIND: $NODE_KIND"
             exit 1
     esac
     ## Set GPU_MEMORY_UTILIZATION
@@ -54,6 +51,82 @@ init_common(){
     UV_OPTIONS="--isolated --project ${REPO_PATH} --locked"
 
     echo "✅ Common initialization was successfully done."
+}
+
+
+extract_gpu_num_from_node_kind(){
+    # Global variables which will be defined and become available after this function is over:
+    # - NUM_GPUS
+
+    # Load Args
+    NODE_KIND=$1
+
+    # Extract GPU number from NODE_KIND
+    NUM_GPUS=$(echo "$NODE_KIND" | grep -oP 'gpu_\K\d+')
+    if [[ -z $NUM_GPUS ]]; then
+        echo "💀 Error: NODE_KIND must contain 'gpu_' and a number. NODE_KIND: $NODE_KIND"
+        exit 1
+    fi
+    echo "✅ GPU number is extracted from NODE_KIND: $NUM_GPUS"
+}
+
+
+init_service(){
+    # Global variables which will be defined and become available after this function is over:
+
+    SERVICE=$1
+    NODE_KIND=$2
+    PRIORITY=$3
+    CUDA_VISIBLE_DEVICES=$4
+
+    case $SERVICE in
+        "tsubame")
+            export TMPDIR=/local/${JOB_ID}
+            . /etc/profile.d/modules.sh
+            ;;
+
+        "local")
+            get_random_job_id
+            if [[ -z $CUDA_VISIBLE_DEVICES ]]; then
+                echo "💀 Error: CUDA_VISIBLE_DEVICES is not set. Please set CUDA_VISIBLE_DEVICES to use local GPUs."
+                exit 1
+            fi
+            ;;
+
+        *)
+            echo "💀 Error: Unknown SERVICE: $SERVICE"
+            exit 1
+            ;;
+    esac
+}
+
+
+get_random_job_id(){
+    # Global variables which will be defined and become available after this function is over:
+    # - JOB_ID (8 characters. {year_last}{day_of_year}{4 characters [0-9a-zA-Z]}.)
+
+    # Get date prefix
+    year=$(date +%Y)
+    year_last=${year: -1}
+    day_of_year=$(date +%j)
+    prefix="${year_last}${day_of_year}"
+
+    # Seed RANDOM with nanoseconds
+    seed=$(date +%N)
+    RANDOM=$seed
+
+    # Define 62-based digits
+    digits=( {0..9} {a..z} {A..Z} )
+    len=${#digits[@]}
+
+    # Generate suffix
+    suffix=""
+    for i in {1..4}; do
+    suffix+="${digits[RANDOM % len]}"
+    done
+
+    # Combine and output
+    JOB_ID="${prefix}${suffix}"
 }
 
 
@@ -312,7 +385,7 @@ PY
         VLLM_SERVER_PORT=""
 
         ## Check the node kind
-        if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" ]]; then
+        if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" || $NODE_KIND == *"gpu"* ]]; then
             echo "❌ You specified ${NODE_KIND} but OpenAI and DeepInfra do not use GPUs. Use CPU nodes instead."
             exit 1
         fi
