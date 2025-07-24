@@ -6,18 +6,19 @@ set -euo pipefail
 
 # Set Args
 ## Common Settings
-NODE_KIND=""                # A node kind to use. Tsubame: ["node_q", "node_f", "cpu_16"], Local: ["cpu", "gpu_*" (*: GPU number)]
+NODE_KIND=""                # A node kind to use. tsubame: ["node_q", "node_f", "cpu_16"], local: ["cpu", "gpu_*" (*: GPU number)], abci: ["rt_HG", "rt_HF", "rt_HC"]
 MODEL_NAME=""               # A model name (HuggingFace ID) to use.
 
 ## Special Settings
 PROVIDER="vllm"             # Default: "vllm". A provider to host the model. ["vllm", "openai", "deepinfra"]
 CUSTOM_SETTINGS=""          # Default: "". A custom setting name to use. (e.g. "reasoning", "coding", "flashattn_incompatible")
 PREDOWNLOAD_MODEL="true"    # Default: "true". A pre-download a model before qsub.
+MAX_SAMPLES=""              # Default: "". A maximum number of samples in benchmark to evaluate. Set it for debugging.
 
 ## Environmental Settings
-SERVICE=""                  # A service to use. ["tsubame", "local"]
+SERVICE=""                  # A service to use. ["tsubame", "abci", "local"]
 PRIORITY="-5"               # Default: "-5". A priority of the job. Note that double priority is double cost. ["-5", "-4", "-3"] (Only for TSUBAME)
-CUDA_VISIBLE_DEVICES=""     # Default: "". A CUDA_VISIBLE_DEVICES to use. [e.g. "0,1"] (Only for local)
+CUDA_VISIBLE_DEVICES=""     # Default: "". A CUDA_VISIBLE_DEVICES to use. [e.g. "0,1"] (Only for and absolutely necessary for local)
 
 ########################################################
 
@@ -39,14 +40,18 @@ esac
 RESULTS_DIR="${REPO_PATH}/results/${PROVIDER_SUBDIR}${MODEL_NAME}${CUSTOM_SETTINGS_SUBDIR}"
 SCRIPTS_DIR="${REPO_PATH}/scripts/tsubame"
 
-# Optional Args
+# Optional Args (whose values can be empty)
+## When a value is empty, do not pass its arg name either to avoid an arg parsing error.
 OPTIONAL_ARGS=""
 if [[ -n "${CUSTOM_SETTINGS}" ]]; then
   OPTIONAL_ARGS="${OPTIONAL_ARGS} --custom-settings '${CUSTOM_SETTINGS}'"
 fi
-if [[ -n "${PROVIDER}" ]]; then
-  OPTIONAL_ARGS="${OPTIONAL_ARGS} --provider '${PROVIDER}'"
+if [[ -n "${MAX_SAMPLES}" ]]; then
+  OPTIONAL_ARGS="${OPTIONAL_ARGS} --max-samples '${MAX_SAMPLES}'"
 fi
+
+# Set common qsub args
+common_qsub_args="--node-kind ${NODE_KIND} --provider ${PROVIDER} --model-name ${MODEL_NAME} --repo-path ${REPO_PATH} --service ${SERVICE}"
 
 # Pre-download the model
 if [ ${PREDOWNLOAD_MODEL} = "true" ]; then
@@ -72,10 +77,9 @@ qsub_task() {
 
   # Get task-specific args
   result_dir=$(task_result "${lang}_${task}")
-  h_rt=$(hrt "${NODE_KIND}" "${lang}_${task}")
   task_name=$(task_script "${lang}_${task}")
   task_framework=$(task_framework "${lang}_${task}")
-  [[ -z $task_name || -z $h_rt || -z $result_dir || -z $task_framework ]] && { echo "❌ unknown task ${lang}_${task}"; exit 1; }
+  [[ -z $task_name || -z $result_dir || -z $task_framework ]] && { echo "❌ Unknown task ${lang}_${task}"; exit 1; }
 
   # Set an outdir 
   OUTDIR="${RESULTS_DIR}/${result_dir}"
@@ -93,17 +97,24 @@ qsub_task() {
   local job_name="${lang}_${task}"
   case $SERVICE in
     "tsubame")
-      qsub -g tga-okazaki -l ${NODE_KIND}=1 -p ${PRIORITY}-N "${job_name}" -l h_rt="${h_rt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
-        --task-name "${task_name}" --node-kind "${NODE_KIND}" --model-name "${MODEL_NAME}" --repo-path "${REPO_PATH}" --service "${SERVICE}" ${OPTIONAL_ARGS}
+      h_rt=$(hrt "${NODE_KIND}" "${lang}_${task}") || { echo "❌ Cound not get h_rt for ${lang}_${task} on ${NODE_KIND}"; exit 1; }
+      qsub -g "${TGROUP_GROUP}" -l "${NODE_KIND}"=1 -p "${PRIORITY}" -N "${job_name}" -l h_rt="${h_rt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
+        --task-name "${task_name}" ${common_qsub_args[@]} ${OPTIONAL_ARGS}
+      ;;
+
+    "abci")
+      wlt=$(walltime "${NODE_KIND}" "${lang}_${task}") || { echo "❌ Cound not get walltime for ${lang}_${task} on ${NODE_KIND}"; exit 1; }
+      qsub -P "${ABCI_GROUP}" -q "${NODE_KIND}" -l select=1 -N "${job_name}" -l walltime="${wlt}" -o "${OUTDIR}" -e "${OUTDIR}" -- "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
+        --task-name "${task_name}" ${common_qsub_args[@]} ${OPTIONAL_ARGS}
       ;;
 
     "local")
-      get_random_job_id
+      set_random_job_id
       local session_name="${job_name}_${JOB_ID}"
       tmux new-session -d -s "${session_name}" bash -c "
         set -euo pipefail
         export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES} && bash "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
-          --task-name '${task_name}' --node-kind '${NODE_KIND}' --model-name '${MODEL_NAME}' --repo-path '${REPO_PATH}' --service '${SERVICE}' --custom-job-id '${JOB_ID}' ${OPTIONAL_ARGS} \
+          --task-name '${task_name}' ${common_qsub_args[@]} --custom-job-id '${JOB_ID}' ${OPTIONAL_ARGS} \
           > '${OUTDIR}/${job_name}.o${JOB_ID}' 2> '${OUTDIR}/${job_name}.e${JOB_ID}'
       "
       echo "✅ Local job ${job_name} was successfully submitted to tmux session ${session_name}."

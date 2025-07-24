@@ -1,13 +1,14 @@
 #!/bin/bash
 #$ -cwd
 #% -m abe
+#% -M your_email@address.here
 # Replace % with $ if you want to receive emails when jobs start & finish, and errors occur.
 set -euo pipefail
 
 
 # Load Args
 ## Default Values
-TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; REPO_PATH=""; SERVICE=""; CUSTOM_SETTINGS=""; PROVIDER=""; CUSTOM_JOB_ID=""
+TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; REPO_PATH=""; SERVICE=""; CUSTOM_SETTINGS=""; PROVIDER=""; CUSTOM_JOB_ID=""; MAX_SAMPLES=""
 
 ## Parse Args
 while [[ $# -gt 0 ]]; do
@@ -17,9 +18,10 @@ while [[ $# -gt 0 ]]; do
     --model-name) MODEL_NAME="$2";;
     --repo-path) REPO_PATH="$2";;
     --service) SERVICE="$2";;
-    --custom-settings) CUSTOM_SETTINGS="$2";;   # Optional
-    --provider) PROVIDER="$2";;                 # Optional
-    --custom-job-id) CUSTOM_JOB_ID="$2";;       # Optional
+    --provider) PROVIDER="$2";;
+    --custom-settings) CUSTOM_SETTINGS="$2";;     # Optional
+    --custom-job-id) CUSTOM_JOB_ID="$2";;         # Optional
+    --max-samples) MAX_SAMPLES="${2//[^0-9]/}";;  # Optional
     *) echo "Unknown option: $1" >&2;;
   esac
   shift 2
@@ -34,9 +36,9 @@ fi
 
 # Setup
 source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
-init_common "${MODEL_NAME}" "${NODE_KIND}" "${REPO_PATH}"
-init_service "${SERVICE}" "${NUM_GPUS}" "${CUDA_VISIBLE_DEVICES}" "${CUSTOM_JOB_ID}"
-get_generation_params "${CUSTOM_SETTINGS}" "${TASK_NAME}" "${REPO_PATH}" "${MODEL_NAME}"
+init_service "${SERVICE}" "${NODE_KIND}" "${CUDA_VISIBLE_DEVICES}" "${CUSTOM_JOB_ID}"
+init_common "${REPO_PATH}"
+get_generation_params "${CUSTOM_SETTINGS}" "${TASK_NAME}" "${REPO_PATH}" "${MODEL_NAME}" "${MAX_SAMPLES}"
 echo "⚙️ Generation Parameters: ${GEN_PARAMS}"
 RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"
 
