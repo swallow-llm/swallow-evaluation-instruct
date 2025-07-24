@@ -9,6 +9,7 @@ set -euo pipefail
 # Load Args
 ## Default Values
 TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; REPO_PATH=""; SERVICE=""; CUSTOM_SETTINGS=""; PROVIDER=""; CUSTOM_JOB_ID=""; MAX_SAMPLES=""
+STDOUT_STDERR_DIR="";
 
 ## Parse Args
 while [[ $# -gt 0 ]]; do
@@ -22,14 +23,28 @@ while [[ $# -gt 0 ]]; do
     --custom-settings) CUSTOM_SETTINGS="$2";;     # Optional
     --custom-job-id) CUSTOM_JOB_ID="$2";;         # Optional
     --max-samples) MAX_SAMPLES="${2//[^0-9]/}";;  # Optional
-    *) echo "Unknown option: $1" >&2;;
+    --stdout-stderr-dir) STDOUT_STDERR_DIR="$2";; # Optional
+    *) echo "💀 Error: Unknown option: $1" >&2;;
   esac
   shift 2
 done
 
+## Redirect stdout and stderr to files if specified
+if [[ -n "$STDOUT_STDERR_DIR" ]]; then
+  ### ABCI does not support streaming stdout and stderr, so we need to redirect them by ourselves.
+  ### Note that any echo and print statements before this line will not be redirected.
+  ### Therefore, if you face a sudden quit of the job without any error messages, please check the lines above.
+  if [[ $SERVICE != "abci" ]]; then
+    echo "💀 Error: --stdout-stderr-dir option is only supported for ABCI jobs." >&2
+    exit 1
+  fi
+  exec > "${STDOUT_STDERR_DIR}/${PBS_JOBNAME}.o${PBS_JOBID}" 2> "${STDOUT_STDERR_DIR}/${PBS_JOBNAME}.e${PBS_JOBID}"
+fi
+
+
 ## Check Required Args
 if [[ -z "$TASK_NAME" ]] || [[ -z "$NODE_KIND" ]] || [[ -z "$MODEL_NAME" ]] || [[ -z "$REPO_PATH" ]] || [[ -z "$SERVICE" ]]; then
-  echo "Error: Missing required arguments. TASK_NAME: '${TASK_NAME}', NODE_KIND: '${NODE_KIND}', MODEL_NAME: '${MODEL_NAME}', REPO_PATH: '${REPO_PATH}', SERVICE: '${SERVICE}'" >&2
+  echo "💀 Error: Missing required arguments. TASK_NAME: '${TASK_NAME}', NODE_KIND: '${NODE_KIND}', MODEL_NAME: '${MODEL_NAME}', REPO_PATH: '${REPO_PATH}', SERVICE: '${SERVICE}'" >&2
   exit 1
 fi
 
