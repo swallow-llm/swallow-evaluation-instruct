@@ -49,12 +49,25 @@ cd $REPO_PATH
 export UV_CACHE_DIR=$UV_CACHE
 echo "💰 Set UV_CACHE_DIR as \`${UV_CACHE_DIR}.\`"
 
-echo "🌐 Installing uv..."
-curl -LsSf https://astral.sh/uv/install.sh | sh
+if command -v uv &> /dev/null; then
+    echo "🛠️ uv is already installed: $(command -v uv) (version: $(uv --version))"
+else
+    echo "🌐 uv is not found. Installing uv..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh || echo "❌ Failed to install uv."
+    export PATH="$HOME/.local/bin:$PATH"
+    hash -r
+    command -v uv &>/dev/null || echo "❌ uv still not found on PATH after installation"
+    echo "🛠️ uv is successfully installed: $(command -v uv) (version: $(uv --version))"
+fi
 
-echo "📦 Installing Python 3.10.14 via uv..."
-uv python install 3.10.14
-uv python pin 3.10.14
+if uv python list --only-installed | grep -q "3\.10\.14"; then
+    echo "🛠️ Python 3.10.14 is already installed under uv."
+else
+    echo "📦 Installing Python 3.10.14 via uv..."
+    uv python install 3.10.14
+    uv python pin 3.10.14
+    echo "🛠️ Python 3.10.14 is successfully installed under uv."
+fi
 
 echo "🔧 Creating shared virtual environment..."
 uv venv "${REPO_PATH}/.common_envs"
@@ -66,7 +79,8 @@ uv pip install pre-commit huggingface_hub[cli]
 uv pip install pandas pyarrow fastparquet ipykernel
 deactivate
 
-echo "🔗 Added virtual-env bin dir to PATH in .bashrc"
-echo 'export PATH="'"${REPO_PATH}"'/.common_envs/bin:$PATH"' >> "$HOME/.bashrc"
+echo "🔗 Added virtual-env bin dir to PATH in .bashrc (if not already present)"
+grep -qxF 'export PATH="'"${REPO_PATH}"'/.common_envs/bin:$PATH"' "$HOME/.bashrc" || echo 'export PATH="'"${REPO_PATH}"'/.common_envs/bin:$PATH"' >> "$HOME/.bashrc"
+grep -qxF 'export PATH="$HOME/.local/bin:$PATH"' "$HOME/.bashrc" || echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 
 echo "✅ Environment was successfully created!"
