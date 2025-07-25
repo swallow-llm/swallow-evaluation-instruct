@@ -339,7 +339,7 @@ class VLLMModel(LightevalModel):
                         if term in gen_text:
                             gen_text = gen_text.split(term)[0]
                     if request.max_gen_text_length is not None and len(gen_text) > request.max_gen_text_length:
-                        print(f"Truncating generated text to {request.max_gen_text_length} tokens.")
+                        logger.warning(f"Truncating generated text to {request.max_gen_text_length} characters.")
                         gen_text = gen_text[: request.max_gen_text_length]
                     gen_texts.append(gen_text)
                     gen_ids_list.append(gen_ids)
