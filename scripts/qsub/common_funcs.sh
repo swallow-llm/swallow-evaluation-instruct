@@ -2,22 +2,15 @@
 
 init_common(){
     # Global variables which will be defined and become available after this function is over:
-    # - NUM_GPUS
     # - GPU_MEMORY_UTILIZATION
     # - UV_OPTIONS
 
-    # Load Modules
-    . /etc/profile.d/modules.sh
-
     # Load Args
-    MODEL_NAME=$1
-    NODE_KIND=$2
-    REPO_PATH=$3
+    REPO_PATH=$1
     
     # Load and Set Vars
     source "${REPO_PATH}/.env"
     export PATH="$HOME/.local/bin:$PATH" # for uv, add local bin to PATH
-    export TMPDIR=/local/${JOB_ID}
     export HUGGINGFACE_HUB_CACHE=$HUGGINGFACE_CACHE
     export HF_HOME=$HUGGINGFACE_CACHE
     export HF_TOKEN=$HF_TOKEN
@@ -28,14 +21,6 @@ init_common(){
     export REPO_PATH=$REPO_PATH
 
     # GPU Settings
-    ## Set NUM_GPUS based on NODE_KIND
-    case $NODE_KIND in
-        "node_q") NUM_GPUS=1 ;;
-        "node_f") NUM_GPUS=4 ;;
-        *"cpu"*) NUM_GPUS=0 ;;
-        *) echo "❌ Unknown NODE_KIND: $NODE_KIND"
-            exit 1
-    esac
     ## Set GPU_MEMORY_UTILIZATION
     GPU_MEMORY_UTILIZATION=0.9
 
@@ -57,6 +42,179 @@ init_common(){
 }
 
 
+extract_gpu_num_from_node_kind(){
+    # Global variables which will be defined and become available after this function is over:
+    # - NUM_GPUS
+
+    # Load Args
+    NODE_KIND=$1
+
+    # Extract GPU number from NODE_KIND
+    NUM_GPUS=$(echo "$NODE_KIND" | grep -oP 'gpu_\K\d+')
+    if [[ -z $NUM_GPUS ]]; then
+        echo "💀 Error: NODE_KIND must contain 'gpu_' and a number. NODE_KIND: $NODE_KIND"
+        exit 1
+    fi
+    echo "✅ GPU number is extracted from NODE_KIND: $NUM_GPUS"
+}
+
+
+init_service(){
+    # Global variables which will be defined and become available after this function is over:
+    # - NUM_GPUS (all)
+    # - JOB_ID (local only. JOB_ID is available without running this function in tsubame and abci.)
+
+    # Load Args
+    SERVICE=$1
+    NODE_KIND=$2
+    CUDA_VISIBLE_DEVICES=$3
+    CUSTOM_JOB_ID=$4
+
+    # Run special initialization based on the service
+    case $SERVICE in
+        "tsubame")
+            ## Set NUM_GPUS
+            case $NODE_KIND in
+                "node_q") NUM_GPUS=1 ;;
+                "node_f") NUM_GPUS=4 ;;
+                *"cpu"*) NUM_GPUS=0 ;;
+                *) echo "❌ Unsupported NODE_KIND: $NODE_KIND"
+            esac
+
+            ## Set TMPDIR
+            export TMPDIR=/local/${JOB_ID}
+
+            ## Load modules
+            . /etc/profile.d/modules.sh
+            ;;
+
+        "abci")
+            ## Set NUM_GPUS
+            case $NODE_KIND in
+                "rt_HG") NUM_GPUS=1 ;;
+                "rt_HF") NUM_GPUS=8 ;;
+                "rt_HC") NUM_GPUS=0 ;;
+                *) echo "❌ Unsupported NODE_KIND: $NODE_KIND"
+            esac
+
+            ## Set environment variables
+            export JOB_ID=$PBS_JOBID
+            export TMPDIR=/local/${JOB_ID}
+
+            ## Map MIG UUID to numeric index for CUDA_VISIBLE_DEVICES if necessary
+            echo "Allocated CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES:-<unset>}"
+            if [[ "${CUDA_VISIBLE_DEVICES:-}" =~ ^GPU- ]]; then
+                IFS=',' read -ra uuid_arr <<< "${CUDA_VISIBLE_DEVICES}"
+
+                ### Create a mapping from UUID to index
+                declare -A u2i
+                while IFS=',' read -r idx uuid; do
+                    idx=${idx//[[:space:]]/}
+                    uuid=${uuid//[[:space:]]/}
+                    u2i["$uuid"]="$idx"
+                done < <(nvidia-smi --query-gpu=index,uuid --format=csv,noheader,nounits)
+
+                ### Execute the mapping
+                mapped=()
+                for u in "${uuid_arr[@]}"; do
+                    key=${u//[[:space:]]/}
+                    if [[ -n "${u2i[$key]:-}" ]]; then
+                        mapped+=("${u2i[$key]}")
+                    else
+                        echo "❌ Invalid GPU UUID: $key" >&2
+                        echo "    Available map:" >&2
+                        for k in "${!u2i[@]}"; do
+                            echo "    $k → ${u2i[$k]}" >&2
+                        done
+                        exit 1
+                    fi
+                done
+
+                ### Overwrite the output by comma-joining
+                export CUDA_VISIBLE_DEVICES=$(IFS=','; echo "${mapped[*]}")
+                echo "🪄 Mapped CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES}"
+            else
+                echo "➖ Current CUDA_VISIBLE_DEVICES is not a UUID. Skipping mapping."
+            fi
+
+            ## Load modules
+            . /etc/profile.d/modules.sh
+            ;;
+
+        "local")
+            ## Set NUM_GPUS
+            case $NODE_KIND in
+                "cpu") NUM_GPUS=0 ;;
+                *"gpu"*) extract_gpu_num_from_node_kind "$NODE_KIND" ;;
+                *) echo "❌ Unsupported NODE_KIND: $NODE_KIND"
+            esac
+
+            ## Set JOB_ID manually (because JOB_ID is not automatically issued in local)
+            export JOB_ID="${CUSTOM_JOB_ID}"
+
+            ## Check CUDA_VISIBLE_DEVICES
+            if [[ -z $CUDA_VISIBLE_DEVICES || $(echo "$CUDA_VISIBLE_DEVICES" | tr ',' '\n' | wc -l) -ne $NUM_GPUS ]]; then
+                echo "💀 Error: CUDA_VISIBLE_DEVICES is not set or does not match NUM_GPUS. Please set CUDA_VISIBLE_DEVICES appropriately. (CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES, NUM_GPUS: $NUM_GPUS)"
+                exit 1
+            fi
+            ;;
+
+        *)
+            echo "💀 Error: Unknown SERVICE: $SERVICE"
+            exit 1
+            ;;
+    esac
+}
+
+check_service(){
+    # Load Args
+    SERVICE=$1
+
+    ## Detect current service
+    if [[ -d /groups/gag51395 ]]; then
+        current_service="abci"
+    elif [[ -d /gs/fs/tga-okazaki ]]; then
+        current_service="tsubame"
+    else
+        current_service="local"
+    fi
+
+    ## Check if the current service matches the specified service
+    if [[ $current_service != $SERVICE ]]; then
+        echo "💀 Error: The current service is '$current_service', but you specified '$SERVICE'."
+        exit 1
+    fi
+}
+
+set_random_job_id(){
+    # Global variables which will be defined and become available after this function is over:
+    # - JOB_ID (8 characters. {year_last}{day_of_year}{4 characters [0-9a-zA-Z]}.)
+
+    # Get date prefix
+    year=$(date +%Y)
+    year_last=${year: -1}
+    day_of_year=$(date +%j)
+    prefix="${year_last}${day_of_year}"
+
+    # Seed RANDOM with nanoseconds
+    seed=$(date +%N)
+    RANDOM=$seed
+
+    # Define 62-based digits
+    digits=( {0..9} {a..z} {A..Z} )
+    len=${#digits[@]}
+
+    # Generate suffix
+    suffix=""
+    for i in {1..4}; do
+    suffix+="${digits[RANDOM % len]}"
+    done
+
+    # Combine and output
+    JOB_ID="${prefix}${suffix}"
+}
+
+
 get_generation_params(){
     # Global variables which will be defined and become available after this function is over:
     # - CUSTOM_SETTINGS_PATH
@@ -74,6 +232,7 @@ get_generation_params(){
     TASK_NAME=$2
     REPO_PATH=$3
     MODEL_NAME=$4
+    MAX_SAMPLES=$5
 
     # Load custom settings from model_conf.yaml
     local GENERATION_SETTINGS_DIR="${REPO_PATH}/scripts/generation_settings"
@@ -108,6 +267,9 @@ get_generation_params(){
     OPTIONAL_ARGS_FOR_LIGHTEVAL=""
     if [[ $SYSTEM_MESSAGE != "" ]]; then
         OPTIONAL_ARGS_FOR_LIGHTEVAL+="--system-prompt ${SYSTEM_MESSAGE}"
+    fi
+    if [[ $MAX_SAMPLES != "" ]]; then
+        OPTIONAL_ARGS_FOR_LIGHTEVAL+="--max-samples ${MAX_SAMPLES}"
     fi
 }
 
@@ -268,7 +430,7 @@ PY
 
 
         ## Start vllm server
-        source "${REPO_PATH}/scripts/tsubame/conf/load_config.sh"
+        source "${REPO_PATH}/scripts/qsub/conf/load_config.sh"
         result_subdir=$(script_result "${TASK_NAME}")
         vllm_log_file="${AGGREGATED_OUTPUTS_DIR}/${result_subdir}/${result_subdir//\//_}.vllm${JOB_ID}"
         uv run --isolated --project "$REPO_PATH" --locked --extra vllm \
@@ -312,7 +474,7 @@ PY
         VLLM_SERVER_PORT=""
 
         ## Check the node kind
-        if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" ]]; then
+        if [[ $NODE_KIND == "node_q" || $NODE_KIND == "node_f" || $NODE_KIND == *"gpu"* ]]; then
             echo "❌ You specified ${NODE_KIND} but OpenAI and DeepInfra do not use GPUs. Use CPU nodes instead."
             exit 1
         fi
