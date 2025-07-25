@@ -49,7 +49,7 @@ fi
 
 
 # Setup
-source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
+source "${REPO_PATH}/scripts/qsub/common_funcs.sh"
 init_service "${SERVICE}" "${NODE_KIND}" "${CUDA_VISIBLE_DEVICES}" "${CUSTOM_JOB_ID}"
 init_common "${REPO_PATH}"
 get_generation_params "${CUSTOM_SETTINGS}" "${TASK_NAME}" "${REPO_PATH}" "${MODEL_NAME}" "${MAX_SAMPLES}"

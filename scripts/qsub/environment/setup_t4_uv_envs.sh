@@ -87,12 +87,12 @@ fi
 # ----------------------------------------------------------------------
 # 4. Manage execution permissions (Only for ABCI)
 # ----------------------------------------------------------------------
-if show_point > /dev/null 2>&1; then
+if [[ -d /groups/gag51395 ]]; then
   echo "🔧 Managing execution permissions..."
   files_to_chmod=(
-      "$REPO_PATH/scripts/tsubame/common_funcs.sh"
-      "$REPO_PATH/scripts/tsubame/evaluate_lighteval.sh"
-      "$REPO_PATH/scripts/tsubame/qsub_all.sh"
+      "$REPO_PATH/scripts/qsub/common_funcs.sh"
+      "$REPO_PATH/scripts/qsub/evaluate_lighteval.sh"
+      "$REPO_PATH/scripts/qsub/qsub_all.sh"
   )
   for file in "${files_to_chmod[@]}"; do
     chgrp ${ABCI_GROUP} "$file"

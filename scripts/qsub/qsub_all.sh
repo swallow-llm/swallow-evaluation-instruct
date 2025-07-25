@@ -24,7 +24,7 @@ CUDA_VISIBLE_DEVICES=""     # Default: "". A CUDA_VISIBLE_DEVICES to use. [e.g. 
 
 # Load task-definition and common functions
 source "$(dirname "$0")/conf/load_config.sh"
-source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
+source "${REPO_PATH}/scripts/qsub/common_funcs.sh"
 
 # Load .env and define dirs
 source "$(dirname "$0")/../../.env"
@@ -39,7 +39,7 @@ case $PROVIDER in
     *) echo "❌ unknown provider ${PROVIDER}"; exit 1 ;;
 esac
 RESULTS_DIR="${REPO_PATH}/results/${PROVIDER_SUBDIR}${MODEL_NAME}${CUSTOM_SETTINGS_SUBDIR}"
-SCRIPTS_DIR="${REPO_PATH}/scripts/tsubame"
+SCRIPTS_DIR="${REPO_PATH}/scripts/qsub"
 
 # Optional Args (whose values can be empty)
 ## When a value is empty, do not pass its arg name either to avoid an arg parsing error.
