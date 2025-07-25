@@ -22,8 +22,9 @@ CUDA_VISIBLE_DEVICES=""     # Default: "". A CUDA_VISIBLE_DEVICES to use. [e.g. 
 
 ########################################################
 
-# Load task-definition
+# Load task-definition and common functions
 source "$(dirname "$0")/conf/load_config.sh"
+source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
 
 # Load .env and define dirs
 source "$(dirname "$0")/../../.env"
@@ -53,6 +54,9 @@ fi
 # Set common qsub args
 common_qsub_args="--node-kind ${NODE_KIND} --provider ${PROVIDER} --model-name ${MODEL_NAME} --repo-path ${REPO_PATH} --service ${SERVICE}"
 
+# Check service
+check_service "${SERVICE}"
+
 # Pre-download the model
 if [ ${PREDOWNLOAD_MODEL} = "true" ]; then
   if [ ${PROVIDER} != "vllm" ]; then
@@ -70,7 +74,6 @@ fi
 
 # Define qsub-function
 last_submit_time=""
-source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
 qsub_task() {
   # Get args
   local lang=$1 task=$2
@@ -128,27 +131,27 @@ qsub_task() {
 echo "🚀 Submitting tasks..."
 
 ## Japanese
-# qsub_task ja gpqa
-# qsub_task ja jemhopqa_cot
+qsub_task ja gpqa
+qsub_task ja jemhopqa_cot
 qsub_task ja math_100
-# qsub_task ja mmlu
-# qsub_task ja mmlu_prox
-# qsub_task ja mtbench
-# qsub_task ja wmt20_en_ja
-# qsub_task ja wmt20_ja_en
-# qsub_task ja humaneval
-# qsub_task ja mifeval
+qsub_task ja mmlu
+qsub_task ja mmlu_prox
+qsub_task ja mtbench
+qsub_task ja wmt20_en_ja
+qsub_task ja wmt20_ja_en
+qsub_task ja humaneval
+qsub_task ja mifeval
 
 ## English
-# qsub_task en hellaswag
-# qsub_task en mtbench
-# qsub_task en gpqa_diamond
-# qsub_task en math_500
-# qsub_task en aime_2024_2025
-# qsub_task en livecodebench_v5_v6
-# qsub_task en mmlu
-# qsub_task en mmlu_pro
-# qsub_task en mmlu_prox
+qsub_task en hellaswag
+qsub_task en mtbench
+qsub_task en gpqa_diamond
+qsub_task en math_500
+qsub_task en aime_2024_2025
+qsub_task en livecodebench_v5_v6
+qsub_task en mmlu
+qsub_task en mmlu_pro
+qsub_task en mmlu_prox
 
 ## Optional
 # qsub_task ja jemhopqa

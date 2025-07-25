@@ -166,6 +166,25 @@ init_service(){
     esac
 }
 
+check_service(){
+    # Load Args
+    SERVICE=$1
+
+    ## Detect current service
+    if [[ -d /groups/gag51395 ]]; then
+        current_service="abci"
+    elif [[ -d /gs/fs/tga-okazaki ]]; then
+        current_service="tsubame"
+    else
+        current_service="local"
+    fi
+
+    ## Check if the current service matches the specified service
+    if [[ $current_service != $SERVICE ]]; then
+        echo "💀 Error: The current service is '$current_service', but you specified '$SERVICE'."
+        exit 1
+    fi
+}
 
 set_random_job_id(){
     # Global variables which will be defined and become available after this function is over:
