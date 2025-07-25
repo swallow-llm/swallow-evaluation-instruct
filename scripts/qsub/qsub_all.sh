@@ -20,11 +20,7 @@ SERVICE=""                  # A service to use. ["tsubame", "abci", "local"]
 PRIORITY="-5"               # Default: "-5". A priority of the job. Note that double priority is double cost. ["-5", "-4", "-3"] (Only for TSUBAME)
 CUDA_VISIBLE_DEVICES=""     # Default: "". A CUDA_VISIBLE_DEVICES to use. [e.g. "0,1"] (Only for and absolutely necessary for local)
 
-########################################################
-
-# Load task-definition and common functions
-source "$(dirname "$0")/conf/load_config.sh"
-source "${REPO_PATH}/scripts/qsub/common_funcs.sh"
+#######################################################
 
 # Load .env and define dirs
 source "$(dirname "$0")/../../.env"
@@ -40,6 +36,10 @@ case $PROVIDER in
 esac
 RESULTS_DIR="${REPO_PATH}/results/${PROVIDER_SUBDIR}${MODEL_NAME}${CUSTOM_SETTINGS_SUBDIR}"
 SCRIPTS_DIR="${REPO_PATH}/scripts/qsub"
+
+# Load task-definition and common functions
+source "$(dirname "$0")/conf/load_config.sh"
+source "${REPO_PATH}/scripts/qsub/common_funcs.sh"
 
 # Optional Args (whose values can be empty)
 ## When a value is empty, do not pass its arg name either to avoid an arg parsing error.
@@ -108,7 +108,7 @@ qsub_task() {
 
     "abci")
       wlt=$(walltime "${NODE_KIND}" "${lang}_${task}") || { echo "❌ Cound not get walltime for ${lang}_${task} on ${NODE_KIND}"; exit 1; }
-      qsub -P "${ABCI_GROUP}" -q "${NODE_KIND}" -l select=1 -N "${job_name}" -l walltime="${wlt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
+      qsub -P "${ABCI_GROUP}" -q "${NODE_KIND}" -l select=1 -N "${job_name}" -l walltime="${wlt}" -o "${OUTDIR}" -e "${OUTDIR}" -- "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
         --task-name "${task_name}" ${common_qsub_args[@]} --stdout-stderr-dir "${OUTDIR}" ${OPTIONAL_ARGS}
       ;;
 
