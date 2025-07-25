@@ -480,6 +480,7 @@ class LightevalTask:
                     metric_categories=[MetricCategory.LLM_AS_JUDGE_MULTI_TURN],
                     temperature=formatted_doc.specific.get("temperature", "") if formatted_doc.specific else None,
                     num_samples=formatted_doc.specific.get("num_samples", 1) if formatted_doc.specific else 1,
+                    max_gen_text_length=formatted_doc.specific.get("max_gen_text_length", None),
                 )
             ]
         if self.has_metric_category[MetricCategory.LLM_AS_JUDGE]:
