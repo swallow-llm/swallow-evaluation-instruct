@@ -98,7 +98,7 @@ qsub_task() {
   case $SERVICE in
     "tsubame")
       h_rt=$(hrt "${NODE_KIND}" "${lang}_${task}") || { echo "❌ Cound not get h_rt for ${lang}_${task} on ${NODE_KIND}"; exit 1; }
-      qsub -g "${TGROUP_GROUP}" -l "${NODE_KIND}"=1 -p "${PRIORITY}" -N "${job_name}" -l h_rt="${h_rt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
+      qsub -g "${TSUBAME_GROUP}" -l "${NODE_KIND}"=1 -p "${PRIORITY}" -N "${job_name}" -l h_rt="${h_rt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
         --task-name "${task_name}" ${common_qsub_args[@]} ${OPTIONAL_ARGS}
       ;;
 
@@ -115,7 +115,7 @@ qsub_task() {
         set -euo pipefail
         export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES} && bash "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
           --task-name '${task_name}' ${common_qsub_args[@]} --custom-job-id '${JOB_ID}' ${OPTIONAL_ARGS} \
-          > '${OUTDIR}/${job_name}.o${JOB_ID}' 2> '${OUTDIR}/${job_name}.e${JOB_ID}'
+          > >(tee '${OUTDIR}/${job_name}.o${JOB_ID}') 2> >(tee '${OUTDIR}/${job_name}.e${JOB_ID}' >&2)
       "
       echo "✅ Local job ${job_name} was successfully submitted to tmux session ${session_name}."
   esac
@@ -128,27 +128,27 @@ qsub_task() {
 echo "🚀 Submitting tasks..."
 
 ## Japanese
-qsub_task ja gpqa
-qsub_task ja jemhopqa_cot
+# qsub_task ja gpqa
+# qsub_task ja jemhopqa_cot
 qsub_task ja math_100
-qsub_task ja mmlu
-qsub_task ja mmlu_prox
-qsub_task ja mtbench
-qsub_task ja wmt20_en_ja
-qsub_task ja wmt20_ja_en
-qsub_task ja humaneval
-qsub_task ja mifeval
+# qsub_task ja mmlu
+# qsub_task ja mmlu_prox
+# qsub_task ja mtbench
+# qsub_task ja wmt20_en_ja
+# qsub_task ja wmt20_ja_en
+# qsub_task ja humaneval
+# qsub_task ja mifeval
 
 ## English
-qsub_task en hellaswag
-qsub_task en mtbench
-qsub_task en gpqa_diamond
-qsub_task en math_500
-qsub_task en aime_2024_2025
-qsub_task en livecodebench_v5_v6
-qsub_task en mmlu
-qsub_task en mmlu_pro
-qsub_task en mmlu_prox
+# qsub_task en hellaswag
+# qsub_task en mtbench
+# qsub_task en gpqa_diamond
+# qsub_task en math_500
+# qsub_task en aime_2024_2025
+# qsub_task en livecodebench_v5_v6
+# qsub_task en mmlu
+# qsub_task en mmlu_pro
+# qsub_task en mmlu_prox
 
 ## Optional
 # qsub_task ja jemhopqa
