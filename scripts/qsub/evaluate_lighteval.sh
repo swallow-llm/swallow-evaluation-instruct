@@ -9,7 +9,7 @@ set -euo pipefail
 # Load Args
 ## Default Values
 TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; REPO_PATH=""; SERVICE=""; CUSTOM_SETTINGS=""; PROVIDER=""; CUSTOM_JOB_ID=""; MAX_SAMPLES=""
-STDOUT_STDERR_DIR=""; CUDA_VISIBLE_DEVICES="";
+STDOUT_STDERR_DIR=""; if [[ -z "$CUDA_VISIBLE_DEVICES" ]]; then CUDA_VISIBLE_DEVICES=""; fi
 
 ## Parse Args
 while [[ $# -gt 0 ]]; do
@@ -24,7 +24,6 @@ while [[ $# -gt 0 ]]; do
     --custom-job-id) CUSTOM_JOB_ID="$2";;               # Optional
     --max-samples) MAX_SAMPLES="${2//[^0-9]/}";;        # Optional
     --stdout-stderr-dir) STDOUT_STDERR_DIR="$2";;       # Optional
-    --cuda-visible-devices) CUDA_VISIBLE_DEVICES="$2";; # Optional
     *) echo "💀 Error: Unknown option: $1" >&2;;
   esac
   shift 2
