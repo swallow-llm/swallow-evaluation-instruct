@@ -402,25 +402,21 @@ class LiteLLMClient(LightevalModel):
                     if temperature is not None:
                         self.generation_parameters.temperature = temperature
 
-                    if temperature is not None and temperature == 0 and num_samples > 1:
+                    # temperature=0のときはN回生成するのは無駄なのでnum_samples=1でAPI呼び出し、gen_textをnum_samples個複製
+                    if temperature is not None and temperature == 0:
                         multi_turn_response = self.__call_api(multi_turn_context, return_logits, max_new_tokens, 1, stop_sequence)
                         gen_text = multi_turn_response.choices[0].message.content
-                        # max_gen_text_lengthで文字列をleft truncate（vllm_model.pyと同様の処理）
-                        if (request.max_gen_text_length is not None) and (gen_text is not None) and (len(gen_text) > request.max_gen_text_length):
-                            logger.warning(f"Truncating generated text to {request.max_gen_text_length} characters.")
-                            gen_text = gen_text[: request.max_gen_text_length]
-                        turn_results.append([gen_text] * num_samples)
+                        tmp_results = [gen_text] * num_samples
                     else:
-                        tmp_results = []
-                        for i in range(num_samples):
-                            multi_turn_response = self.__call_api(multi_turn_context, return_logits, max_new_tokens, 1, stop_sequence)
-                            gen_text = multi_turn_response.choices[0].message.content
-                            # max_gen_text_lengthで文字列をleft truncate（vllm_model.pyと同様の処理）
-                            if (request.max_gen_text_length is not None) and (gen_text is not None) and (len(gen_text) > request.max_gen_text_length):
+                        multi_turn_response = self.__call_api(multi_turn_context, return_logits, max_new_tokens, num_samples, stop_sequence)
+                        tmp_results = [choice.message.content for choice in multi_turn_response.choices]
+                    # max_gen_text_lengthで文字列をleft truncate（vllm_model.pyと同様の処理）
+                    if request.max_gen_text_length is not None:
+                        for i, text in enumerate(tmp_results):
+                            if text is not None and len(text) > request.max_gen_text_length:
                                 logger.warning(f"Truncating generated text to {request.max_gen_text_length} characters.")
-                                gen_text = gen_text[: request.max_gen_text_length]
-                            tmp_results.append(gen_text)
-                        turn_results.append(tmp_results)
+                                tmp_results[i] = text[:request.max_gen_text_length]
+                    turn_results.append(tmp_results)
 
                 results.append(
                     GenerativeMultiturnResponse(
