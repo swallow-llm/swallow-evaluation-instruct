@@ -104,7 +104,7 @@ qsub_task() {
 
     "abci")
       wlt=$(walltime "${NODE_KIND}" "${lang}_${task}") || { echo "❌ Cound not get walltime for ${lang}_${task} on ${NODE_KIND}"; exit 1; }
-      qsub -P "${ABCI_GROUP}" -q "${NODE_KIND}" -l select=1 -N "${job_name}" -l walltime="${wlt}" -o /dev/null -e /dev/null "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
+      qsub -P "${ABCI_GROUP}" -q "${NODE_KIND}" -l select=1 -N "${job_name}" -l walltime="${wlt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
         --task-name "${task_name}" ${common_qsub_args[@]} --stdout-stderr-dir "${OUTDIR}" ${OPTIONAL_ARGS}
       ;;
 

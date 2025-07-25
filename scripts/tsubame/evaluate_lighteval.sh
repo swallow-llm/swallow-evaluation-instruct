@@ -31,14 +31,12 @@ done
 
 ## Redirect stdout and stderr to files if specified
 if [[ -n "$STDOUT_STDERR_DIR" ]]; then
-  ### ABCI does not support streaming stdout and stderr, so we need to redirect them by ourselves.
-  ### Note that any echo and print statements before this line will not be redirected.
-  ### Therefore, if you face a sudden quit of the job without any error messages, please check the lines above.
+  ### ABCI does not support streaming stdout and stderr into specific files, so we need to tee them by ourselves.
   if [[ $SERVICE != "abci" ]]; then
     echo "💀 Error: --stdout-stderr-dir option is only supported for ABCI jobs." >&2
     exit 1
   fi
-  exec > "${STDOUT_STDERR_DIR}/${PBS_JOBNAME}.o${PBS_JOBID}" 2> "${STDOUT_STDERR_DIR}/${PBS_JOBNAME}.e${PBS_JOBID}"
+  exec > >(tee -a "${STDOUT_STDERR_DIR}/${PBS_JOBID}.OU") 2> >(tee -a "${STDOUT_STDERR_DIR}/${PBS_JOBID}.ER" >&2)
 fi
 
 
