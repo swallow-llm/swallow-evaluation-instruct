@@ -232,6 +232,7 @@ class LiteLLMClient(LightevalModel):
 
                 if kwargs.get("max_completion_tokens", None) is None:
                     kwargs["max_completion_tokens"] = max_new_tokens
+
                 response = litellm.completion(**kwargs, timeout=litellm.DEFAULT_REQUEST_TIMEOUT)
 
                 # If response content is null, replace with empty string
@@ -407,15 +408,8 @@ class LiteLLMClient(LightevalModel):
                         gen_text = multi_turn_response.choices[0].message.content
                         tmp_results = [gen_text] * num_samples
                     else:
-                        if self.provider == "deepinfra" and num_samples > 4:
-                            logger.warning("DeepInfra does not support num_samples > 4, call API one by one.")
-                            tmp_results = []
-                            for _ in range(num_samples):
-                                multi_turn_response = self.__call_api(multi_turn_context, return_logits, max_new_tokens, 1, stop_sequence)
-                                tmp_results.append(multi_turn_response.choices[0].message.content)
-                        else:
-                            multi_turn_response = self.__call_api(multi_turn_context, return_logits, max_new_tokens, num_samples, stop_sequence)
-                            tmp_results = [choice.message.content for choice in multi_turn_response.choices]
+                        multi_turn_response = self.__call_api(multi_turn_context, return_logits, max_new_tokens, num_samples, stop_sequence)
+                        tmp_results = [choice.message.content for choice in multi_turn_response.choices]
                     # max_gen_text_lengthで文字列をleft truncate（vllm_model.pyと同様の処理）
                     if request.max_gen_text_length is not None:
                         for i, text in enumerate(tmp_results):
