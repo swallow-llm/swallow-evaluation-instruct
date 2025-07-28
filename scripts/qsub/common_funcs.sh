@@ -410,21 +410,13 @@ PY
 
         ## Search for an available port
         echo "🔍 Searching for an available port..."
-        START_PORT=10000; END_PORT=49151
-        current_port=$START_PORT
-        while (( current_port <= END_PORT )); do
-            if ! nc -z 127.0.0.1 "$current_port" 2>/dev/null; then
-                port=$current_port
-                break
-            fi
-            (( current_port++ ))
-        done
-
-        if [[ -z ${port-} ]]; then
-            echo "💀 Error: No free port between $START_PORT and $END_PORT."
-            exit 1
-        fi
-
+        port=$(uv run --isolated --project "${REPO_PATH}" --locked --extra auto_detector python - <<'PY'
+import socket
+with socket.socket() as s:
+    s.bind(('', 0))
+    print(s.getsockname()[1])
+PY
+)
         echo "✅ Found free port: $port"
         BASE_URL=${BASE_URL//\{port\}/$port}
 
