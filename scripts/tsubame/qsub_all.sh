@@ -113,3 +113,4 @@ qsub_task en mmlu_prox
 
 ## Optional
 # qsub_task ja jemhopqa
+# qsub_task ja mtbench_truncate_6144

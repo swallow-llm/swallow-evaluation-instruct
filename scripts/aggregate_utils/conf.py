@@ -646,7 +646,7 @@ AGGREGATE_CONF = [
             "metric_key_list": JAPANESE_MTBENCH_CODING
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -656,7 +656,7 @@ AGGREGATE_CONF = [
             "metric_key_list": JAPANESE_MTBENCH_EXTRACTION
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -666,7 +666,7 @@ AGGREGATE_CONF = [
             "metric_key_list": JAPANESE_MTBENCH_HUMANITIES
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -676,7 +676,7 @@ AGGREGATE_CONF = [
             "metric_key_list": JAPANESE_MTBENCH_MATH
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -686,7 +686,7 @@ AGGREGATE_CONF = [
             "metric_key_list": JAPANESE_MTBENCH_REASONING
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -696,7 +696,7 @@ AGGREGATE_CONF = [
             "metric_key_list": JAPANESE_MTBENCH_ROLEPLAY
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -706,7 +706,7 @@ AGGREGATE_CONF = [
             "metric_key_list": JAPANESE_MTBENCH_STEM
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -716,7 +716,7 @@ AGGREGATE_CONF = [
             "metric_key_list": JAPANESE_MTBENCH_WRITING
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -726,7 +726,7 @@ AGGREGATE_CONF = [
             "metric_key_list": JAPANESE_MTBENCH_FIRST_TURN
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -736,7 +736,7 @@ AGGREGATE_CONF = [
             "metric_key_list": JAPANESE_MTBENCH_SECOND_TURN
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -746,7 +746,7 @@ AGGREGATE_CONF = [
             "metric_key_list": JAPANESE_MTBENCH_ALL
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -756,7 +756,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_coding"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -766,7 +766,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_extraction"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -776,7 +776,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_humanities"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -786,7 +786,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_math"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -796,7 +796,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_reasoning"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -806,7 +806,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_roleplay"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -816,7 +816,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_stem"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -826,7 +826,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_writing"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -836,7 +836,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_overall"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
 
