@@ -11,7 +11,7 @@ ja_math_100,math_100_japanese,ja/math_100,lighteval,00:30:00,02:00:00
 ja_mmlu,swallow_jmmlu,ja/mmlu,lighteval,01:00:00,04:00:00
 ja_mmlu_prox,mmlu_prox_japanese,ja/mmlu_prox,lighteval,04:00:00,16:00:00
 ja_mtbench,japanese_mt_bench,ja/mt_bench,lighteval,04:00:00,16:00:00
-ja_mt_bench_truncate_6144,japanese_mt_bench_truncate_6144,ja/mt_bench,lighteval,04:00:00,16:00:00
+ja_mtbench_truncate_6144,japanese_mt_bench_truncate_6144,ja/mt_bench,lighteval,04:00:00,16:00:00
 ja_wmt20_en_ja,wmt20:en-ja,ja/wmt20_en_ja,lighteval,00:30:00,02:00:00
 ja_wmt20_ja_en,wmt20:ja-en,ja/wmt20_ja_en,lighteval,00:30:00,02:00:00
 ja_humaneval,swallow_jhumaneval,ja/humaneval,lighteval,01:00:00,04:00:00
