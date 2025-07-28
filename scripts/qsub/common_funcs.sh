@@ -152,10 +152,12 @@ init_service(){
             ## Set JOB_ID manually (because JOB_ID is not automatically issued in local)
             export JOB_ID="${CUSTOM_JOB_ID}"
 
-            ## Check CUDA_VISIBLE_DEVICES
-            if [[ -z $CUDA_VISIBLE_DEVICES || $(echo "$CUDA_VISIBLE_DEVICES" | tr ',' '\n' | wc -l) -ne $NUM_GPUS ]]; then
-                echo "💀 Error: CUDA_VISIBLE_DEVICES is not set or does not match NUM_GPUS. Please set CUDA_VISIBLE_DEVICES appropriately. (CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES, NUM_GPUS: $NUM_GPUS)"
-                exit 1
+            ## Check CUDA_VISIBLE_DEVICES (if GPU is used)
+            if [[ "$NODE_KIND" == *"gpu"* ]]; then
+                if [[ -z $CUDA_VISIBLE_DEVICES || $(echo "$CUDA_VISIBLE_DEVICES" | tr ',' '\n' | wc -l) -ne $NUM_GPUS ]]; then
+                    echo "💀 Error: CUDA_VISIBLE_DEVICES is not set or does not match NUM_GPUS. Please set CUDA_VISIBLE_DEVICES appropriately. (CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES, NUM_GPUS: $NUM_GPUS)"
+                    exit 1
+                fi
             fi
             ;;
 
@@ -333,7 +335,7 @@ serve_litellm(){
     # Start VLLM server
     if [ "$PROVIDER" = "vllm" ]; then
         if [[ $NODE_KIND == *"cpu"* ]]; then
-            echo "❌ VLLM server cannot be started on CPU nodes. Use GPU nodes (node_q or node_f)."
+            echo "❌ VLLM server cannot be started on CPU nodes. Use GPU nodes. Or use openai or deepinfra instead of vllm."
             exit 1
         fi
 
