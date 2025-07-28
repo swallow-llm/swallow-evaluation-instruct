@@ -45,7 +45,7 @@ source "${REPO_PATH}/scripts/qsub/common_funcs.sh"
 ## When a value is empty, do not pass its arg name either to avoid an arg parsing error.
 OPTIONAL_ARGS=""
 if [[ -n "${CUSTOM_SETTINGS}" ]]; then
-  OPTIONAL_ARGS="${OPTIONAL_ARGS} --custom-settings '${CUSTOM_SETTINGS}'"
+  OPTIONAL_ARGS="${OPTIONAL_ARGS} --custom-settings ${CUSTOM_SETTINGS}"
 fi
 if [[ -n "${MAX_SAMPLES}" ]]; then
   OPTIONAL_ARGS="${OPTIONAL_ARGS} --max-samples '${MAX_SAMPLES}'"
