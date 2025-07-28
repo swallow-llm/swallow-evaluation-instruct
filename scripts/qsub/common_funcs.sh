@@ -200,7 +200,7 @@ set_random_job_id(){
 
     # Seed RANDOM with nanoseconds
     seed=$(date +%N)
-    RANDOM=$seed
+    RANDOM=$((10#$seed))
 
     # Define 62-based digits
     digits=( {0..9} {a..z} {A..Z} )
