@@ -9,7 +9,7 @@ set -euo pipefail
 # Load Args
 ## Default Values
 TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; REPO_PATH=""; SERVICE=""; CUSTOM_SETTINGS=""; PROVIDER=""; CUSTOM_JOB_ID=""; MAX_SAMPLES=""
-STDOUT_STDERR_DIR=""; ${CUDA_VISIBLE_DEVICES:=""}
+STDOUT_STDERR_DIR=""; : "${CUDA_VISIBLE_DEVICES:=}"
 
 ## Parse Args
 while [[ $# -gt 0 ]]; do
