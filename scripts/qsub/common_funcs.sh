@@ -296,8 +296,8 @@ serve_litellm(){
     NODE_KIND=$7
     NUM_GPUS=$8
     GPU_MEMORY_UTILIZATION=$9
-    MAX_MODEL_LENGTH=${10}
-    REASONING_PARSER=${11}
+    MAX_MODEL_LENGTH=${10:-"-1"}
+    REASONING_PARSER=${11:-""}
 
     # Setup based on provider
     RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"
@@ -388,26 +388,35 @@ PY
 
         ## Set reasoning-tag parameter
         REASONING_PARSER_PARAM=""
-        if [ "${results[1]}" = "true" ]; then
+        if [[ "${results[1]}" == "true" ]]; then
             echo "🤖 (Auto-detected) The specified model has reasoning-tag in its vocabulary."
-            if [ "${REASONING_PARSER}" == "ignore" ]; then
-                echo "✅ The specified model may support reasoning-tag, but it is ignored. No reasoning-parser will be used."
-            elif [ "${REASONING_PARSER}" == ""]; then
-                echo "💀 Error: The specified model may support reasoning-tag, but no reasoning-parser is specified. Please specify a reasoning-parser(, or set REASONING_PARSER=ignore if you do not want to use reasoning-tag)."
-                exit 1
-            else
-                echo "✅ Reasoning-parser: ${REASONING_PARSER} is used."
-                REASONING_PARSER_PARAM="--reasoning-parser ${REASONING_PARSER}"
-            fi
+            case "${REASONING_PARSER}" in
+                "ignore")
+                    echo "✅ The specified model may support reasoning-tag, but it is ignored. No reasoning-parser will be used."
+                    ;;
+                "")
+                    echo "💀 Error: The specified model may support reasoning-tag, but no reasoning-parser is specified. Please specify a reasoning-parser(, or set REASONING_PARSER=ignore if you do not want to use reasoning-tag)."
+                    exit 1
+                    ;;
+                *)
+                    echo "✅ Reasoning-parser: ${REASONING_PARSER} is used."
+                    REASONING_PARSER_PARAM="--reasoning-parser ${REASONING_PARSER}"
+                    ;;
+            esac
         else
             echo "🤖 (Auto-detected) The specified model does not have reasoning-tag in its vocabulary."
-            if [ "${REASONING_PARSER}" == "ignore" ]; then
-                echo "✅ No reasoning-parser will be used. (You do not have to specify reasoning_parser=ignore in this case. Please unset reasoning_parser in the YAML file to make it clear.)"
-            elif [ "${REASONING_PARSER}" != "" ]; then
-                echo "⚠️ Warning: The specified model may not support reasoning-tag, but a reasoning-parser, ${REASONING_PARSER}, is specified and will be used. This may cause an error or unexpected behavior."
-            else
-                echo "✅ No reasoning-parser will be used."
-            fi
+            case "${REASONING_PARSER}" in
+                "ignore")
+                    echo "✅ No reasoning-parser will be used. (You do not have to specify reasoning_parser=ignore in this case. Please unset reasoning_parser in the YAML file to make it clear.)"
+                    ;;
+                "")
+                    echo "✅ No reasoning-parser will be used."
+                    ;;
+                *)
+                    echo "⚠️ Warning: The specified model may not support reasoning-tag, but a reasoning-parser, ${REASONING_PARSER}, is specified and will be used. This may cause an error or unexpected behavior."
+                    REASONING_PARSER_PARAM="--reasoning-parser ${REASONING_PARSER}"
+                    ;;
+            esac
         fi
 
         ## Search for an available port
