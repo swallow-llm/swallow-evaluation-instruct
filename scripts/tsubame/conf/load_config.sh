@@ -23,3 +23,4 @@ task_result()  { _field "$1" 3; }
 task_framework() { _field "$1" 4; }
 hrt()          { _field "$2" "$( [ "$1" = node_q ] && echo 5 || echo 6 )"; }
 script_result() { _field "$1" 3 2; }
+script_task() { _field "$1" 1 2; }
