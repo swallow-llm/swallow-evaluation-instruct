@@ -44,7 +44,7 @@ def jemhopqa_cot_prompt_fn(line, task_name: str = None):
         query=query,
         choices=choices,
         gold_index=gold_index,
-        instruction=query,
+        instruction=None,
     )
 
 # [デフォルト] CoTなしプロンプト
@@ -59,7 +59,7 @@ def jemhopqa_prompt_fn(line, task_name: str = None):
         query=query,
         choices=choices,
         gold_index=gold_index,
-        instruction=query,
+        instruction=None,
     )
 
 # 自由記述式問題から回答スパン抽出・正規化・正準化 および accuracy や 文字F1 を計測する Metric．

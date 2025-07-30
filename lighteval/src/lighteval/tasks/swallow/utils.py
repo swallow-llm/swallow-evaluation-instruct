@@ -1,6 +1,16 @@
 from typing import List, Optional, Callable, Literal, Dict, Any
 import re
 
+def remove_instruction_decorator(func):
+    """
+    関数の返り値（Docオブジェクト）の instruction 属性を None にするデコレータ
+    """
+    def wrapper(*args, **kwargs):
+        doc = func(*args, **kwargs)
+        doc.instruction = None
+        return doc
+    return wrapper
+
 def _regex_extractor(obj_regex, text: str, 
                      match_group_name: str,
                      extraction_mode: Literal["first_match", "last_match", "any_match"]) -> List[str]:
@@ -24,4 +34,3 @@ def _regex_extractor(obj_regex, text: str,
             return [lst_matches_with_positions[-1][0]]
         elif extraction_mode == "any_match":
             return [match[0] for match in lst_matches_with_positions]
-

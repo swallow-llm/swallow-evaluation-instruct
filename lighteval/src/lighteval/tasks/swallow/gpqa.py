@@ -1,11 +1,17 @@
 from lighteval.tasks.lighteval_task import LightevalTaskConfig
 import lighteval.tasks.default_prompts as prompt
 from lighteval.metrics.metrics import Metrics
+from lighteval.tasks.swallow.utils import remove_instruction_decorator
+
+# instruciton=None にしたバージョン
+@remove_instruction_decorator
+def gpqa_instruct_without_instruction(line, task_name: str = None):
+    return prompt.gpqa_instruct(line, task_name)
 
 gpqa_diamond_instruct_swallow = LightevalTaskConfig(
     name="gpqa:diamond",
     suite=["swallow"],
-    prompt_function=prompt.gpqa_instruct,
+    prompt_function=gpqa_instruct_without_instruction,
     hf_repo="Idavidrein/gpqa",
     hf_subset="gpqa_diamond",
     hf_avail_splits=["train"],

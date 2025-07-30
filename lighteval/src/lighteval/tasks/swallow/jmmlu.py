@@ -92,7 +92,7 @@ def swallow_jmmlu_prompt_fn(line, task_name: str = None):
         query=query,
         choices=["A", "B", "C", "D"],
         gold_index=gold_index,
-        instruction=query,
+        instruction=None,
     )
 
 
