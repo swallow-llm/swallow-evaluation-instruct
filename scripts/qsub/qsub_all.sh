@@ -43,16 +43,22 @@ source "${REPO_PATH}/scripts/qsub/common_funcs.sh"
 
 # Optional Args (whose values can be empty)
 ## When a value is empty, do not pass its arg name either to avoid an arg parsing error.
-OPTIONAL_ARGS=""
+OPTIONAL_ARGS=()
 if [[ -n "${CUSTOM_SETTINGS}" ]]; then
-  OPTIONAL_ARGS="${OPTIONAL_ARGS} --custom-settings ${CUSTOM_SETTINGS}"
+  OPTIONAL_ARGS+=(--custom-settings ${CUSTOM_SETTINGS})
 fi
 if [[ -n "${MAX_SAMPLES}" ]]; then
-  OPTIONAL_ARGS="${OPTIONAL_ARGS} --max-samples '${MAX_SAMPLES}'"
+  OPTIONAL_ARGS+=(--max-samples ${MAX_SAMPLES})
 fi
 
 # Set common qsub args
-common_qsub_args="--node-kind ${NODE_KIND} --provider ${PROVIDER} --model-name ${MODEL_NAME} --repo-path ${REPO_PATH} --service ${SERVICE}"
+common_qsub_args=(
+  --node-kind ${NODE_KIND}
+  --provider ${PROVIDER}
+  --model-name ${MODEL_NAME}
+  --repo-path ${REPO_PATH}
+  --service ${SERVICE}
+  )
 
 # Check service
 check_service "${SERVICE}"
@@ -103,25 +109,25 @@ qsub_task() {
     "tsubame")
       h_rt=$(hrt "${NODE_KIND}" "${lang}_${task}") || { echo "❌ Cound not get h_rt for ${lang}_${task} on ${NODE_KIND}"; exit 1; }
       qsub -g "${TSUBAME_GROUP}" -l "${NODE_KIND}"=1 -p "${PRIORITY}" -N "${job_name}" -l h_rt="${h_rt}" -o "${OUTDIR}" -e "${OUTDIR}" "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
-        --task-name "${task_name}" ${common_qsub_args[@]} ${OPTIONAL_ARGS}
+        --task-name "${task_name}" "${common_qsub_args[@]}" "${OPTIONAL_ARGS[@]}"
       ;;
 
     "abci")
       wlt=$(walltime "${NODE_KIND}" "${lang}_${task}") || { echo "❌ Cound not get walltime for ${lang}_${task} on ${NODE_KIND}"; exit 1; }
       qsub -P "${ABCI_GROUP}" -q "${NODE_KIND}" -l select=1 -N "${job_name}" -l walltime="${wlt}" -o "${OUTDIR}" -e "${OUTDIR}" -- "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
-        --task-name "${task_name}" ${common_qsub_args[@]} --stdout-stderr-dir "${OUTDIR}" ${OPTIONAL_ARGS}
+        --task-name "${task_name}" "${common_qsub_args[@]}" --stdout-stderr-dir "${OUTDIR}" "${OPTIONAL_ARGS[@]}"
       ;;
 
     "local")
       set_random_job_id
       local session_name="${job_name}_${JOB_ID}"
-      tmux new-session -d -s "${session_name}" bash -c "
-        set -euo pipefail
-        export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES} && bash "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
-          --task-name '${task_name}' ${common_qsub_args[@]} --custom-job-id '${JOB_ID}' ${OPTIONAL_ARGS} \
-          > >(tee '${OUTDIR}/${job_name}.o${JOB_ID}') 2> >(tee '${OUTDIR}/${job_name}.e${JOB_ID}' >&2)
-      "
+      tmux new-session -d -s "${session_name}" \
+        env CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES} \
+        bash "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
+          --task-name "${task_name}" "${common_qsub_args[@]}" --custom-job-id "${JOB_ID}" "${OPTIONAL_ARGS[@]}" \
+          > >(tee "${OUTDIR}/${job_name}.o${JOB_ID}" ) 2> >(tee "${OUTDIR}/${job_name}.e${JOB_ID}" >&2)
       echo "✅ Local job ${job_name} was successfully submitted to tmux session ${session_name}."
+      ;;
   esac
   last_submit_time=$(date +%s)
 }

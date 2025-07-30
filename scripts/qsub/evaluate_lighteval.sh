@@ -12,6 +12,7 @@ TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; REPO_PATH=""; SERVICE=""; CUSTOM_SETT
 STDOUT_STDERR_DIR=""; : "${CUDA_VISIBLE_DEVICES:=}"
 
 ## Parse Args
+echo "🔧 Received args: $@"
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --task-name) TASK_NAME="$2";;
@@ -20,14 +21,15 @@ while [[ $# -gt 0 ]]; do
     --repo-path) REPO_PATH="$2";;
     --service) SERVICE="$2";;
     --provider) PROVIDER="$2";;
-    --custom-settings) CUSTOM_SETTINGS="$2";;           # Optional
-    --custom-job-id) CUSTOM_JOB_ID="$2";;               # Optional
-    --max-samples) MAX_SAMPLES="${2//[^0-9]/}";;        # Optional
-    --stdout-stderr-dir) STDOUT_STDERR_DIR="$2";;       # Optional
+    --custom-settings) CUSTOM_SETTINGS="$2";;       # Optional
+    --custom-job-id) CUSTOM_JOB_ID="$2";;           # Optional
+    --max-samples) MAX_SAMPLES=$2;;               # Optional
+    --stdout-stderr-dir) STDOUT_STDERR_DIR="$2";;   # Optional
     *) echo "💀 Error: Unknown option: $1" >&2;;
   esac
   shift 2
 done
+
 
 ## Redirect stdout and stderr to files if specified
 if [[ -n "$STDOUT_STDERR_DIR" ]]; then
@@ -68,6 +70,7 @@ echo "📝 Task: ${TASK_DEF}"
 # Run Evaluation
 cd "${REPO_PATH}/lighteval"
 echo "🏃 Run Evaluation..."
+echo "🔍 Optional Arguments for Lighteval: ${OPTIONAL_ARGS_FOR_LIGHTEVAL[@]}"
 start_time=$(date +%s)
 uv run $UV_OPTIONS --extra lighteval \
  lighteval endpoint litellm $MODEL_CONFIG_PATH $TASK_DEF \
@@ -75,7 +78,7 @@ uv run $UV_OPTIONS --extra lighteval \
     --output-dir "${RAW_OUTPUT_DIR}" \
     --output-subdir "${CUSTOM_SETTINGS_SUBDIR}" \
     --save-details \
-    ${OPTIONAL_ARGS_FOR_LIGHTEVAL}
+    "${OPTIONAL_ARGS_FOR_LIGHTEVAL[@]}"
 end_time=$(date +%s)
 elapsed=$(( end_time - start_time ))
 echo "⌚️ Elapsed time: ${elapsed} seconds"
