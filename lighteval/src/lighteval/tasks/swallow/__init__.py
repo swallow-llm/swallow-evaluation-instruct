@@ -8,7 +8,7 @@
 
 from .mclm_MATH_100_japanese import math_100_japanese
 from .jmmlu import JMMLU_SUBSET_TASKS
-from .japanese_mt_bench.main import mt_bench_japanese_swallow_gpt4o
+from .japanese_mt_bench.main import mt_bench_japanese_swallow_gpt4o, mt_bench_japanese_swallow_gpt4o_truncate_6144
 from .jhumaneval import jhumaneval
 
 from .hellaswag import hellaswag_generative
@@ -26,7 +26,7 @@ from .aime import aime_24_swallow, aime_25_swallow
 from .math_500 import math_500_swallow
 from .lcb_swallow import lcb_swallow_tasks
 
-SWALLOW_TASKS = [
+TASKS_TABLE = [
     math_100_japanese,
     hellaswag_generative,
     jhumaneval,
@@ -36,6 +36,7 @@ SWALLOW_TASKS = [
     wmt20_enja_swallow,
     wmt20_jaen_swallow,
     mt_bench_japanese_swallow_gpt4o,
+    mt_bench_japanese_swallow_gpt4o_truncate_6144,
     mt_bench_english_swallow_gpt4o,
     mifeval_ja,
     gpqa_diamond_instruct_swallow,
@@ -43,9 +44,9 @@ SWALLOW_TASKS = [
     aime_24_swallow,
     aime_25_swallow,
 ]
-SWALLOW_TASKS.extend(JMMLU_SUBSET_TASKS)
-SWALLOW_TASKS.extend(mmlu_prox_japanese_tasks)
-SWALLOW_TASKS.extend(mmlu_prox_english_tasks)
-SWALLOW_TASKS.extend(mmlu_pro_english_tasks)
-SWALLOW_TASKS.extend(mmlu_english_tasks)
-SWALLOW_TASKS.extend(lcb_swallow_tasks)
+TASKS_TABLE.extend(JMMLU_SUBSET_TASKS)
+TASKS_TABLE.extend(mmlu_prox_japanese_tasks)
+TASKS_TABLE.extend(mmlu_prox_english_tasks)
+TASKS_TABLE.extend(mmlu_pro_english_tasks)
+TASKS_TABLE.extend(mmlu_english_tasks)
+TASKS_TABLE.extend(lcb_swallow_tasks)

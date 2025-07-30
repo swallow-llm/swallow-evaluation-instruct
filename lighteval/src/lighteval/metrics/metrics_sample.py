@@ -1010,10 +1010,12 @@ class JudgeLLMMTBenchSwallow(JudgeLLM):
             judgement_turn_2 = [judgement_turn_2_list[j][i] for j in range(num_samples)]
             judge_score_turn_1_avg = np.mean(judge_score_turn_1)
             judge_score_turn_2_avg = np.mean(judge_score_turn_2)
+            judge_score_avg = (judge_score_turn_1_avg + judge_score_turn_2_avg) / 2
             metrics.append(
                 {
                     "judge_score_overall_turn_1_avg": judge_score_turn_1_avg,
                     "judge_score_overall_turn_2_avg": judge_score_turn_2_avg,
+                    "judge_score_overall_avg": judge_score_avg,
                     "judge_score_overall_turn_1": judge_score_turn_1,
                     "judge_score_overall_turn_2": judge_score_turn_2,
                     "user_prompt_overall_turn_1": user_prompt_turn_1,
@@ -1022,6 +1024,7 @@ class JudgeLLMMTBenchSwallow(JudgeLLM):
                     "judgement_overall_turn_2": judgement_turn_2,
                     f"judge_score_{categories[i]}_turn_1_avg": judge_score_turn_1_avg,
                     f"judge_score_{categories[i]}_turn_2_avg": judge_score_turn_2_avg,
+                    f"judge_score_{categories[i]}_avg": judge_score_avg,
                 }
             )
 

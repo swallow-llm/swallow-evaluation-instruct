@@ -641,112 +641,112 @@ AGGREGATE_CONF = [
     # Japanese MTBench
     {
         "display_name": "japanese_mtbench_coding",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": JAPANESE_MTBENCH_CODING
+            "metric_key": "judge_score_coding_avg"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
         "display_name": "japanese_mtbench_extraction",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": JAPANESE_MTBENCH_EXTRACTION
+            "metric_key": "judge_score_extraction_avg"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
         "display_name": "japanese_mtbench_humanities",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": JAPANESE_MTBENCH_HUMANITIES
+            "metric_key": "judge_score_humanities_avg"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
         "display_name": "japanese_mtbench_math",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": JAPANESE_MTBENCH_MATH
+            "metric_key": "judge_score_math_avg"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
         "display_name": "japanese_mtbench_reasoning",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": JAPANESE_MTBENCH_REASONING
+            "metric_key": "judge_score_reasoning_avg"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
         "display_name": "japanese_mtbench_roleplay",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": JAPANESE_MTBENCH_ROLEPLAY
+            "metric_key": "judge_score_roleplay_avg"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
         "display_name": "japanese_mtbench_stem",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": JAPANESE_MTBENCH_STEM
+            "metric_key": "judge_score_stem_avg"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
         "display_name": "japanese_mtbench_writing",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": JAPANESE_MTBENCH_WRITING
+            "metric_key": "judge_score_writing_avg"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
         "display_name": "japanese_mtbench_first_turn",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": JAPANESE_MTBENCH_FIRST_TURN
+            "metric_key": "judge_score_overall_turn_1_avg"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
         "display_name": "japanese_mtbench_second_turn",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": JAPANESE_MTBENCH_SECOND_TURN
+            "metric_key": "judge_score_overall_turn_2_avg"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
         "display_name": "japanese_mtbench_average",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": JAPANESE_MTBENCH_ALL
+            "metric_key": "judge_score_overall_avg"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -756,7 +756,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_coding"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -766,7 +766,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_extraction"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -776,7 +776,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_humanities"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -786,7 +786,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_math"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -796,7 +796,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_reasoning"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -806,7 +806,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_roleplay"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -816,7 +816,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_stem"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -826,7 +826,7 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_writing"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
     {
@@ -836,16 +836,16 @@ AGGREGATE_CONF = [
             "metric_key": "japanese_ratio_overall"
         },
         "target": {
-            "task_key": "swallow|japanese_mt_bench|0"
+            "task_key": "swallow|japanese_mt_bench|0,swallow|japanese_mt_bench_truncate_6144|0"
         },
     },
 
     # English MTBench
     {
         "display_name": "english_mtbench_coding",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": ENGLISH_MTBENCH_CODING
+            "metric_key": "judge_score_coding_avg"
         },
         "target": {
             "task_key": "swallow|english_mt_bench|0"
@@ -853,9 +853,9 @@ AGGREGATE_CONF = [
     },
     {
         "display_name": "english_mtbench_extraction",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": ENGLISH_MTBENCH_EXTRACTION
+            "metric_key": "judge_score_extraction_avg"
         },
         "target": {
             "task_key": "swallow|english_mt_bench|0"
@@ -863,9 +863,9 @@ AGGREGATE_CONF = [
     },
     {
         "display_name": "english_mtbench_humanities",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": ENGLISH_MTBENCH_HUMANITIES
+            "metric_key": "judge_score_humanities_avg"
         },
         "target": {
             "task_key": "swallow|english_mt_bench|0"
@@ -873,9 +873,9 @@ AGGREGATE_CONF = [
     },
     {
         "display_name": "english_mtbench_math",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": ENGLISH_MTBENCH_MATH
+            "metric_key": "judge_score_math_avg"
         },
         "target": {
             "task_key": "swallow|english_mt_bench|0"
@@ -883,9 +883,9 @@ AGGREGATE_CONF = [
     },
     {
         "display_name": "english_mtbench_reasoning",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": ENGLISH_MTBENCH_REASONING
+            "metric_key": "judge_score_reasoning_avg"
         },
         "target": {
             "task_key": "swallow|english_mt_bench|0"
@@ -893,9 +893,9 @@ AGGREGATE_CONF = [
     },
     {
         "display_name": "english_mtbench_roleplay",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": ENGLISH_MTBENCH_ROLEPLAY
+            "metric_key": "judge_score_roleplay_avg"
         },
         "target": {
             "task_key": "swallow|english_mt_bench|0"
@@ -903,9 +903,9 @@ AGGREGATE_CONF = [
     },
     {
         "display_name": "english_mtbench_stem",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": ENGLISH_MTBENCH_STEM
+            "metric_key": "judge_score_stem_avg"
         },
         "target": {
             "task_key": "swallow|english_mt_bench|0"
@@ -913,9 +913,9 @@ AGGREGATE_CONF = [
     },
     {
         "display_name": "english_mtbench_writing",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": ENGLISH_MTBENCH_WRITING
+            "metric_key": "judge_score_writing_avg"
         },
         "target": {
             "task_key": "swallow|english_mt_bench|0"
@@ -923,9 +923,9 @@ AGGREGATE_CONF = [
     },
     {
         "display_name": "english_mtbench_first_turn",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": ENGLISH_MTBENCH_FIRST_TURN
+            "metric_key": "judge_score_overall_turn_1_avg"
         },
         "target": {
             "task_key": "swallow|english_mt_bench|0"
@@ -933,9 +933,9 @@ AGGREGATE_CONF = [
     },
     {
         "display_name": "english_mtbench_second_turn",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": ENGLISH_MTBENCH_SECOND_TURN
+            "metric_key": "judge_score_overall_turn_2_avg"
         },
         "target": {
             "task_key": "swallow|english_mt_bench|0"
@@ -943,9 +943,9 @@ AGGREGATE_CONF = [
     },
     {
         "display_name": "english_mtbench_average",
-        "func": average_in_one_task,
+        "func": pick,
         "func_args": {
-            "metric_key_list": ENGLISH_MTBENCH_ALL
+            "metric_key": "judge_score_overall_avg"
         },
         "target": {
             "task_key": "swallow|english_mt_bench|0"

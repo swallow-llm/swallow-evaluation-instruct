@@ -72,6 +72,7 @@ def mt_bench_prompt(line, task_name: str = ""):
             "id": line["question_id"],
             "num_samples": NUM_SAMPLES,
             "temperature": CATEGORY_TEMPERATURE_MAP.get(line["category"], 0.0),
+            "max_gen_text_length": 8192,  # 推論過程を除いた回答部分はこの長さで切り取る
         },
     )
 
@@ -129,7 +130,8 @@ llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
     corpus_level_fn={
         f"judge_score_{category}_turn_1_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES
     }
-    | {f"judge_score_{category}_turn_2_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES},
+    | {f"judge_score_{category}_turn_2_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES}
+    | {f"judge_score_{category}_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES},
 )
 
 mt_bench_english_swallow_gpt4o = LightevalTaskConfig(

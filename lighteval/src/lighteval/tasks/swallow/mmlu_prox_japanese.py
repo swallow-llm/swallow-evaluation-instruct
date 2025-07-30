@@ -161,7 +161,7 @@ def swallow_mmlu_prox_japanese_prompt_fn(line, task_name: str = None):
         query=query,
         choices=choices,
         gold_index=gold_index,
-        instruction=query,
+        instruction=None,
     )
 
 
