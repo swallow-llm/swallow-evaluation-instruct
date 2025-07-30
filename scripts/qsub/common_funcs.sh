@@ -266,12 +266,12 @@ get_generation_params(){
     GEN_PARAMS=$(printf '%s\n' "${rest[@]}")
 
     # Prepare optional arguments for lighteval
-    OPTIONAL_ARGS_FOR_LIGHTEVAL=""
-    if [[ $SYSTEM_MESSAGE != "" ]]; then
-        OPTIONAL_ARGS_FOR_LIGHTEVAL+="--system-prompt ${SYSTEM_MESSAGE}"
+    OPTIONAL_ARGS_FOR_LIGHTEVAL=()
+    if [[ -n "${SYSTEM_MESSAGE:-}" ]]; then
+        OPTIONAL_ARGS_FOR_LIGHTEVAL+=(--system-prompt "$SYSTEM_MESSAGE")
     fi
-    if [[ $MAX_SAMPLES != "" ]]; then
-        OPTIONAL_ARGS_FOR_LIGHTEVAL+="--max-samples ${MAX_SAMPLES}"
+    if [[ -n "${MAX_SAMPLES:-}" ]]; then
+        OPTIONAL_ARGS_FOR_LIGHTEVAL+=(--max-samples $MAX_SAMPLES)
     fi
 }
 
