@@ -26,7 +26,7 @@ from .aime import aime_24_swallow, aime_25_swallow
 from .math_500 import math_500_swallow
 from .lcb_swallow import lcb_swallow_tasks
 
-SWALLOW_TASKS = [
+TASKS_TABLE = [
     math_100_japanese,
     hellaswag_generative,
     jhumaneval,
@@ -44,9 +44,9 @@ SWALLOW_TASKS = [
     aime_24_swallow,
     aime_25_swallow,
 ]
-SWALLOW_TASKS.extend(JMMLU_SUBSET_TASKS)
-SWALLOW_TASKS.extend(mmlu_prox_japanese_tasks)
-SWALLOW_TASKS.extend(mmlu_prox_english_tasks)
-SWALLOW_TASKS.extend(mmlu_pro_english_tasks)
-SWALLOW_TASKS.extend(mmlu_english_tasks)
-SWALLOW_TASKS.extend(lcb_swallow_tasks)
+TASKS_TABLE.extend(JMMLU_SUBSET_TASKS)
+TASKS_TABLE.extend(mmlu_prox_japanese_tasks)
+TASKS_TABLE.extend(mmlu_prox_english_tasks)
+TASKS_TABLE.extend(mmlu_pro_english_tasks)
+TASKS_TABLE.extend(mmlu_english_tasks)
+TASKS_TABLE.extend(lcb_swallow_tasks)

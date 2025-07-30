@@ -130,7 +130,8 @@ llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
     corpus_level_fn={
         f"judge_score_{category}_turn_1_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES
     }
-    | {f"judge_score_{category}_turn_2_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES},
+    | {f"judge_score_{category}_turn_2_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES}
+    | {f"judge_score_{category}_avg": mt_bench_corpus_level_fn for category in ["overall"] + CATEGORIRES},
 )
 
 mt_bench_english_swallow_gpt4o = LightevalTaskConfig(

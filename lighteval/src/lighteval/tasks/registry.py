@@ -37,8 +37,7 @@ from lighteval.tasks.extended import AVAILABLE_EXTENDED_TASKS_MODULES
 from lighteval.tasks.lighteval_task import LightevalTask, LightevalTaskConfig
 from lighteval.utils.imports import CANNOT_USE_EXTENDED_TASKS_MSG, can_load_extended_tasks
 
-from lighteval.tasks.swallow import SWALLOW_TASKS
-
+from lighteval.tasks import swallow as swallow_task_module
 
 logger = logging.getLogger(__name__)
 
@@ -137,6 +136,10 @@ class Registry:
                 custom_tasks_module.append(extended_task_module)
         else:
             logger.warning(CANNOT_USE_EXTENDED_TASKS_MSG)
+        
+        # Import SWALLOW task suite developed by swallow team
+        logger.info(f"Registering SWALLOW Tasks.")
+        custom_tasks_module.append(create_custom_tasks_module(custom_tasks=swallow_task_module))
 
         for module in custom_tasks_module:
             TASKS_TABLE.extend(module.TASKS_TABLE)
@@ -348,11 +351,6 @@ def create_lazy_tasks(
 
     if meta_table is None:
         meta_table = [config for config in vars(default_tasks).values() if isinstance(config, LightevalTaskConfig)]
-    
-    # Append swallow benchmark suites
-    if len(SWALLOW_TASKS) > 0:
-        _meta_table = [config for config in SWALLOW_TASKS if isinstance(config, LightevalTaskConfig)]
-        meta_table.extend(_meta_table)
 
     tasks_with_config: dict[str, LightevalTaskConfig] = {}
     # Every task is renamed suite|task, if the suite is in DEFAULT_SUITE

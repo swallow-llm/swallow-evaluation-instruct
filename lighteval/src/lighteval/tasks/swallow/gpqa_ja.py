@@ -35,7 +35,7 @@ D) {D}
         query=query,
         choices=LETTER_INDICES[: len(choices)],
         gold_index=gold_index,
-        instruction=query,
+        instruction=None
     )
 
 

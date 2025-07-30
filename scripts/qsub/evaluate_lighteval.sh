@@ -1,13 +1,15 @@
 #!/bin/bash
 #$ -cwd
 #% -m abe
+#% -M your_email@address.here
 # Replace % with $ if you want to receive emails when jobs start & finish, and errors occur.
 set -euo pipefail
 
 
 # Load Args
 ## Default Values
-TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; CUSTOM_SETTINGS=""; REPO_PATH=""; PROVIDER=""
+TASK_NAME=""; NODE_KIND=""; MODEL_NAME=""; REPO_PATH=""; SERVICE=""; CUSTOM_SETTINGS=""; PROVIDER=""; CUSTOM_JOB_ID=""; MAX_SAMPLES=""
+STDOUT_STDERR_DIR=""; : "${CUDA_VISIBLE_DEVICES:=}"
 
 ## Parse Args
 while [[ $# -gt 0 ]]; do
@@ -16,24 +18,40 @@ while [[ $# -gt 0 ]]; do
     --node-kind) NODE_KIND="$2";;
     --model-name) MODEL_NAME="$2";;
     --repo-path) REPO_PATH="$2";;
-    --custom-settings) CUSTOM_SETTINGS="$2";;   # Optional
-    --provider) PROVIDER="$2";;                 # Optional
-    *) echo "Unknown option: $1" >&2;;
+    --service) SERVICE="$2";;
+    --provider) PROVIDER="$2";;
+    --custom-settings) CUSTOM_SETTINGS="$2";;           # Optional
+    --custom-job-id) CUSTOM_JOB_ID="$2";;               # Optional
+    --max-samples) MAX_SAMPLES="${2//[^0-9]/}";;        # Optional
+    --stdout-stderr-dir) STDOUT_STDERR_DIR="$2";;       # Optional
+    *) echo "💀 Error: Unknown option: $1" >&2;;
   esac
   shift 2
 done
 
+## Redirect stdout and stderr to files if specified
+if [[ -n "$STDOUT_STDERR_DIR" ]]; then
+  ### ABCI does not support streaming stdout and stderr into specific files, so we need to tee them by ourselves.
+  if [[ $SERVICE != "abci" ]]; then
+    echo "💀 Error: --stdout-stderr-dir option is only supported for ABCI jobs." >&2
+    exit 1
+  fi
+  exec > >(tee -a "${STDOUT_STDERR_DIR}/${PBS_JOBID}.OU") 2> >(tee -a "${STDOUT_STDERR_DIR}/${PBS_JOBID}.ER" >&2)
+fi
+
+
 ## Check Required Args
-if [[ -z "$TASK_NAME" ]] || [[ -z "$NODE_KIND" ]] || [[ -z "$MODEL_NAME" ]] || [[ -z "$REPO_PATH" ]]; then
-  echo "Error: Missing required arguments. TASK_NAME: '${TASK_NAME}', NODE_KIND: '${NODE_KIND}', MODEL_NAME: '${MODEL_NAME}', REPO_PATH: '${REPO_PATH}'" >&2
+if [[ -z "$TASK_NAME" ]] || [[ -z "$NODE_KIND" ]] || [[ -z "$MODEL_NAME" ]] || [[ -z "$REPO_PATH" ]] || [[ -z "$SERVICE" ]]; then
+  echo "💀 Error: Missing required arguments. TASK_NAME: '${TASK_NAME}', NODE_KIND: '${NODE_KIND}', MODEL_NAME: '${MODEL_NAME}', REPO_PATH: '${REPO_PATH}', SERVICE: '${SERVICE}'" >&2
   exit 1
 fi
 
 
 # Setup
-source "${REPO_PATH}/scripts/tsubame/common_funcs.sh"
-init_common "${MODEL_NAME}" "${NODE_KIND}" "${REPO_PATH}"
-get_generation_params "${CUSTOM_SETTINGS}" "${TASK_NAME}" "${REPO_PATH}" "${MODEL_NAME}"
+source "${REPO_PATH}/scripts/qsub/common_funcs.sh"
+init_service "${SERVICE}" "${NODE_KIND}" "${CUDA_VISIBLE_DEVICES}" "${CUSTOM_JOB_ID}"
+init_common "${REPO_PATH}"
+get_generation_params "${CUSTOM_SETTINGS}" "${TASK_NAME}" "${REPO_PATH}" "${MODEL_NAME}" "${MAX_SAMPLES}"
 echo "⚙️ Generation Parameters: ${GEN_PARAMS}"
 RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"
 
