@@ -424,9 +424,9 @@ PY
 
 
         ## Start vllm server
-        source "${REPO_PATH}/scripts/qsub/conf/load_config.sh"
-        result_subdir=$(script_result "${TASK_NAME}")
-        vllm_log_file="${AGGREGATED_OUTPUTS_DIR}/${result_subdir}/${result_subdir//\//_}.vllm${JOB_ID}"
+        source "${REPO_PATH}/scripts/tsubame/conf/load_config.sh"
+        result_subdir=$(script_result "${TASK_NAME}"); task_key=$(script_task "${TASK_NAME}")
+        vllm_log_file="${AGGREGATED_OUTPUTS_DIR}/${result_subdir}/${task_key}.vllm${JOB_ID}"
         uv run --isolated --project "$REPO_PATH" --locked --extra vllm \
             vllm serve "$MODEL_NAME" \
                 --port "$port" \

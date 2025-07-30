@@ -72,6 +72,7 @@ def mt_bench_prompt(line, task_name: str = ""):
             "id": line["question_id"],
             "num_samples": NUM_SAMPLES,
             "temperature": CATEGORY_TEMPERATURE_MAP.get(line["category"], 0.0),
+            "max_gen_text_length": 8192,  # 推論過程を除いた回答部分はこの長さで切り取る
         },
     )
 

@@ -150,6 +150,7 @@ class GreedyUntilMultiTurnRequest(Request):
     use_logits: bool = False
     temperature: float = None
     num_samples: int = 1
+    max_gen_text_length: int = None
 
 
 class SampleUid(NamedTuple):

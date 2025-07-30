@@ -2,6 +2,58 @@
 # - must have latest_results and target as the 1st arg and 2nd arg.
 # - may have three or more args followed.
 
+from functools import wraps
+
+def resolve_multi_task_key(func):
+    """
+    target["task_key"] が "key1,key2,..." のように複数書かれている場合に
+    ・latest_results で見つかったキーが 0 個なら -1 を返す
+    ・1 個ならそのキーだけを target にセットして元関数へ委譲
+    ・2 個以上見つかったら ValueError を送出
+    単一キーの場合は何もしないでそのまま元関数へ委譲する
+    """
+    @wraps(func)
+    def wrapper(latest_results: dict, target: dict, *args, **kwargs):
+        raw_key = target.get("task_key", "")
+        # ① task_key が空／単一ならそのまま
+        if (not raw_key) or ("," not in raw_key):
+            return func(latest_results, target, *args, **kwargs)
+
+        # ② 複数キーを個別に試す
+        keys = [k.strip() for k in raw_key.split(",") if k.strip()]
+        found_keys = []
+        result_for_found = None
+
+        for k in keys:
+            ## keys から一つ選んで task_key としてセットし，元関数を走らせる 
+            ## 見つからないと -1 が返る仕様を活用して，見つかったキーとその計算結果を保存しておく
+            tmp_target = dict(target)
+            tmp_target["task_key"] = k
+            r = func(latest_results, tmp_target, *args, **kwargs)
+            if r != -1:
+                found_keys.append(k)
+                result_for_found = r
+
+        # ③ 見つかった結果に応じた処理
+        if len(found_keys) == 0:
+            ## キーが一つも見つからなかった場合は -1 を返す
+            return -1
+
+        elif len(found_keys) == 1:
+            ## キーが一つだけ見つかった場合はその結果を採用
+            return result_for_found
+
+        else:
+            ## キーが複数見つかった場合は ValueError を送出
+            raise ValueError(
+                f"Multiple task_keys {found_keys} are present in latest_results "
+                f"for requested '{raw_key}'. Please disambiguate."
+            )
+
+    return wrapper
+
+
+@resolve_multi_task_key
 def pick(latest_results: dict, target: dict, metric_key: str) -> float:
     """
     対象タスクの最新エントリから、指定された metric の値をそのまま返す．
@@ -15,6 +67,7 @@ def pick(latest_results: dict, target: dict, metric_key: str) -> float:
     return -1
 
 
+@resolve_multi_task_key
 def micro_average(latest_results: dict, target: dict, metric_key: str, white_list: list[str]=[]) -> float:
     """
     対象タスクの全サブセットについて、指定された metric のサンプル数重み付き平均を計算する．
@@ -52,6 +105,8 @@ def micro_average(latest_results: dict, target: dict, metric_key: str, white_lis
     else:
         return -1
 
+
+@resolve_multi_task_key
 def average_in_one_task(latest_results: dict, target: dict, metric_key_list: list[str]) -> float:
     """
     対象タスクに対して、指定されたmetric間の平均を計算する

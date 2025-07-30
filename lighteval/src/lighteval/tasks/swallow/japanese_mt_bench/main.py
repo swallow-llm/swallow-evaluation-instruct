@@ -67,23 +67,33 @@ CATEGORY_TEMPERATURE_MAP = {
 NUM_SAMPLES = 5
 
 
-def mt_bench_prompt(line, task_name: str = ""):
-    return Doc(
-        task_name=task_name,
-        query=f"{line['turns'][0]}",
-        choices=[],
-        instruction=None,
-        gold_index=[],
-        specific={
-            "reference": line["reference"],
-            "category": line["category"],
-            "multi_turn_queries": line["turns"],
-            "id": line["question_id"],
-            "num_samples": NUM_SAMPLES,
-            "temperature": CATEGORY_TEMPERATURE_MAP.get(line["category"], 0.0),
-        },
-    )
+def make_mt_bench_prompt(max_gen_text_length: int = 8192):
+    """
+    generator for mt_bench_prompt variant with custom max_gen_text_length.
+    """
+    def mt_bench_prompt_variant(line, task_name: str = ""):
+        return Doc(
+            task_name=task_name,
+            query=f"{line['turns'][0]}",
+            choices=[],
+            instruction=None,
+            gold_index=[],
+            specific={
+                "reference": line["reference"],
+                "category": line["category"],
+                "multi_turn_queries": line["turns"],
+                "id": line["question_id"],
+                "num_samples": NUM_SAMPLES,
+                "temperature": CATEGORY_TEMPERATURE_MAP.get(line["category"], 0.0),
+                "max_gen_text_length": max_gen_text_length,  # variantで指定
+            },
+        )
+    return mt_bench_prompt_variant
 
+# max_gen_text_length=8192にセットするデフォルトのプロンプト関数
+mt_bench_prompt = make_mt_bench_prompt(8192)
+# max_gen_text_length=6144にセットする，コンテキスト長が短いモデル(e.g., llm-jp-3.1)向けのプロンプト関数
+mt_bench_prompt_truncate_6144 = make_mt_bench_prompt(6144)
 
 def process_judge_response_gpt(x):
     score_pattern = re.compile("\[\[(\d+\.?\d*)\]\]")
@@ -232,7 +242,7 @@ llm_judge_mt_bench_swallow_gpt4o_judge = SampleLevelMetricGrouping(
 
 mt_bench_japanese_swallow_gpt4o = LightevalTaskConfig(
     name="japanese_mt_bench",
-    prompt_function=mt_bench_prompt,  # must be defined in the file or imported from src/lighteval/tasks/tasks_prompt_formatting.py
+    prompt_function=mt_bench_prompt,
     suite=["swallow"],
     hf_repo="tokyotech-llm/swallow_japanese_mt_bench",
     hf_subset="default",
@@ -244,5 +254,19 @@ mt_bench_japanese_swallow_gpt4o = LightevalTaskConfig(
     stop_sequence=[],
 )
 
+# max_gen_text_lengthを6144に減らした，コンテキスト長が短いモデル(e.g., llm-jp-3.1)向けの派生版
+mt_bench_japanese_swallow_gpt4o_truncate_6144 = LightevalTaskConfig(
+    name="japanese_mt_bench_truncate_6144",
+    prompt_function=mt_bench_prompt_truncate_6144,
+    suite=["swallow"],
+    hf_repo="tokyotech-llm/swallow_japanese_mt_bench",
+    hf_subset="default",
+    hf_avail_splits=["train"],
+    evaluation_splits=["train"],
+    few_shots_split="",
+    few_shots_select="random",
+    metric=[llm_judge_mt_bench_swallow_gpt4o_judge, japanese_character_ratio_metric],
+    stop_sequence=[],
+)
 
-TASKS_TABLE = [mt_bench_japanese_swallow_gpt4o]
+TASKS_TABLE = [mt_bench_japanese_swallow_gpt4o, mt_bench_japanese_swallow_gpt4o_truncate_6144]
