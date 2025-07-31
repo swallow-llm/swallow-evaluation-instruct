@@ -36,10 +36,10 @@ class StringBasedMarkupReasoningParser(ReasoningParser):
         think_start_expr, response_start_expr で囲まれた部分を reasoning_content、
         それ以降を content として抽出。
         """
-        re_match = self.reasoning_regex.findall(model_output)
+        re_match = self.reasoning_regex.search(model_output)
         if not re_match:
             return None, model_output
-        reasoning_content, response_content = re_match[0]
+        reasoning_content, response_content = re_match.groups()
         if not response_content:
             return reasoning_content, None
         return reasoning_content, response_content
