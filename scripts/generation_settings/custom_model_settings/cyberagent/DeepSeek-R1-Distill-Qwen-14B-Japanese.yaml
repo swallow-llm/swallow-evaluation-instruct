@@ -11,20 +11,8 @@
 # 'version' is the version of the custom settings.
 # You should update this value if you make any changes to the settings.
 
-reasoning:
-  temperature: 0.6
-  top_p: 0.95
-  reasoning_parser: "deepseek_r1"
-  version: "1"
-
-
-reasoning_no_temp:
-  top_p: 0.95
-  reasoning_parser: "deepseek_r1"
-  version: "1"
 
 # swallowプロジェクトの評価用に使用する。
-# 公式のモデルカードの設定は使用せず、ベンチマークのデフォルト設定で評価を行う。
 reasoning_swallow:
   reasoning_parser: "deepseek_r1"
   version: "1"
