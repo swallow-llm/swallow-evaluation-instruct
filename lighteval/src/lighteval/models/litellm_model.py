@@ -255,8 +255,6 @@ class LiteLLMClient(LightevalModel):
                             )
                             choice.message.reasoning_content = reasoning_content
                             choice.message.content = parsed_content
-                            logger.debug(f"=== message ===")
-                            logger.debug(choice.message)
                         
                         # content が None の場合は reasoning_content で置換
                         if choice.message.content is None:
