@@ -43,7 +43,7 @@ def run_reasoning_extraction(model_output: str, reasoning_parser: str,
         model = getattr(tokenizer, "name_or_path", "dummy")
     
     # ToDo: もしも非対応のモデルが現れた場合はここに reasoning-parser を追加してください．
-    reasoner_cls = ReasoningParserManager.get_reasoning_parser(reasoning_parser) 
+    reasoner_cls = ReasoningParserManager.get_reasoning_parser(reasoning_parser)
     obj_reasoning_parser = reasoner_cls(tokenizer=tokenizer)
     if request is None:
         request = ChatCompletionRequest(messages=[], model=model)
