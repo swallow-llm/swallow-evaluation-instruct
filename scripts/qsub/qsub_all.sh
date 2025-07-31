@@ -125,7 +125,6 @@ qsub_task() {
         env ${CUDA_VISIBLE_DEVICES:+CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}} \
         bash "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
           --task-name "${task_name}" "${common_qsub_args[@]}" --stdout-stderr-dir "${OUTDIR}" --custom-job-id "${JOB_ID}" "${OPTIONAL_ARGS[@]}"
-      tmux a -t "${session_name}"
       echo "✅ Local job ${job_name} was successfully submitted to tmux session ${session_name}."
       ;;
   esac
