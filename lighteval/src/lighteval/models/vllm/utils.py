@@ -43,7 +43,7 @@ def run_reasoning_extraction(model_output: str, reasoning_parser: str,
     if reasoning_parser in TOKENIZER_AGNOSTIC_REASONING_PARSER:
         tokenizer = None
         model = None
-    # tokenizerに依存する(=reasoning markup tagが語彙で定義されている) reasoning parser
+    # tokenizerに依存する(=vLLMが提供している) reasoning parser
     else:
         if (vllm_engine is None) and (hf_tokenizer is None):
             raise ValueError(f"You must specify either vllm_engine or hf_tokenizer.")
