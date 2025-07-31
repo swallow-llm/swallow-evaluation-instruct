@@ -1,0 +1,9 @@
+reasoning:
+  system_message: "detailed thinking on"
+  reasoning_parser: "deepseek_r1"
+  version: "1"
+
+non_reasoning:
+  system_message: "detailed thinking off"
+  version: "1"
+
