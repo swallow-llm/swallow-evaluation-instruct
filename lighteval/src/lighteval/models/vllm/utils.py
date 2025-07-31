@@ -33,16 +33,26 @@ def run_reasoning_extraction(model_output: str, reasoning_parser: str,
     """
     if streaming:
         raise NotImplementedError(f"Improvised reasoning extractor does not support streaming output.")
-    elif (vllm_engine is None) and (hf_tokenizer is None):
-        raise ValueError(f"You must specify either vllm_engine or hf_tokenizer.")
-    elif hf_tokenizer is not None:
-        tokenizer = hf_tokenizer
-        model = getattr(hf_tokenizer, "name_or_path", "dummy")
-    elif vllm_engine is not None:
-        tokenizer = vllm_engine.get_tokenizer()
-        model = getattr(tokenizer, "name_or_path", "dummy")
+    
+    # tokenizerに依存しない reasoning parser
+    TOKENIZER_AGNOSTIC_REASONING_PARSER = ("deepseek_r1_markup",)
+    
+    if reasoning_parser in TOKENIZER_AGNOSTIC_REASONING_PARSER:
+        tokenizer = None
+        model = None
+    # tokenizerに依存する(=reasoning markup tagが語彙で定義されている) reasoning parser
+    else:
+        if (vllm_engine is None) and (hf_tokenizer is None):
+            raise ValueError(f"You must specify either vllm_engine or hf_tokenizer.")
+        elif hf_tokenizer is not None:
+            tokenizer = hf_tokenizer
+            model = getattr(hf_tokenizer, "name_or_path", "dummy")
+        elif vllm_engine is not None:
+            tokenizer = vllm_engine.get_tokenizer()
+            model = getattr(tokenizer, "name_or_path", "dummy")
     
     # ToDo: もしも非対応のモデルが現れた場合はここに reasoning-parser を追加してください．
+    # ./reasoning_parser/__init__.py も参照のこと
     reasoner_cls = ReasoningParserManager.get_reasoning_parser(reasoning_parser)
     obj_reasoning_parser = reasoner_cls(tokenizer=tokenizer)
     if request is None:
