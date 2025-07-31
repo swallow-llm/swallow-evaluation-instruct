@@ -5,6 +5,9 @@ from vllm.reasoning import ReasoningParserManager, ReasoningParser
 from vllm.entrypoints.openai.protocol import ChatCompletionRequest
 from lighteval.models.utils import replace_none_with_empty_string
 
+# @ReasoningParserManager.register_module() を実行するために import が必須
+import lighteval.models.vllm.reasoning_parser
+
 # Sourced from vLLM unittest run_reasoning_extraction() method.
 # Ref. https://github.com/vllm-project/vllm/blob/v0.9.1/tests/reasoning/utils.py#L35
 def run_reasoning_extraction(model_output: str, reasoning_parser: str, 

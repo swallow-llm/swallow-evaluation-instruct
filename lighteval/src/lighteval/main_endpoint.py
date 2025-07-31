@@ -494,7 +494,7 @@ def litellm(
         print(model_args)
         model_args_dict: dict = {k.split("=")[0]: k.split("=")[1] if "=" in k else True for k in model_args.split(",")}
         
-        model_config = LiteLLMModelConfig(**model_args_dict, generation_parameters=generation_parameters)
+        model_config = LiteLLMModelConfig(**model_args_dict, generation_parameters=generation_parameters)       
 
     pipeline_params = PipelineParameters(
         launcher_type=parallelism_manager,
