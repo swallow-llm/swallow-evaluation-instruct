@@ -32,6 +32,15 @@ lighteval endpoint litellm \
 **推論型モデルの場合は vLLM起動時に に reasoning_parser を指定してください．**  
 これにより出力から推論過程が取り除かれます．Ref. [vLLM Doc: Reasoning Outputs](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)
 
+vLLMのreasoning_parserが対応していない推論型モデル（例：`Llama-3.1-Nemotron`）の場合は `lighteval endpoint litellm` に reasoning_parser=deepseek_r1_markup を指定してください．  
+deepseek_r1_markup は DeepSeek-R1の `<think>,</think>` 形式に対応しています．  
+
+```
+lighteval endpoint litellm \
+"model=$MODEL,api_key=$API_KEY,base_url=$BASE_URL,reasoning_parser=deepseek_r1_markup" \
+...
+```
+
 ### OpenAIモデル等の評価
 litellmをバックエンドとして指定することにより，OpenAIのように推論APIだけが提供されているモデルも評価できます．  
 NVIDIA NIM や DeepInfra のようなOpenAI互換の推論APIも対応しています．  
