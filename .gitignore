@@ -184,4 +184,6 @@ pyproject.toml
 ## outputs
 results/
 lighteval/outputs/
-scripts/tsubame/utils/qstat_history.out
+scripts/qsub/utils/qstat_history.out
+scripts/qsub/utils/abci/qstat_history.json
+.python-version
