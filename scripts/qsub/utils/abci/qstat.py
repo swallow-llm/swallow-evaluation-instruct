@@ -1,5 +1,7 @@
 import subprocess
 import re
+import json
+import os
 
 #======================================================================
 # qstat.py
@@ -64,9 +66,6 @@ def parse_qstat_output(qstat_output):
     return job_infos
 
 def main():
-    import json
-    import os
-    from datetime import datetime
 
     qstat_output = get_qstat_output()
     jobs = parse_qstat_output(qstat_output)
@@ -93,8 +92,6 @@ def main():
     os.makedirs(script_dir, exist_ok=True)
     history_path = os.path.join(script_dir, 'qstat_history.json')
 
-    # 差分表示
-    import json
     prev_jobs = []
     if os.path.exists(history_path):
         try:

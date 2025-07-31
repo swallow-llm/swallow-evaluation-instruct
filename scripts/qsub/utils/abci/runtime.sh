@@ -14,7 +14,7 @@ SETTING_NAME=""
 HOSTING="hosted_vllm"  
 
 
-# 2. このスクリプトを実行する。 -> scripts/qsub/utils/abci/runtime.sh
+# 2. このスクリプトを実行する。 -> bash scripts/qsub/utils/abci/runtime.sh
 
 # ========== Script to extract runtime from qsub jobs =========
 cd "$(dirname "$0")"
