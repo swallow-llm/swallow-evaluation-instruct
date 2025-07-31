@@ -122,10 +122,10 @@ qsub_task() {
       set_random_job_id
       local session_name="${job_name}_${JOB_ID}"
       tmux new-session -d -s "${session_name}" \
-        env CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES} \
+        env ${CUDA_VISIBLE_DEVICES:+CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}} \
         bash "${SCRIPTS_DIR}/evaluate_${task_framework}.sh" \
-          --task-name "${task_name}" "${common_qsub_args[@]}" --custom-job-id "${JOB_ID}" "${OPTIONAL_ARGS[@]}" \
-          > >(tee "${OUTDIR}/${job_name}.o${JOB_ID}" ) 2> >(tee "${OUTDIR}/${job_name}.e${JOB_ID}" >&2)
+          --task-name "${task_name}" "${common_qsub_args[@]}" --stdout-stderr-dir "${OUTDIR}" --custom-job-id "${JOB_ID}" "${OPTIONAL_ARGS[@]}"
+      tmux a -t "${session_name}"
       echo "✅ Local job ${job_name} was successfully submitted to tmux session ${session_name}."
       ;;
   esac
