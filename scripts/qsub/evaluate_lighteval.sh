@@ -33,12 +33,16 @@ done
 
 ## Redirect stdout and stderr to files if specified
 if [[ -n "$STDOUT_STDERR_DIR" ]]; then
-  ### ABCI does not support streaming stdout and stderr into specific files, so we need to tee them by ourselves.
-  if [[ $SERVICE != "abci" ]]; then
-    echo "💀 Error: --stdout-stderr-dir option is only supported for ABCI jobs." >&2
-    exit 1
+  if [[ $SERVICE == "abci" ]]; then
+    ### ABCI does not support streaming stdout and stderr into specific files, so we need to tee them by ourselves.
+    exec > >(tee -a "${STDOUT_STDERR_DIR}/${PBS_JOBID}.OU") 2> >(tee -a "${STDOUT_STDERR_DIR}/${PBS_JOBID}.ER" >&2)
   fi
-  exec > >(tee -a "${STDOUT_STDERR_DIR}/${PBS_JOBID}.OU") 2> >(tee -a "${STDOUT_STDERR_DIR}/${PBS_JOBID}.ER" >&2)
+  if [[ $SERVICE == "local" ]]; then
+    ### Local uses tmux session to run the job, so we need to tee the stdout and stderr in the session.
+    source "${REPO_PATH}/scripts/qsub/conf/load_config.sh"
+    JOB_NAME=$(script_task "${TASK_NAME}")
+    exec > >(tee -a "${STDOUT_STDERR_DIR}/${JOB_NAME}.o${CUSTOM_JOB_ID}" ) 2> >(tee -a "${STDOUT_STDERR_DIR}/${JOB_NAME}.e${CUSTOM_JOB_ID}" >&2)
+  fi
 fi
 
 
