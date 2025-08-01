@@ -77,6 +77,9 @@ echo "📥 Installing utilities..."
 uv pip install --upgrade pip setuptools wheel
 uv pip install pre-commit huggingface_hub[cli]
 uv pip install pandas pyarrow fastparquet ipykernel
+
+echo "🤗 Logging in to HuggingFace..."
+hf auth login --token $HF_TOKEN
 deactivate
 
 echo "🔗 Added virtual-env bin dir to PATH in .bashrc (if not already present)"
