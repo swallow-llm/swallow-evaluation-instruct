@@ -24,11 +24,6 @@ init_common(){
     ## Set GPU_MEMORY_UTILIZATION
     GPU_MEMORY_UTILIZATION=0.9
 
-    # Login to HuggingFace
-    source "${REPO_PATH}/.common_envs/bin/activate"
-    huggingface-cli login --token $HF_TOKEN
-    deactivate
-
     # Special Settings
     ## CUDA_LAUNCH_BLOCKING - to prevent evaluation from stopping at a certain batch. (Default: 0)
     ## (This setting should be done only if necessary because it might slow evaluation.)
