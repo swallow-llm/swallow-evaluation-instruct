@@ -22,6 +22,7 @@
 >   - [3.4 特定のproviderでエラーが出る場合の対応](#34-特定のproviderでエラーが出る場合の対応)
 >   - [3.5 並列応答数を強制的に1にする方法](#35-並列応答数を強制的に1にする方法)
 >   - [3.6 評価がいつまでたっても終わらない場合](#36-評価がいつまでたっても終わらない場合)
+>   - [3.7 vLLMのreasoning_parserが対応していない推論型モデル](#37-vLLMのreasoning_parserが対応していない推論型モデル)
 
 ## 概要
 この資料は，岡崎研の評価チームが TSUBAME4，ABCI3.0，岡崎研HPC 上で評価を行う際に参照することを想定した，内部向けのマニュアルである．
@@ -34,6 +35,7 @@
 | 2025/07/02 | Provider固有の問題への対処法、モデル固有の生成条件に関する注意、計算が終わらないときの対処法をTipsに追記 | 水木 |
 | 2025/07/07 | custom_model_settings に関する追記・修正 | 齋藤 |
 | 2025/07/25 | ABCI，local での実行に関する追記・修正 | 齋藤 |
+| 2025/07/31 | 独自のreasoning parserを使うケースを追記 | 水木 |
 
 ## 1. 環境構築
 ### 1.1 評価者固有情報の登録
@@ -298,3 +300,31 @@ max-samples=10くらいに設定してモデルが生成した回答を眺めて
 
 vLLMログに `Aborted request` が出力されている，またはlightevalログに `Timeout` が出力されている場合は，推論に時間がかかりすぎてAPI呼び出しがタイムアウトしている．  
 この場合は環境変数 `REQUEST_TIMEOUT` （単位は秒）に十分に大きな値を設定すること．
+
+### 3.7 vLLMのreasoning_parserが対応していない推論型モデル
+
+vLLMには推論過程を除去する reasoning parser がビルトインされていますが，parserが対応していない推論型モデルはRuntimeErrorが発生します．  
+
+```
+# --reasoning-parser=deepseek_r1 でエラーが生じた例
+RuntimeError: DeepSeek R1 reasoning parser could not locate think start/end tokens in the tokenizer!
+```
+
+推論過程の除去はMT-Bench等で必須なので，このようにエラーが起きる推論型モデルについては我々が独自実装した parser を lighteval側で適用します．
+具体的には `vllm serve` ではなく `lighteval endpoint litellm` の MODEL_ARGS に `reasoning_parser` を指定してください．  
+
+```
+# コマンドのイメージ
+vllm serve
+(--reasoning-parser を指定しない)
+
+lighteval endpoint litellm \
+"model=モデル名,reasoning_parser={parser名},generation_parameters=..." \
+(以下略)
+```
+
+`lighteval endpoint litellm` のparserは我々が独自実装したもので，以下のparserが利用できます．推論過程のマークアップタグを調べて適切なものを選んでください．  
+
+|reasoning_parser|推論過程のマークアップ|モデルの例|
+|--|--|--|
+|deepseek_r1_markup|"\<think\>,\<\/think\>"|Llama-3.1-Nemotron, MiMo-7B-RL|

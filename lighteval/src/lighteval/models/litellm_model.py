@@ -50,7 +50,8 @@ from lighteval.tasks.requests import (
     LoglikelihoodSingleTokenRequest,
 )
 from lighteval.utils.imports import is_litellm_available
-from lighteval.models.utils import replace_none_with_empty_string, replace_none_content_with_reasoning_content
+from lighteval.models.utils import replace_none_content_with_reasoning_content
+from lighteval.models.vllm.utils import run_reasoning_extraction
 
 logger = logging.getLogger(__name__)
 
@@ -97,6 +98,7 @@ class LiteLLMModelConfig:
     base_url: Optional[str] = None
     api_key: Optional[str] = None
     generation_parameters: GenerationParameters = None
+    reasoning_parser: Optional[str] = None
 
     def __post_init__(self):
         if self.generation_parameters is None:
@@ -111,6 +113,7 @@ class LiteLLMModelConfig:
         provider = config["base_params"].get("provider", None)
         base_url = config["base_params"].get("base_url", None)
         api_key = config["base_params"].get("api_key", None)
+        reasoning_parser = config["base_params"].get("reasoning_parser", None)
         generation_parameters = GenerationParameters.from_dict(config)
         return cls(
             model=model,
@@ -118,13 +121,14 @@ class LiteLLMModelConfig:
             base_url=base_url,
             generation_parameters=generation_parameters,
             api_key=api_key,
+            reasoning_parser=reasoning_parser,
         )
 
 
 class LiteLLMClient(LightevalModel):
     _DEFAULT_MAX_LENGTH: int = 4096
 
-    def __init__(self, config, env_config) -> None:
+    def __init__(self, config: LiteLLMModelConfig, env_config) -> None:
         """
         IMPORTANT: Your API keys should be set in the environment variables.
         If a base_url is not set, it will default to the public API.
@@ -139,6 +143,7 @@ class LiteLLMClient(LightevalModel):
         self.provider = config.provider or config.model.split("/")[0]
         self.base_url = config.base_url
         self.api_key = config.api_key
+        self.reasoning_parser = config.reasoning_parser
         self.generation_parameters = config.generation_parameters
 
         self.API_MAX_RETRY = 5
@@ -150,6 +155,9 @@ class LiteLLMClient(LightevalModel):
         self.pairwise_tokenization = False
         litellm.drop_params = True
         litellm.set_verbose = False
+        
+        if self.reasoning_parser is not None:
+            logger.warning(f"In-house reasoning_parser={self.reasoning_parser} is set. Please make sure vLLM reasoning_parser is not set. Use a custom parser only for models not supported by the vLLM built-in parser.")
 
     def _prepare_stop_sequence(self, stop_sequence):
         """Prepare and validate stop sequence."""
@@ -238,9 +246,21 @@ class LiteLLMClient(LightevalModel):
                 # If response content is null, replace with empty string
                 if response is not None:
                     for choice in response.choices:
+                        # reasoning_parser が指定されていれば reasoning_content, content に分離
+                        if self.reasoning_parser is not None:
+                            reasoning_content, parsed_content = run_reasoning_extraction(
+                                model_output=choice.message.content,
+                                reasoning_parser=self.reasoning_parser,
+                                replace_none_content_with_reasoning_content=True
+                            )
+                            choice.message.reasoning_content = reasoning_content
+                            choice.message.content = parsed_content                            
+                        
+                        # content が None の場合は reasoning_content で置換
                         if choice.message.content is None:
                             logger.info("Response is empty, replacing with reasoning content.")
                             choice.message.content = replace_none_content_with_reasoning_content(choice.message)
+                            
                 return response
             except litellm.BadRequestError as e:
                 logger.error(f"BadRequestError in API call: {e}")

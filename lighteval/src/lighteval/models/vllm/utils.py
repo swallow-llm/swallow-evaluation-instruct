@@ -5,6 +5,9 @@ from vllm.reasoning import ReasoningParserManager, ReasoningParser
 from vllm.entrypoints.openai.protocol import ChatCompletionRequest
 from lighteval.models.utils import replace_none_with_empty_string
 
+# @ReasoningParserManager.register_module() を実行するために import が必須
+import lighteval.models.vllm.reasoning_parser
+
 # Sourced from vLLM unittest run_reasoning_extraction() method.
 # Ref. https://github.com/vllm-project/vllm/blob/v0.9.1/tests/reasoning/utils.py#L35
 def run_reasoning_extraction(model_output: str, reasoning_parser: str, 
@@ -33,17 +36,27 @@ def run_reasoning_extraction(model_output: str, reasoning_parser: str,
     """
     if streaming:
         raise NotImplementedError(f"Improvised reasoning extractor does not support streaming output.")
-    elif (vllm_engine is None) and (hf_tokenizer is None):
-        raise ValueError(f"You must specify either vllm_engine or hf_tokenizer.")
-    elif hf_tokenizer is not None:
-        tokenizer = hf_tokenizer
-        model = getattr(hf_tokenizer, "name_or_path", "dummy")
-    elif vllm_engine is not None:
-        tokenizer = vllm_engine.get_tokenizer()
-        model = getattr(tokenizer, "name_or_path", "dummy")
+    
+    # tokenizerに依存しない reasoning parser
+    TOKENIZER_AGNOSTIC_REASONING_PARSER = ("deepseek_r1_markup",)
+    
+    if reasoning_parser in TOKENIZER_AGNOSTIC_REASONING_PARSER:
+        tokenizer = None
+        model = None
+    # tokenizerに依存する(=vLLMが提供している) reasoning parser
+    else:
+        if (vllm_engine is None) and (hf_tokenizer is None):
+            raise ValueError(f"You must specify either vllm_engine or hf_tokenizer.")
+        elif hf_tokenizer is not None:
+            tokenizer = hf_tokenizer
+            model = getattr(hf_tokenizer, "name_or_path", "dummy")
+        elif vllm_engine is not None:
+            tokenizer = vllm_engine.get_tokenizer()
+            model = getattr(tokenizer, "name_or_path", "dummy")
     
     # ToDo: もしも非対応のモデルが現れた場合はここに reasoning-parser を追加してください．
-    reasoner_cls = ReasoningParserManager.get_reasoning_parser(reasoning_parser) 
+    # ./reasoning_parser/__init__.py も参照のこと
+    reasoner_cls = ReasoningParserManager.get_reasoning_parser(reasoning_parser)
     obj_reasoning_parser = reasoner_cls(tokenizer=tokenizer)
     if request is None:
         request = ChatCompletionRequest(messages=[], model=model)

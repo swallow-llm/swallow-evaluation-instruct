@@ -219,7 +219,8 @@ get_generation_params(){
     # - CUSTOM_SETTINGS_SUBDIR
     # - CUSTOM_SETTINGS_NAME
     # - MAX_MODEL_LENGTH
-    # - REASONING_PARSER
+    # - REASONING_PARSER_FOR_VLLM
+    # - REASONING_PARSER_FOR_LIGHTEVAL
     # - SYSTEM_MESSAGE (Optional: will be included in OPTIONAL_ARGS_FOR_LIGHTEVAL)
     # - GEN_PARAMS
     # - OPTIONAL_ARGS_FOR_LIGHTEVAL
@@ -230,6 +231,7 @@ get_generation_params(){
     REPO_PATH=$3
     MODEL_NAME=$4
     MAX_SAMPLES=$5
+
 
     # Load custom settings from model_conf.yaml
     local GENERATION_SETTINGS_DIR="${REPO_PATH}/scripts/generation_settings"
@@ -250,15 +252,65 @@ get_generation_params(){
         echo "➖ No custom settings is specified. Use default settings."
     fi
 
-    # Accept SHELL_OUTPUT_PARAMETERS
-    MAX_MODEL_LENGTH=${results[2]}
-    REASONING_PARSER=${results[3]}
+    ## Accept SHELL_OUTPUT_PARAMETERS
+    local MAX_MODEL_LENGTH_MANUALLY_SPECIFIED=${results[2]}
+    local REASONING_PARSER=${results[3]}
     export VLLM_USE_V1=${results[4]}
     SYSTEM_MESSAGE=${results[5]}
 
-    # Accept CONFIG_YAML_PARAMETERS
+    ## Accept CONFIG_YAML_PARAMETERS
     rest=( "${results[@]:6}" )
     GEN_PARAMS=$(printf '%s\n' "${rest[@]}")
+
+
+    # Check metadata
+    readarray -t results < <(uv run --isolated --project ${REPO_PATH}  --locked --extra auto_detector python "${GENERATION_SETTINGS_DIR}/check_metadata.py" --model_id "$MODEL_NAME")
+    
+    ## Accept results
+    local MAX_MODEL_LENGTH_AUTO_DETECTED=${results[0]}
+    local HAS_THINK_TAG=${results[1]}
+
+    ## Set max model length if not specified
+    if [[ $MAX_MODEL_LENGTH_MANUALLY_SPECIFIED == "-1" ]]; then
+        echo "🤖 (Auto-detected) MAX_MODEL_LENGTH: ${MAX_MODEL_LENGTH_AUTO_DETECTED}"
+        MAX_MODEL_LENGTH="${MAX_MODEL_LENGTH_AUTO_DETECTED}"
+    else
+        echo "🖐️ (Manually specified) MAX_MODEL_LENGTH: ${MAX_MODEL_LENGTH_MANUALLY_SPECIFIED}"
+        MAX_MODEL_LENGTH="${MAX_MODEL_LENGTH_MANUALLY_SPECIFIED}"
+    fi
+
+    ## Set reasoning-tag parameter
+    if [[ "$HAS_THINK_TAG" == "true" ]]; then
+        echo "🤖 (Auto-detected) The specified model has reasoning-tag in its vocabulary."
+        case "${REASONING_PARSER}" in
+            "ignore")
+                echo "✅ The specified model may support reasoning-tag, but it is ignored. No reasoning-parser will be used."
+                ;;
+            "")
+                echo "💀 Error: The specified model may support reasoning-tag, but no reasoning-parser is specified. Please specify a reasoning-parser(, or set REASONING_PARSER=ignore if you do not want to use reasoning-tag)."
+                exit 1
+                ;;
+            *)
+                echo "✅ Reasoning-parser: ${REASONING_PARSER} will be used."
+                classify_reasoning_parser "$REASONING_PARSER"
+                ;;
+        esac
+    else
+        echo "🤖 (Auto-detected) The specified model does not have reasoning-tag in its vocabulary."
+        case "${REASONING_PARSER}" in
+            "ignore")
+                echo "✅ No reasoning-parser will be used. (You do not have to specify reasoning_parser=ignore in this case. Please unset reasoning_parser in the YAML file to make it clear.)"
+                ;;
+            "")
+                echo "✅ No reasoning-parser will be used."
+                ;;
+            *)
+                echo "⚠️ Warning: The specified model may not support reasoning-tag, but '${REASONING_PARSER}' is specified and will be used. This may cause an error or unexpected behavior."
+                classify_reasoning_parser "$REASONING_PARSER"
+                ;;
+        esac
+    fi
+
 
     # Prepare optional arguments for lighteval
     OPTIONAL_ARGS_FOR_LIGHTEVAL=()
@@ -268,6 +320,34 @@ get_generation_params(){
     if [[ -n "${MAX_SAMPLES:-}" ]]; then
         OPTIONAL_ARGS_FOR_LIGHTEVAL+=(--max-samples $MAX_SAMPLES)
     fi
+}
+
+
+classify_reasoning_parser(){
+    # Load Args
+    local REASONING_PARSER=$1
+
+    # Classify reasoning parser
+    REASONING_PARSER_FOR_VLLM=""; REASONING_PARSER_FOR_LIGHTEVAL=""
+    case "$REASONING_PARSER" in
+        "qwen3" | "deepseek_r1" | "granite")
+            ## vLLM official parsers (*) are passed to vllm serve
+            ## (*) Available parsers at v0.9.2 - https://github.com/vllm-project/vllm/tree/v0.9.2/vllm/reasoning
+            REASONING_PARSER_FOR_VLLM="$REASONING_PARSER"
+            echo "✅ vLLM's official parser: '$REASONING_PARSER' was detected. Use it in vLLM."
+            ;;
+
+        "deepseek_r1_markup")
+            ## swallow's parsers are passed to lighteval
+            REASONING_PARSER_FOR_LIGHTEVAL="$REASONING_PARSER"
+            echo "✅ Swallow's parser: '$REASONING_PARSER' was detected. Use it in lighteval."            
+            ;;
+
+        *)
+            echo "💀 Error: The specified reasoning parser, '$REASONING_PARSER', is not supported."
+            exit 1
+            ;;
+    esac
 }
 
 
@@ -292,7 +372,8 @@ serve_litellm(){
     NUM_GPUS=$8
     GPU_MEMORY_UTILIZATION=$9
     MAX_MODEL_LENGTH=${10:-"-1"}
-    REASONING_PARSER=${11:-""}
+    REASONING_PARSER_FOR_VLLM=${11:-""}
+    REASONING_PARSER_FOR_LIGHTEVAL=${12:-""}
 
     # Setup based on provider
     RAW_OUTPUT_DIR="${REPO_PATH}/lighteval/outputs"
@@ -329,103 +410,24 @@ serve_litellm(){
 
     # Start VLLM server
     if [ "$PROVIDER" = "vllm" ]; then
+        ## Check if the node kind is GPU
         if [[ $NODE_KIND == *"cpu"* ]]; then
             echo "❌ VLLM server cannot be started on CPU nodes. Use GPU nodes. Or use openai or deepinfra instead of vllm."
             exit 1
         fi
 
-        ## Detect max length and reasoning-tag
-        readarray -t results < <(uv run --isolated --project ${REPO_PATH}  --locked --extra auto_detector python - "$MODEL_NAME" <<'PY'
-import sys
-from transformers import AutoConfig, AutoTokenizer
-
-model_id = sys.argv[1]
-
-# Detect max length from config
-## Get config (trust_remote_code=True is required for most community models)
-cfg = AutoConfig.from_pretrained(model_id, trust_remote_code=True)
-
-## Search for candidate keys in order
-for key in (
-    "max_position_embeddings",
-    "model_max_length",
-    "context_length",
-    "seq_length"
-):
-    val = getattr(cfg, key, None)
-    if isinstance(val, int) and val > 0:
-        break
-else:
-    val = 32768
-
-# Reasoning-tag Detection
-tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
-vocab = tokenizer.get_vocab()
-
-think_tags = [
-    ## Add think tags here
-    "<think>", "</think>",
-]
-has_think_tag = any(vocab.get(tag) is not None for tag in think_tags)
-
-print(min(32768, val))
-print(str(has_think_tag).lower())
-PY
-)
-
-        ## Set max model length if not specified
-        if [[ $MAX_MODEL_LENGTH == "-1" ]]; then
-            MAX_MODEL_LENGTH="${results[0]}"
-            echo "🤖 (Auto-detected) MAX_MODEL_LENGTH: ${MAX_MODEL_LENGTH}"
-        else
-            echo "🖐️ (Manually specified) MAX_MODEL_LENGTH: ${MAX_MODEL_LENGTH}"
-        fi
-
-        ## Set reasoning-tag parameter
-        REASONING_PARSER_PARAM=""
-        if [[ "${results[1]}" == "true" ]]; then
-            echo "🤖 (Auto-detected) The specified model has reasoning-tag in its vocabulary."
-            case "${REASONING_PARSER}" in
-                "ignore")
-                    echo "✅ The specified model may support reasoning-tag, but it is ignored. No reasoning-parser will be used."
-                    ;;
-                "")
-                    echo "💀 Error: The specified model may support reasoning-tag, but no reasoning-parser is specified. Please specify a reasoning-parser(, or set REASONING_PARSER=ignore if you do not want to use reasoning-tag)."
-                    exit 1
-                    ;;
-                *)
-                    echo "✅ Reasoning-parser: ${REASONING_PARSER} is used."
-                    REASONING_PARSER_PARAM="--reasoning-parser ${REASONING_PARSER}"
-                    ;;
-            esac
-        else
-            echo "🤖 (Auto-detected) The specified model does not have reasoning-tag in its vocabulary."
-            case "${REASONING_PARSER}" in
-                "ignore")
-                    echo "✅ No reasoning-parser will be used. (You do not have to specify reasoning_parser=ignore in this case. Please unset reasoning_parser in the YAML file to make it clear.)"
-                    ;;
-                "")
-                    echo "✅ No reasoning-parser will be used."
-                    ;;
-                *)
-                    echo "⚠️ Warning: The specified model may not support reasoning-tag, but a reasoning-parser, ${REASONING_PARSER}, is specified and will be used. This may cause an error or unexpected behavior."
-                    REASONING_PARSER_PARAM="--reasoning-parser ${REASONING_PARSER}"
-                    ;;
-            esac
-        fi
-
         ## Search for an available port
         echo "🔍 Searching for an available port..."
-        port=$(uv run --isolated --project "${REPO_PATH}" --locked --extra auto_detector python - <<'PY'
-import socket
-with socket.socket() as s:
-    s.bind(('', 0))
-    print(s.getsockname()[1])
-PY
-)
+        port=$(python -c $'import socket\nwith socket.socket() as s:\n    s.bind(("", 0))\n    print(s.getsockname()[1])')
         echo "✅ Found free port: $port"
         BASE_URL=${BASE_URL//\{port\}/$port}
 
+
+        ## Set optional parameters for vLLM
+        OPTIONAL_PARAMS_FOR_VLLM=()
+        if [[ -n "${REASONING_PARSER_FOR_VLLM:-}" ]]; then
+            OPTIONAL_PARAMS_FOR_VLLM+=(--reasoning-parser "$REASONING_PARSER_FOR_VLLM")
+        fi
 
         ## Start vllm server
         source "${REPO_PATH}/scripts/qsub/conf/load_config.sh"
@@ -439,7 +441,7 @@ PY
                 --max-model-len "$MAX_MODEL_LENGTH" \
                 --gpu-memory-utilization "$GPU_MEMORY_UTILIZATION" \
                 --dtype bfloat16 \
-                ${REASONING_PARSER_PARAM} \
+                ${OPTIONAL_PARAMS_FOR_VLLM[@]} \
                 2>&1 > "$vllm_log_file" &
         VLLM_SERVER_PID=$!
 
@@ -487,15 +489,27 @@ PY
         esac
     fi
 
-    # Create YAML file
-    ## api_key is only needed for openai and deepinfra
+    # Create a config file for lighteval
+    ## Prepare optional base parameters
+    OPTIONAL_BASE_PARAMS=()
+    if [[ $PROVIDER != "vllm" ]]; then
+        ## api_key is only needed for openai and deepinfra
+        OPTIONAL_BASE_PARAMS+=("api_key: $API_KEY")
+    fi
+    if [[ -n "${REASONING_PARSER_FOR_LIGHTEVAL:-}" ]]; then
+        ## reasoning_parser is only needed when using a swallow's parser
+        OPTIONAL_BASE_PARAMS+=("reasoning_parser: $REASONING_PARSER_FOR_LIGHTEVAL")
+    fi
+    echo "🔍 OPTIONAL_BASE_PARAMS: ${OPTIONAL_BASE_PARAMS[@]}"
+
+    ## Create YAML file
     MODEL_CONFIG_PATH="$RAW_RESULT_DIR/model_config_${TASK_NAME}.yaml"
     cat >"$MODEL_CONFIG_PATH" <<EOL
 model:
     base_params:
         model_name: $MODEL_NAME_CONFIG
         base_url: $BASE_URL
-$( [[ $PROVIDER != vllm ]] && printf "        api_key: %s\n" "$API_KEY" )
+$(printf '        %s\n' "${OPTIONAL_BASE_PARAMS[@]}")
 $GEN_PARAMS
 EOL
     echo "✅ YAML file is created at $MODEL_CONFIG_PATH."
