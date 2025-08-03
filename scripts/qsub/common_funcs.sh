@@ -285,6 +285,7 @@ get_generation_params(){
         case "${REASONING_PARSER}" in
             "ignore")
                 echo "✅ The specified model may support reasoning-tag, but it is ignored. No reasoning-parser will be used."
+                REASONING_PARSER_FOR_VLLM=""; REASONING_PARSER_FOR_LIGHTEVAL=""
                 ;;
             "")
                 echo "💀 Error: The specified model may support reasoning-tag, but no reasoning-parser is specified. Please specify a reasoning-parser(, or set REASONING_PARSER=ignore if you do not want to use reasoning-tag)."
@@ -300,9 +301,11 @@ get_generation_params(){
         case "${REASONING_PARSER}" in
             "ignore")
                 echo "✅ No reasoning-parser will be used. (You do not have to specify reasoning_parser=ignore in this case. Please unset reasoning_parser in the YAML file to make it clear.)"
+                REASONING_PARSER_FOR_VLLM=""; REASONING_PARSER_FOR_LIGHTEVAL=""
                 ;;
             "")
                 echo "✅ No reasoning-parser will be used."
+                REASONING_PARSER_FOR_VLLM=""; REASONING_PARSER_FOR_LIGHTEVAL=""
                 ;;
             *)
                 echo "⚠️ Warning: The specified model may not support reasoning-tag, but '${REASONING_PARSER}' is specified and will be used. This may cause an error or unexpected behavior."
