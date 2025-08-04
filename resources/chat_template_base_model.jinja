@@ -1,0 +1,1 @@
+{%- for m in messages if m['role'] == 'user' -%}{{- m['content'] -}}{%- if not loop.last %}\n{%- endif -%}{%- endfor -%}
