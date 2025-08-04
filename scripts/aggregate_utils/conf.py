@@ -67,7 +67,7 @@ AGGREGATE_CONF = [
         'display_name': 'jhumaneval_pass@1', 
         'func': pick, 
         'func_args': {
-            'metric_key': 'jhumaneval_pass@1:10'
+            'metric_key': 'humaneval_pass@1:10'
         }, 
         'target': {
             'task_key': 'swallow|swallow_jhumaneval|0'
@@ -77,7 +77,7 @@ AGGREGATE_CONF = [
         'display_name': 'jhumaneval_pass@10', 
         'func': pick, 
         'func_args': {
-            'metric_key': 'jhumaneval_pass@10:10'
+            'metric_key': 'humaneval_pass@10:10'
         }, 
         'target': {
             'task_key': 'swallow|swallow_jhumaneval|0'

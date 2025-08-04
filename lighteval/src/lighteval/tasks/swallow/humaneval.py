@@ -34,7 +34,7 @@ def swallow_humaneval_prompt_fn(line, task_name: str = "humaneval") -> Doc:
     )
 
 # Task config
-# metric は jhumaneval.py で定義済みの "jhumaneval_pass_{1,10}" を使用する．
+# metric は jhumaneval.py で登録済みの "humaneval_pass_{1,10}" を使用する．
 humaneval = LightevalTaskConfig(
     name="humaneval",
     prompt_function=swallow_humaneval_prompt_fn,
@@ -45,6 +45,6 @@ humaneval = LightevalTaskConfig(
     evaluation_splits=["test"],
     trust_dataset=True,
     stop_sequence=[],
-    metric=[Metrics.jhumaneval_pass_1, Metrics.jhumaneval_pass_10],
+    metric=[Metrics.humaneval_pass_1, Metrics.humaneval_pass_10],
     version=0,
 )   
