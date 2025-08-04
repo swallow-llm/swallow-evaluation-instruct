@@ -92,7 +92,11 @@ class GenerationParameters:
                     gen_params = re.sub(r"(\w+):", r'"\1":', value)
                     return json.loads(gen_params)
 
-        params: dict = parse_model_args(model_args) or {}
+        params: dict = parse_model_args(model_args) or {}        
+        stop_tokens = params.get("stop_tokens", None)
+        if isinstance(stop_tokens, str):
+            params["stop_tokens"] = stop_tokens.split(",")
+        
         return GenerationParameters(**params)
 
     def to_litellm_dict(self) -> dict:
