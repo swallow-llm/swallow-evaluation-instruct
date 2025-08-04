@@ -36,6 +36,7 @@
 | 2025/07/07 | custom_model_settings に関する追記・修正 | 齋藤 |
 | 2025/07/25 | ABCI，local での実行に関する追記・修正 | 齋藤 |
 | 2025/07/31 | 独自のreasoning parserを使うケースを追記 | 水木 |
+| 2025/08/04 | Baseモデルを無理やり評価するユースケースを追記 | 水木 |
 
 ## 1. 環境構築
 ### 1.1 評価者固有情報の登録
@@ -328,3 +329,62 @@ lighteval endpoint litellm \
 |reasoning_parser|推論過程のマークアップ|モデルの例|
 |--|--|--|
 |deepseek_r1_markup|"\<think\>,\<\/think\>"|Llama-3.1-Nemotron, MiMo-7B-RL|
+
+### 3.8 Baseモデルを無理やり評価する
+
+swallow suite に実装されているベンチマークはすべて zero-shot かつ "考えてから解く" Instructモデルを想定したスタイルになっていて，"続きを予測する" Baseモデルを想定したスタイルではありません．  
+しかしMid-trainingのように事後学習を意識した事前学習を研究・実践する場合は，Baseモデルに対しても"考えてから解く"スタイルで評価したいことがあるかもしれません．  
+このようなユースケースを想定して，Baseモデルを無理やり評価する方法を説明します．  
+ただし **停止条件を設定するのが難しい** ですし，考えてから解くスタイルの適否はモデル次第なので，性質をよく理解しているモデルの研究用途でのみ使うことをおすすめします．  
+
+Baseモデルを無理やり評価する方法は，Backendにより異なります．  
+
+vllm serve & litellm backend の場合は role:user の content を平文化する chat template `./resources/chat_template_base_model.jinja` を vllm serve の chat-template 引数に渡してください．  
+
+```
+# chat templateを持たないBaseモデル
+MODEL="Qwen/Qwen2.5-1.5B"
+HOST=localhost
+PORT=9001
+BASE_URL="http://$HOST:$PORT/v1"
+API_KEY="dummy"
+
+# vllmでホスティング
+vllm serve $MODEL \
+--chat-template ./resources/chat_template_base_model.jinja \
+--host "$HOST" \
+--port "$PORT"
+```
+
+Chat template の振る舞いを目視で確かめたい方は [Chat Template Playground](https://huggingface.co/spaces/huggingfacejs/chat-template-playground) を使ってください．  
+
+lightevalの引数はいつもどおり実行すればよいです．  
+必要ならば `generation_parameters.stop` に，カンマ区切りで停止文字列を指定できます．Ref. [LiteLLM仕様書](https://docs.litellm.ai/docs/completion/input)
+
+```
+lighteval endpoint litellm \
+    "model=hosted_vllm/$MODEL,api_key=$API_KEY,base_url=$BASE_URL,generation_parameters={stop:\"def ,__main__\"}" \
+    "swallow|swallow_jhumaneval|0|0" \
+    --output-dir "$OUTPUT_DIR" \
+    --use-chat-template
+
+# stop は str型にしているのでエスケープした二重引用符をつけてください．
+```
+
+vLLMをlightevalから直接起動する vllm backend の場合は `--use-chat-template` 引数を外してください．  
+
+```
+MODEL="Qwen/Qwen2.5-1.5B"
+MAX_MODEL_LENGTH=8192
+TEMPERATURE=0.2
+TOP_P=0.95
+
+MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,max_model_length=$MAX_MODEL_LENGTH,generation_parameters={temperature:$TEMPERATURE,top_p:$TOP_P}"
+OUTPUT_DIR=data/evals/
+
+# --use-chat-template を外す
+lighteval vllm $MODEL_ARGS \
+"swallow|swallow_jhumaneval|0|0" \
+--output-dir $OUTPUT_DIR \
+--save-details
+```
