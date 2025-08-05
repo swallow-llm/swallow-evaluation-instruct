@@ -28,7 +28,8 @@
 ## 概要
 この資料は，岡崎研の評価チームが TSUBAME4，ABCI3.0，岡崎研HPC 上で評価を行う際に参照することを想定した，内部向けのマニュアルである．
 
-## 更新履歴
+<details><summary>更新履歴</summary>
+
 | 日付 | 内容 | 担当 |
 | -- | -- | -- |
 | 2025/06/19 | 初稿 | 齋藤 |
@@ -38,6 +39,8 @@
 | 2025/07/25 | ABCI，local での実行に関する追記・修正 | 齋藤 |
 | 2025/07/31 | 独自のreasoning parserを使うケースを追記 | 水木 |
 | 2025/08/04 | Baseモデルを無理やり評価するユースケースを追記 | 水木 |
+
+</details>
 
 ## 1. 環境構築
 ### 1.1 評価者固有情報の登録
@@ -305,15 +308,18 @@ vLLMログに `Aborted request` が出力されている，またはlightevalロ
 
 ### 3.7 vLLMのreasoning_parserが対応していない推論型モデル
 
-vLLMには推論過程を除去する reasoning parser がビルトインされていますが，parserが対応していない推論型モデルはRuntimeErrorが発生します．  
+vLLMには推論過程を除去する reasoning parser がビルトインされているが，parserが対応していない推論型モデルについてはRuntimeErrorが発生する．  
 
 ```
 # --reasoning-parser=deepseek_r1 でエラーが生じた例
 RuntimeError: DeepSeek R1 reasoning parser could not locate think start/end tokens in the tokenizer!
 ```
 
-推論過程の除去はMT-Bench等で必須なので，このようにエラーが起きる推論型モデルについては我々が独自実装した parser を lighteval側で適用します．
-具体的には `vllm serve` ではなく `lighteval endpoint litellm` の MODEL_ARGS に `reasoning_parser` を指定してください．  
+推論過程の除去はMT-Bench等で必須なので，このようにエラーが起きる推論型モデルについては我々が独自実装した parser を lighteval側で適用したい． \
+具体的には `vllm serve` ではなく `lighteval endpoint litellm` の MODEL_ARGS に `reasoning_parser` を指定してほしい．  
+> 🗒️ Note: \
+> custom_model_settings では vLLM ビルトインの parsre と独自実装の parser を区別することなく指定することができる． \
+> ただし，新しい parser を追加した際には [common_fungs/classify_reasoning_parser](https://github.com/swallow-llm/swallow-evaluation-instruct-private/blob/0d91b7301f66bf46cf55424bf69d16b76c495293/scripts/qsub/common_funcs.sh#L329) に適宜反映して欲しい．
 
 ```
 # コマンドのイメージ
@@ -325,7 +331,9 @@ lighteval endpoint litellm \
 (以下略)
 ```
 
-`lighteval endpoint litellm` のparserは我々が独自実装したもので，以下のparserが利用できます．推論過程のマークアップタグを調べて適切なものを選んでください．  
+
+`lighteval endpoint litellm` のparserは我々が独自実装したもので，以下のparserが利用できる．\
+推論過程のマークアップタグを調べて適切なものを選んでほしい．  
 
 |reasoning_parser|推論過程のマークアップ|モデルの例|
 |--|--|--|
@@ -333,14 +341,15 @@ lighteval endpoint litellm \
 
 ### 3.8 Baseモデルを無理やり評価する
 
-swallow suite に実装されているベンチマークはすべて zero-shot かつ "考えてから解く" Instructモデルを想定したスタイルになっていて，"続きを予測する" Baseモデルを想定したスタイルではありません．  
-しかしMid-trainingのように事後学習を意識した事前学習を研究・実践する場合は，Baseモデルに対しても"考えてから解く"スタイルで評価したいことがあるかもしれません．  
-このようなユースケースを想定して，Baseモデルを無理やり評価する方法を説明します．  
-ただし **停止条件を設定するのが難しい** ですし，考えてから解くスタイルの適否はモデル次第なので，性質をよく理解しているモデルの研究用途でのみ使うことをおすすめします．  
+swallow suite に実装されているベンチマークはすべて zero-shot かつ "考えてから解く" Instructモデルを想定したスタイルになっていて，"続きを予測する" Baseモデルを想定したスタイルではない．\
+しかしMid-trainingのように事後学習を意識した事前学習を研究・実践する場合は，Baseモデルに対しても"考えてから解く"スタイルで評価したいことがあるかもしれない． \
+このようなユースケースを想定して，本節ではBaseモデルを無理やり評価する方法を説明する． \
+ただし **停止条件を設定するのが難しく**，また，考えてから解くスタイルの適否はモデル次第なので，性質をよく理解しているモデルの研究用途でのみ使うことをおすすめする．  
 
-Baseモデルを無理やり評価する方法は，Backendにより異なります．  
+Baseモデルを無理やり評価する方法は，Backendにより異なる．  
 
-vllm serve & litellm backend の場合は role:user の content を平文化する chat template `./resources/chat_template_base_model.jinja` を vllm serve の chat-template 引数に渡してください．  
+#### vllm serve & litellm backend の場合
+role:user の content を平文化する chat template `./resources/chat_template_base_model.jinja` を vllm serve の chat-template 引数に渡す必要がある．  
 
 ```
 # chat templateを持たないBaseモデル
@@ -357,10 +366,10 @@ vllm serve $MODEL \
 --port "$PORT"
 ```
 
-Chat template の振る舞いを目視で確かめたい方は [Chat Template Playground](https://huggingface.co/spaces/huggingfacejs/chat-template-playground) を使ってください．  
+Chat template の振る舞いを目視で確かめたい方は [Chat Template Playground](https://huggingface.co/spaces/huggingfacejs/chat-template-playground) を使ってほしい．  
 
-lightevalの引数はいつもどおり実行すればよいです．  
-必要ならば `generation_parameters.stop` に，カンマ区切りで停止文字列を指定できます．Ref. [LiteLLM仕様書](https://docs.litellm.ai/docs/completion/input)
+lightevalの引数はいつもどおりの実行をすればよい．  
+必要であれば `generation_parameters.stop` に，カンマ区切りで停止文字列を指定することもできる．Ref. [LiteLLM仕様書](https://docs.litellm.ai/docs/completion/input)
 
 ```
 lighteval endpoint litellm \
@@ -372,7 +381,8 @@ lighteval endpoint litellm \
 # stop は str型にしているのでエスケープした二重引用符をつけてください．
 ```
 
-vLLMをlightevalから直接起動する vllm backend の場合は `--use-chat-template` 引数を外してください．  
+#### vLLMをlightevalから直接起動する vllm backend の場合
+`--use-chat-template` 引数を外してほしい．  
 
 ```
 MODEL="Qwen/Qwen2.5-1.5B"
