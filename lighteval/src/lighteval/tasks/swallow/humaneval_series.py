@@ -33,8 +33,15 @@ def swallow_humaneval_prompt_fn(line, task_name: str = "humaneval") -> Doc:
         },
     )
 
+def swallow_humanevalplus_prompt_fn(line, task_name: str = "humaneval") -> Doc:
+    doc = swallow_humaneval_prompt_fn(line=line, task_name=task_name)
+    # HumanEval+はHumanEvalの約100倍のunittestがあるので，default timeout (=6 sec.)の100倍にする．
+    doc.specific["timeout"] = 600
+    return doc
+
 # Task config
 # metric は jhumaneval.py で登録済みの "humaneval_pass_{1,10}" を使用する．
+# Doc.specific.timeout で単体テストのtimeoutを指定できる．
 humaneval = LightevalTaskConfig(
     name="humaneval",
     prompt_function=swallow_humaneval_prompt_fn,
@@ -47,4 +54,18 @@ humaneval = LightevalTaskConfig(
     stop_sequence=[],
     metric=[Metrics.humaneval_pass_1, Metrics.humaneval_pass_10],
     version=0,
-)   
+)
+
+humanevalplus = LightevalTaskConfig(
+    name="humanevalplus",
+    prompt_function=swallow_humanevalplus_prompt_fn,
+    suite=["swallow"],
+    hf_repo="evalplus/humanevalplus",
+    hf_subset=None,
+    hf_avail_splits=["test"],
+    evaluation_splits=["test"],
+    trust_dataset=True,
+    stop_sequence=[],
+    metric=[Metrics.humaneval_pass_1, Metrics.humaneval_pass_10],
+    version=0,
+)
