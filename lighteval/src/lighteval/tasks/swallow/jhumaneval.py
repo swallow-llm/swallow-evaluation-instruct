@@ -61,11 +61,16 @@ def codegen_metric_passk(predictions: list[str], formatted_doc: Doc, k: int , **
     # This is a list of lists because
     evaluation_sample = [{"input_output": json.dumps(evaluation_sample)}]
 
+    # You can configure timeout via Doc.specific.timeout attribute.
+    # Default timeout is 6 seconds, which is default value for lighteval LiveCodeBench implementation.
+    DEFAULT_TIMEOUT=6
+    timeout = formatted_doc.specific.get("timeout", DEFAULT_TIMEOUT)
     metrics, results = codegen_metrics(
         evaluation_sample,
         generated_code_snippets,
         k_list=[k],
         num_process_evaluate=32,    # node_q: 32 / node_f: 160
+        timeout=timeout, 
     )
 
     # Record the results in the formatted_doc
