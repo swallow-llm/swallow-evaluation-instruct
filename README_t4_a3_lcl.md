@@ -360,11 +360,11 @@ vllm serve $MODEL \
 Chat template の振る舞いを目視で確かめたい方は [Chat Template Playground](https://huggingface.co/spaces/huggingfacejs/chat-template-playground) を使ってください．  
 
 lightevalの引数はいつもどおり実行すればよいです．  
-必要ならば `generation_parameters.stop` に，カンマ区切りで停止文字列を指定できます．Ref. [LiteLLM仕様書](https://docs.litellm.ai/docs/completion/input)
+必要ならば `generation_parameters.stop_tokens` に，カンマ区切りで停止文字列を指定できます．Ref. [LiteLLM仕様書](https://docs.litellm.ai/docs/completion/input)
 
 ```
 lighteval endpoint litellm \
-    "model=hosted_vllm/$MODEL,api_key=$API_KEY,base_url=$BASE_URL,generation_parameters={stop:\"def ,__main__\"}" \
+    "model=hosted_vllm/$MODEL,api_key=$API_KEY,base_url=$BASE_URL,generation_parameters={stop_tokens:\"def ,__main__\"}" \
     "swallow|swallow_jhumaneval|0|0" \
     --output-dir "$OUTPUT_DIR" \
     --use-chat-template
