@@ -35,8 +35,9 @@ def swallow_humaneval_prompt_fn(line, task_name: str = "humaneval") -> Doc:
 
 def swallow_humanevalplus_prompt_fn(line, task_name: str = "humaneval") -> Doc:
     doc = swallow_humaneval_prompt_fn(line=line, task_name=task_name)
-    # HumanEval+はHumanEvalの約100倍のunittestがあるので，default timeout (=6 sec.)の100倍にする．
-    doc.specific["timeout"] = 600
+    # HumanEval+はHumanEvalの約100倍のunittestがあるので，default timeout (=6 sec.)の20倍 = 120 sec.にする．
+    # 600 sec. にすると時間がかかりすぎる
+    doc.specific["timeout"] = 120
     return doc
 
 # Task config
