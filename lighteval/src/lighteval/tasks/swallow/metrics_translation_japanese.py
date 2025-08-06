@@ -67,6 +67,8 @@ def _prefixed_line_extraction_function(text: str, prefix: str,
 def _pass_through(text: str) -> List[str]:
     return [text]
 
+def _return_empty_text(text: str) -> List[str]:
+    return [""]
 
 class JapaneseTextSegmenter:
     """
@@ -244,12 +246,15 @@ def wmt20_jaen_translation_span_extractor(text: str):
 
 wmt20_enja_translation_preparator = JapaneseTranslationPreparator(
     text_extraction_function=wmt20_enja_translation_span_extractor, 
-    extraction_fallback_function=_pass_through,
+    # extraction_fallback_function=_pass_through,
+    extraction_fallback_function=_return_empty_text,
     remove_whitespace_tokens=False, lowercase=False, normalize_nfkc=False)
 
 wmt20_jaen_translation_preparator = TranslationPreparator(
     text_extraction_function=wmt20_jaen_translation_span_extractor, 
-    extraction_fallback_function=_pass_through)
+    # extraction_fallback_function=_pass_through,
+    extraction_fallback_function=_return_empty_text
+    )
 
 # 邦訳文向けBLEU
 bleu_ja = CorpusLevelMetric(
