@@ -132,7 +132,7 @@ class JapaneseTextSegmenter:
 class TranslationPreparator:
     
     def __init__(self, text_extraction_function: Callable[[str], List[str]], 
-                 extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through):
+                 extraction_fallback_function: Optional[Callable[[str], List[str]]] = _return_empty_text):
         """_summary_
         BLEUやchrFなどを計算する際に使う前処理クラス．
         翻訳スパンの抽出，文字列の正規化に対応している．
@@ -178,7 +178,7 @@ class JapaneseTranslationPreparator:
     def __init__(
         self,
         text_extraction_function: Callable[[str], List[str]],
-        extraction_fallback_function: Optional[Callable[[str], List[str]]] = _pass_through,
+        extraction_fallback_function: Optional[Callable[[str], List[str]]] = _return_empty_text,
         segmenter_type: str = "janome",
         remove_whitespace_tokens: bool = False,
         lowercase: bool = False,
@@ -246,13 +246,11 @@ def wmt20_jaen_translation_span_extractor(text: str):
 
 wmt20_enja_translation_preparator = JapaneseTranslationPreparator(
     text_extraction_function=wmt20_enja_translation_span_extractor, 
-    # extraction_fallback_function=_pass_through,
     extraction_fallback_function=_return_empty_text,
     remove_whitespace_tokens=False, lowercase=False, normalize_nfkc=False)
 
 wmt20_jaen_translation_preparator = TranslationPreparator(
     text_extraction_function=wmt20_jaen_translation_span_extractor, 
-    # extraction_fallback_function=_pass_through,
     extraction_fallback_function=_return_empty_text
     )
 
@@ -320,7 +318,7 @@ ter_en = CorpusLevelMetric(
 
 wmt20_enja_translation_preparator_nagisa = JapaneseTranslationPreparator(
     text_extraction_function=wmt20_enja_translation_span_extractor,
-    extraction_fallback_function=_pass_through,
+    extraction_fallback_function=_return_empty_text,
     segmenter_type="nagisa",
     remove_whitespace_tokens=False, lowercase=False, normalize_nfkc=False
 )
