@@ -1136,4 +1136,25 @@ AGGREGATE_CONF = [
             'task_key': 'swallow|humaneval|0'
         },
     },
+    # HumanEvalPlus
+    {
+        'display_name': 'humanevalplus_pass@1', 
+        'func': pick, 
+        'func_args': {
+            'metric_key': 'humaneval_pass@1:10'
+        }, 
+        'target': {
+            'task_key': 'swallow|humanevalplus|0'
+        },
+    },
+    {
+        'display_name': 'humanevalplus_pass@10', 
+        'func': pick, 
+        'func_args': {
+            'metric_key': 'humaneval_pass@10:10'
+        }, 
+        'target': {
+            'task_key': 'swallow|humanevalplus|0'
+        },
+    },
 ]

@@ -162,3 +162,4 @@ qsub_task en mmlu_prox
 ## Optional
 # qsub_task ja jemhopqa
 # qsub_task en humaneval
+# qsub_task en humanevalplus
