@@ -25,6 +25,7 @@ from .gpqa import gpqa_diamond_instruct_swallow
 from .aime import aime_24_swallow, aime_25_swallow
 from .math_500 import math_500_swallow
 from .lcb_swallow import lcb_swallow_tasks
+from .humaneval_series import humaneval, humanevalplus
 
 TASKS_TABLE = [
     math_100_japanese,
@@ -43,6 +44,8 @@ TASKS_TABLE = [
     math_500_swallow,
     aime_24_swallow,
     aime_25_swallow,
+    humaneval,
+    humanevalplus,
 ]
 TASKS_TABLE.extend(JMMLU_SUBSET_TASKS)
 TASKS_TABLE.extend(mmlu_prox_japanese_tasks)

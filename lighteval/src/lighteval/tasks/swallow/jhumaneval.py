@@ -61,11 +61,16 @@ def codegen_metric_passk(predictions: list[str], formatted_doc: Doc, k: int , **
     # This is a list of lists because
     evaluation_sample = [{"input_output": json.dumps(evaluation_sample)}]
 
+    # You can configure timeout via Doc.specific.timeout attribute.
+    # Default timeout is 6 seconds, which is default value for lighteval LiveCodeBench implementation.
+    DEFAULT_TIMEOUT=6
+    timeout = formatted_doc.specific.get("timeout", DEFAULT_TIMEOUT)
     metrics, results = codegen_metrics(
         evaluation_sample,
         generated_code_snippets,
         k_list=[k],
         num_process_evaluate=32,    # node_q: 32 / node_f: 160
+        timeout=timeout, 
     )
 
     # Record the results in the formatted_doc
@@ -77,11 +82,12 @@ def codegen_metric_passk(predictions: list[str], formatted_doc: Doc, k: int , **
 
 
 ## Create metrics for different k values
+## HumanEvalでも同じmetricを使うので "humaneval_pass@{k}" というnamingにした．
 NUM_SAMPLES = 10
 
 codegen_metric_passk_1 = partial(codegen_metric_passk, k=1)
 jhumaneval_pass_1 = SampleLevelMetric(
-    metric_name=f"jhumaneval_pass@1:{NUM_SAMPLES}",
+    metric_name=f"humaneval_pass@1:{NUM_SAMPLES}",
     category=MetricCategory.GENERATIVE_SAMPLING,
     use_case=MetricUseCase.REASONING,
     higher_is_better=True,
@@ -91,7 +97,7 @@ jhumaneval_pass_1 = SampleLevelMetric(
 
 codegen_metric_passk_10 = partial(codegen_metric_passk, k=10)
 jhumaneval_pass_10 = SampleLevelMetric(
-    metric_name=f"jhumaneval_pass@10:{NUM_SAMPLES}",
+    metric_name=f"humaneval_pass@10:{NUM_SAMPLES}",
     category=MetricCategory.GENERATIVE_SAMPLING,
     use_case=MetricUseCase.REASONING,
     higher_is_better=True,
@@ -100,8 +106,9 @@ jhumaneval_pass_10 = SampleLevelMetric(
 )
 
 ## Register both metrics
-extend_enum(Metrics, "jhumaneval_pass_1", jhumaneval_pass_1)
-extend_enum(Metrics, "jhumaneval_pass_10", jhumaneval_pass_10) 
+## HumanEvalでも同じmetricを使うので "humaneval_pass_{k}" というnamingにした．
+extend_enum(Metrics, "humaneval_pass_1", jhumaneval_pass_1)
+extend_enum(Metrics, "humaneval_pass_10", jhumaneval_pass_10) 
 
 
 # Task table
@@ -115,6 +122,6 @@ jhumaneval = LightevalTaskConfig(
     evaluation_splits=["test"],
     trust_dataset=True,
     stop_sequence=[],
-    metric=[Metrics.jhumaneval_pass_1, Metrics.jhumaneval_pass_10],
+    metric=[Metrics.humaneval_pass_1, Metrics.humaneval_pass_10],
     version=0,
 )   

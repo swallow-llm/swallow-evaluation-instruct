@@ -107,6 +107,8 @@ ligiteval の `--tasks` として指定できるように [lighteval/tasks/swall
 * MMLU-ProX: `swallow|mmlu_prox_english`
 * MMLU: `swallow|mmlu_english`
     * 既存実装 `helm|mmlu` は選択肢だけ出力する短答を想定した実装になっている（Ref. [コード](https://github.com/swallow-llm/swallow-evaluation-instruct-private/blob/main/lighteval/src/lighteval/tasks/default_tasks.py#L10310)）ので，"考えてから回答する"スタイルで実装し直したもの．  
+* HumanEval: `swallow|humaneval`
+* HumanEval+: `swallow|humanevalplus`
 
 MMLU, MMLU-Pro, MMLU-ProX はタスクIDが似ていますので取り違えに注意してください．  
 
