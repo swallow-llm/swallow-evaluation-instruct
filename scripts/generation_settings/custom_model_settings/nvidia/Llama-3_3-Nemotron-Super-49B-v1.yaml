@@ -7,3 +7,13 @@ non_reasoning:
   system_message: "detailed thinking off"
   version: "1"
 
+
+# 水木さんが作成したreasoning parserを使った設定
+# この設定はreasoning_parserとしてdeepseek_r1を使用した際に、
+#DeepSeek R1 reasoning parser could not locate think start/end tokens in the tokenizer!
+#というエラーが出るため、reasoning_parserを独自のdeepseek_r1_markupに変更している。
+deepseek_r1_markup:
+  system_message: "detailed thinking on"
+  reasoning_parser: "deepseek_r1_markup"
+  version: "1"
+  
