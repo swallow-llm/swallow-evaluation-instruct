@@ -141,6 +141,8 @@ class LiteLLMClient(LightevalModel):
         )
         self.model = config.model
         self.provider = config.provider or config.model.split("/")[0]
+        if self.provider not in {"deepinfra", "hosted_vllm"}:
+            self.provider = "openai"
         self.base_url = config.base_url
         self.api_key = config.api_key
         self.reasoning_parser = config.reasoning_parser
@@ -227,8 +229,8 @@ class LiteLLMClient(LightevalModel):
                     "caching": False,
                     "api_key": self.api_key,
                 }
-                if self.provider == "openai" and ("o1" in self.model or "o3" in self.model or "o4" in self.model):
-                    logger.warning("O* models do not support temperature, top_p, stop sequence. Disabling.")
+                if self.provider == "openai" and ("o1" in self.model or "o3" in self.model or "o4" in self.model or "gpt-5" in self.model):
+                    logger.warning("O* models and gpt-5 do not support temperature, top_p, stop sequence. Disabling.")
                 else:
                     kwargs.update(self.generation_parameters.to_litellm_dict())
 
