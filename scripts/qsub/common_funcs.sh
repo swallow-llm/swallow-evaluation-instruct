@@ -263,57 +263,70 @@ get_generation_params(){
     GEN_PARAMS=$(printf '%s\n' "${rest[@]}")
 
 
-    # Check metadata
-    readarray -t results < <(uv run --isolated --project ${REPO_PATH}  --locked --extra auto_detector python "${GENERATION_SETTINGS_DIR}/check_metadata.py" --model_id "$MODEL_NAME")
+    if [[ $PROVIDER == "vllm" ]]; then
+        # Check metadata
+        readarray -t results < <(uv run --isolated --project ${REPO_PATH}  --locked --extra auto_detector python "${GENERATION_SETTINGS_DIR}/check_metadata.py" --model_id "$MODEL_NAME")
+        
+        ## Accept results
+        local MAX_MODEL_LENGTH_AUTO_DETECTED=${results[0]}
+        local HAS_THINK_TAG=${results[1]}
     
-    ## Accept results
-    local MAX_MODEL_LENGTH_AUTO_DETECTED=${results[0]}
-    local HAS_THINK_TAG=${results[1]}
 
-    ## Set max model length if not specified
-    if [[ $MAX_MODEL_LENGTH_MANUALLY_SPECIFIED == "-1" ]]; then
-        echo "🤖 (Auto-detected) MAX_MODEL_LENGTH: ${MAX_MODEL_LENGTH_AUTO_DETECTED}"
-        MAX_MODEL_LENGTH="${MAX_MODEL_LENGTH_AUTO_DETECTED}"
+        ## Set max model length if not specified
+        if [[ $MAX_MODEL_LENGTH_MANUALLY_SPECIFIED == "-1" ]]; then
+            echo "🤖 (Auto-detected) MAX_MODEL_LENGTH: ${MAX_MODEL_LENGTH_AUTO_DETECTED}"
+            MAX_MODEL_LENGTH="${MAX_MODEL_LENGTH_AUTO_DETECTED}"
+        else
+            echo "🖐️ (Manually specified) MAX_MODEL_LENGTH: ${MAX_MODEL_LENGTH_MANUALLY_SPECIFIED}"
+            MAX_MODEL_LENGTH="${MAX_MODEL_LENGTH_MANUALLY_SPECIFIED}"
+        fi
+
+        ## Set reasoning-tag parameter
+        if [[ "$HAS_THINK_TAG" == "true" ]]; then
+            echo "🤖 (Auto-detected) The specified model has reasoning-tag in its vocabulary."
+            case "${REASONING_PARSER}" in
+                "ignore")
+                    echo "✅ The specified model may support reasoning-tag, but it is ignored. No reasoning-parser will be used."
+                    REASONING_PARSER_FOR_VLLM=""; REASONING_PARSER_FOR_LIGHTEVAL=""
+                    ;;
+                "")
+                    echo "💀 Error: The specified model may support reasoning-tag, but no reasoning-parser is specified. Please specify a reasoning-parser(, or set REASONING_PARSER=ignore if you do not want to use reasoning-tag)."
+                    exit 1
+                    ;;
+                *)
+                    echo "✅ Reasoning-parser: ${REASONING_PARSER} will be used."
+                    classify_reasoning_parser "$REASONING_PARSER"
+                    ;;
+            esac
+        else
+            echo "🤖 (Auto-detected) The specified model does not have reasoning-tag in its vocabulary."
+            case "${REASONING_PARSER}" in
+                "ignore")
+                    echo "✅ No reasoning-parser will be used. (You do not have to specify reasoning_parser=ignore in this case. Please unset reasoning_parser in the YAML file to make it clear.)"
+                    REASONING_PARSER_FOR_VLLM=""; REASONING_PARSER_FOR_LIGHTEVAL=""
+                    ;;
+                "")
+                    echo "✅ No reasoning-parser will be used."
+                    REASONING_PARSER_FOR_VLLM=""; REASONING_PARSER_FOR_LIGHTEVAL=""
+                    ;;
+                *)
+                    echo "⚠️ Warning: The specified model may not support reasoning-tag, but '${REASONING_PARSER}' is specified and will be used. This may cause an error or unexpected behavior."
+                    classify_reasoning_parser "$REASONING_PARSER"
+                    ;;
+            esac
+        fi
     else
-        echo "🖐️ (Manually specified) MAX_MODEL_LENGTH: ${MAX_MODEL_LENGTH_MANUALLY_SPECIFIED}"
-        MAX_MODEL_LENGTH="${MAX_MODEL_LENGTH_MANUALLY_SPECIFIED}"
+        # For other providers, skip auto-detection because it is not supported.
+        if [[ $MAX_MODEL_LENGTH_MANUALLY_SPECIFIED == "-1" ]]; then
+            echo "🤖 (Default) MAX_MODEL_LENGTH: unknown (no auto-detection for provider: $PROVIDER)"
+            MAX_MODEL_LENGTH="-1"
+        else
+            echo "🖐️ (Manually specified) MAX_MODEL_LENGTH: ${MAX_MODEL_LENGTH_MANUALLY_SPECIFIED}"
+            MAX_MODEL_LENGTH="${MAX_MODEL_LENGTH_MANUALLY_SPECIFIED}"
+        fi
+        REASONING_PARSER_FOR_VLLM=""
+        REASONING_PARSER_FOR_LIGHTEVAL=""
     fi
-
-    ## Set reasoning-tag parameter
-    if [[ "$HAS_THINK_TAG" == "true" ]]; then
-        echo "🤖 (Auto-detected) The specified model has reasoning-tag in its vocabulary."
-        case "${REASONING_PARSER}" in
-            "ignore")
-                echo "✅ The specified model may support reasoning-tag, but it is ignored. No reasoning-parser will be used."
-                REASONING_PARSER_FOR_VLLM=""; REASONING_PARSER_FOR_LIGHTEVAL=""
-                ;;
-            "")
-                echo "💀 Error: The specified model may support reasoning-tag, but no reasoning-parser is specified. Please specify a reasoning-parser(, or set REASONING_PARSER=ignore if you do not want to use reasoning-tag)."
-                exit 1
-                ;;
-            *)
-                echo "✅ Reasoning-parser: ${REASONING_PARSER} will be used."
-                classify_reasoning_parser "$REASONING_PARSER"
-                ;;
-        esac
-    else
-        echo "🤖 (Auto-detected) The specified model does not have reasoning-tag in its vocabulary."
-        case "${REASONING_PARSER}" in
-            "ignore")
-                echo "✅ No reasoning-parser will be used. (You do not have to specify reasoning_parser=ignore in this case. Please unset reasoning_parser in the YAML file to make it clear.)"
-                REASONING_PARSER_FOR_VLLM=""; REASONING_PARSER_FOR_LIGHTEVAL=""
-                ;;
-            "")
-                echo "✅ No reasoning-parser will be used."
-                REASONING_PARSER_FOR_VLLM=""; REASONING_PARSER_FOR_LIGHTEVAL=""
-                ;;
-            *)
-                echo "⚠️ Warning: The specified model may not support reasoning-tag, but '${REASONING_PARSER}' is specified and will be used. This may cause an error or unexpected behavior."
-                classify_reasoning_parser "$REASONING_PARSER"
-                ;;
-        esac
-    fi
-
 
     # Prepare optional arguments for lighteval
     OPTIONAL_ARGS_FOR_LIGHTEVAL=()
