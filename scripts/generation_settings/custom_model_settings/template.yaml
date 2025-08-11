@@ -8,6 +8,7 @@
 # - max_n
 # - reasoning_parser (Set a proper parser if the model supports reasoning tags. Available parsers: https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)
 # - vllm_use_v1 (This option will be deprecated. Please don't use it. Official documentation: https://docs.vllm.ai/en/stable/configuration/env_vars.html)
+# - reasoning_effort (Hint to the model about how much reasoning it should do before answering. only available on specific models (e.g., OpenAI O3 families).)
 
 # 'version' is the version of the custom settings.
 # You should update this value if you make any changes to the settings.
