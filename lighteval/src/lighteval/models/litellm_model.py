@@ -227,8 +227,8 @@ class LiteLLMClient(LightevalModel):
                     "caching": False,
                     "api_key": self.api_key,
                 }
-                if self.provider == "openai" and ("o1" in self.model or "o3" in self.model or "o4" in self.model):
-                    logger.warning("O* models do not support temperature, top_p, stop sequence. Disabling.")
+                if self.provider == "openai" and ("o1" in self.model or "o3" in self.model or "o4" in self.model or "gpt-5" in self.model):
+                    logger.warning("O* models and gpt-5 do not support temperature, top_p, stop sequence. Disabling.")
                 else:
                     kwargs.update(self.generation_parameters.to_litellm_dict())
 
@@ -240,7 +240,7 @@ class LiteLLMClient(LightevalModel):
 
                 if kwargs.get("max_completion_tokens", None) is None:
                     kwargs["max_completion_tokens"] = max_new_tokens
-
+                
                 response = litellm.completion(**kwargs, timeout=litellm.DEFAULT_REQUEST_TIMEOUT)
 
                 # If response content is null, replace with empty string

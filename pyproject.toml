@@ -23,6 +23,7 @@ lighteval = [
     "transformers>=4.51.0,<4.53.0", # Set the floor to allow evaluation of the latest models; Set the ceiling to avoid collapsing Gemma3's generation.
     "openai>=1.40.0", # Set the floor to avoid using deprecated names.
     "datasets<4.0.0", # Set the ceiling to avoid errors due to breaking changes
+    "litellm>1.75.4", # Set for using gpt-5 models
 ]
 
 vllm = [
