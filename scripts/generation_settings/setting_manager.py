@@ -51,13 +51,9 @@ class SettingManager:
                 model_name = yaml_file.stem
                 with open(yaml_file, "r") as f:
                     settings = yaml.load(f, Loader=yaml.FullLoader)
-                if publisher_name != 'openai':
-                    self.custom_model_settings[f"{publisher_name}_{model_name}"] = settings
-                    self.custom_model_settings_paths[f"{publisher_name}_{model_name}"] = yaml_file
-                else:
-                    self.custom_model_settings[f"{model_name}"] = settings
-                    self.custom_model_settings_paths[f"{model_name}"] = yaml_file
-                    
+
+                self.custom_model_settings[f"{publisher_name}_{model_name}"] = settings
+                self.custom_model_settings_paths[f"{publisher_name}_{model_name}"] = yaml_file
 
         # load task config (csv file)
         self.task_config_path = task_config_path
