@@ -241,7 +241,6 @@ class LiteLLMClient(LightevalModel):
                 if kwargs.get("max_completion_tokens", None) is None:
                     kwargs["max_completion_tokens"] = max_new_tokens
                 
-                logger.info(f"litellm completion: {kwargs}")
                 response = litellm.completion(**kwargs, timeout=litellm.DEFAULT_REQUEST_TIMEOUT)
 
                 # If response content is null, replace with empty string
