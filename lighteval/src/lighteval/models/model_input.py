@@ -44,7 +44,8 @@ class GenerationParameters:
     top_p: Optional[int] = None  # vllm, transformers, tgi, litellm, sglang
     truncate_prompt: Optional[bool] = None  # vllm, tgi
 
-    # OpenAI o3 など reasoning_effort をサポートするモデル用
+    # OpenAI o3 など reasoning_effort をサポートするモデル用．
+    # litellm backend の場合は litellm.completion(), vLLM backend の場合は tokenizer.apply_chat_template() に引き渡す．
     reasoning_effort: Optional[str] = None  # openai o3 など
 
     # response format to be followed by the model,

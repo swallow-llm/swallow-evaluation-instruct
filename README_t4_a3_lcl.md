@@ -399,3 +399,28 @@ lighteval vllm $MODEL_ARGS \
 --output-dir $OUTPUT_DIR \
 --save-details
 ```
+
+### 推論型モデルの reasoning effort を指定する
+
+「どのくらい深く考えるか」を制御できるo3のような推論型モデルは `generation_parameters.reasoning_effort` に `low,middle,high` などの値を指定できます．  
+ただし reasoning_effort は以下のユースケースのみ対応しています．  
+
+1. litellm で外部ProviderのAPI (例： OpenAI API) を指定する場合
+2. lighteval から vLLM を直接起動する `litellm vllm` で実行する場合
+
+gpt-oss のようなモデルを `vllm serve` でセルフホストする場合は `reasoning_effort` は指定できません．  
+
+使用例は以下のとおりです．  
+
+```
+# OpenAI API で o3 を評価
+
+API_KEY="{OpenAI APIキー}"
+BASE_URL="https://api.openai.com/v1/"
+MODEL="openai/o3-2025-04-16"
+
+lighteval endpoint litellm \
+"model=$MODEL,api_key=$API_KEY,base_url=$BASE_URL,generation_parameters={reasoning_effort:\"high\"}" \
+"swallow|gpqa:diamond|0|0" \
+--output-dir "$OUTPUT_DIR"
+```
