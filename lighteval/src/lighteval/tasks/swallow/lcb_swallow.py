@@ -50,6 +50,7 @@ def lcb_codegeneration_prompt_fn(line, task_name: str = "lcb:codegeneration") ->
             "inputs": inputs,
             "outputs": outputs,
             "fn_name": json.loads(line["metadata"]).get("func_name", None),
+            "timeout": 60
         },
     )
 
@@ -82,11 +83,16 @@ def codegen_metric_passk(predictions: list[str], formatted_doc: Doc, k: int , **
     # This is a list of lists because
     evaluation_sample = [{"input_output": json.dumps(evaluation_sample)}]
     
+    # You can configure timeout via Doc.specific.timeout attribute.
+    # Default timeout is 6 seconds, which is default value for lighteval LiveCodeBench implementation.
+    DEFAULT_TIMEOUT=6
+    timeout = formatted_doc.specific.get("timeout", DEFAULT_TIMEOUT)
     metrics, results = codegen_metrics(
         evaluation_sample,
         generated_code_snippets,
         k_list=[k],
         num_process_evaluate=8,
+        timeout=timeout,
     )
     
     # Save results in the formatted_doc

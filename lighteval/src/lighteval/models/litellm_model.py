@@ -237,12 +237,13 @@ class LiteLLMClient(LightevalModel):
                     if getattr(self.generation_parameters, "reasoning_effort", None) is not None:
                         kwargs["reasoning_effort"] = self.generation_parameters.reasoning_effort
                         logger.info(f"Set reasoning_effort: {self.generation_parameters.reasoning_effort}")
+                    if getattr(self.generation_parameters, "max_new_tokens", None) is not None:
+                        kwargs["max_completion_tokens"] = self.generation_parameters.max_new_tokens
 
                 if kwargs.get("max_completion_tokens", None) is None:
                     kwargs["max_completion_tokens"] = max_new_tokens
                 
-                logger.info(f"litellm completion: {kwargs}")
-                response = litellm.completion(**kwargs, timeout=litellm.DEFAULT_REQUEST_TIMEOUT)
+                response = litellm.completion(**kwargs, timeout=litellm.DEFAULT_REQUEST_TIMEOUT)                
 
                 # If response content is null, replace with empty string
                 if response is not None:
@@ -261,7 +262,13 @@ class LiteLLMClient(LightevalModel):
                         if choice.message.content is None:
                             logger.info("Response is empty, replacing with reasoning content.")
                             choice.message.content = replace_none_content_with_reasoning_content(choice.message)
-                            
+                
+                # DEBUG
+                for choice in response.choices:                    
+                    logger.info(f"finish reason: {choice.finish_reason}")
+                    if choice.finish_reason == "length":
+                        logger.info(f"Response length exceeded: {choice.message.content}")
+
                 return response
             except litellm.BadRequestError as e:
                 logger.error(f"BadRequestError in API call: {e}")
