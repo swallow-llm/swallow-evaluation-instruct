@@ -141,8 +141,6 @@ class LiteLLMClient(LightevalModel):
         )
         self.model = config.model
         self.provider = config.provider or config.model.split("/")[0]
-        if self.provider not in {"deepinfra", "hosted_vllm"}:
-            self.provider = "openai"
         self.base_url = config.base_url
         self.api_key = config.api_key
         self.reasoning_parser = config.reasoning_parser
@@ -242,7 +240,8 @@ class LiteLLMClient(LightevalModel):
 
                 if kwargs.get("max_completion_tokens", None) is None:
                     kwargs["max_completion_tokens"] = max_new_tokens
-
+                
+                logger.info(f"litellm completion: {kwargs}")
                 response = litellm.completion(**kwargs, timeout=litellm.DEFAULT_REQUEST_TIMEOUT)
 
                 # If response content is null, replace with empty string
