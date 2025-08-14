@@ -153,3 +153,91 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) をク
 * 評価尺度：Pass@1, Pass@10 (N=10) [Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
 * 派生版：`swallow|lcb:codegeneration_{リリースID}` を指定することで評価を行うリリースを変更できます．  
   リリースIDの記法は LiveCodeBench公式実装 [LiveCodeBench/LiveCodeBench](https://github.com/LiveCodeBench/LiveCodeBench) を参照してください．
+
+### MMLU
+一般教養を問う 4 値選択式の英語設問で構成されるベンチマークです。
+JMMLUと同じく、商用利用禁止の 3 科目を除く 53 科目について，科目別・カテゴリ別・全体の正解率を算出します．科目カテゴリは STEM／社会科学／人文科学／その他の 4 種類です．
+
+* タスク分類：一般教養
+* 出典：[Hendrycks et al.](https://openreview.net/forum?id=d7KBjmI3GmQ)
+* lightevalタスクID：`swallow|mmlu_english`
+* データセット：[lighteval/mmlu](https://huggingface.co/datasets/lighteval/mmlu)
+* 設問数：14,042問
+* CoTプロンプト：あり
+* 評価尺度：正解率．
+
+### MMLU-Pro
+MMLUをクリーニングし、高難易度の設問を追加したベンチマークです。
+出題形式は多肢選択式で，最大で 10 件の選択肢が提示されます．
+
+* タスク分類：一般教養
+* 出典：[Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3)
+* lightevalタスクID：`swallow|mmlu_pro_english`
+* データセット：[TIGER-Lab/MMLU-Pro](https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro)
+* 設問数：12,032問
+* CoTプロンプト：あり
+* 評価尺度：正解率．
+
+### GPQA(Diamond)
+博士課程レベルの科学問題を集めたベンチマーク GPQA のうち、高品質かつ高難易度な設問を抽出したDiamondサブセットです。
+出題形式は多肢選択式です。
+
+* タスク分類：科学
+* 出典：[Rein et al. (2024)](https://openreview.net/forum?id=Ti67584b98)
+* lightevalタスクID：`swallow|gpqa:diamond`
+* データセット：[Idavidrein/gpqa](https://huggingface.co/datasets/Idavidrein/gpqa)
+* 設問数：198問
+* CoTプロンプト：あり
+* 評価尺度：正解率．
+
+### MATH-500
+数学能力を問うベンチマークです。
+高校の競技数学レベルの問題で構成されたMATHデータセット [Hendrycks et al. (2021)](https://openreview.net/forum?id=7Bywt2mQsCe) のtestスプリットからランダムに抽出された500問の設問で構成されます。
+
+* タスク分類：数学
+* 出典：[Lightman et al. (2024)](https://openreview.net/forum?id=v8L0pN6EOi)
+* lightevalタスクID：`swallow|math_500`
+* データセット：[HuggingFaceH4/MATH-500](https://huggingface.co/datasets/HuggingFaceH4/MATH-500)
+* 設問数：500問
+* CoTプロンプト：あり
+* 評価尺度：正解率．
+
+### AIME 24–25
+高難易度な数学能力をとうベンチマークです。
+AIME (American Invitational Mathematics Exam) の2024, 2025年の設問で構成されます。
+
+* タスク分類：数学
+* 出典：（**わかりません**）
+* lightevalタスクID：`swallow|aime`
+* データセット：
+  * 2024年：[HuggingFaceH4/aime_2024](https://huggingface.co/datasets/HuggingFaceH4/aime_2024)
+  * 2025年：[yentinglin/aime_2025](https://huggingface.co/datasets/yentinglin/aime_2025)
+* 設問数：60問
+* CoTプロンプト：あり
+* 評価尺度：正解率．
+
+### HumanEval
+コード生成能力を評価するベンチマークです。
+
+* タスク分類：コード生成
+* 出典：[Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
+* lightevalタスクID：`swallow|humaneval`
+* データセット：[openai/openai_humaneval](https://huggingface.co/datasets/openai/openai_humaneval)
+* 設問数：164問
+* CoTプロンプト：なし
+* 推奨設定：temperature=0.2, top-p=0.95 [Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
+* 評価尺度：Pass@1 (N=10)（[Chen et al. (2021)](https://arxiv.org/abs/2107.03374) の不偏推定式に従う）．
+
+### HumanEval+
+（**わかりません**）（そもそも平均に含めないベンチマークなので書く必要がない？）
+
+### MT-Bench
+対話能力を評価するベンチマークです。
+
+* タスク分類：オープンエンド対話
+* 出典：[Zheng et al. (2023)](https://openreview.net/forum?id=uccHPGDlao)
+* データセット：[FastChat/fastchat/llm_judge/data/mt_bench](https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge/data/mt_bench)
+* lightevalタスクID：`swallow|english_mt_bench`
+* 設問数：80問×2ターン
+* CoTプロンプト：なし
+* 評価尺度：5 回の試行（応答）を LLM-as-a-Judge により 1〜10 のスケールで採点し，平均値を採用．審判（judge）は `gpt-4o-2024-08-06` を用います．
