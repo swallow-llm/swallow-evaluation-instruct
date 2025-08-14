@@ -115,7 +115,7 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) をク
 * データセット：
 * 設問数：164問
 * CoTプロンプト：なし
-* 推奨設定：temperature=0.2, top-p=0.95
+* 推奨設定：temperature=0.2, top-p=0.95 [Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
 * 評価尺度：Pass@1 (N=10)（[Chen et al. (2021)](https://arxiv.org/abs/2107.03374) の不偏推定式に従う）．
 
 ### Japanese MT-Bench
