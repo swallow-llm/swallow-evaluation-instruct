@@ -12,6 +12,7 @@ SUPPORTED_PARAMS = [
     "max_n",
     "reasoning_parser",
     "vllm_use_v1",
+    "reasoning_effort"
 ]
 
 CONFIG_YAML_PARAMETERS = [
@@ -21,6 +22,7 @@ CONFIG_YAML_PARAMETERS = [
     "temperature",
     "top_p",
     "max_n",
+    "reasoning_effort",
 ]
 
 SHELL_OUTPUT_PARAMETERS = {
@@ -49,6 +51,7 @@ class SettingManager:
                 model_name = yaml_file.stem
                 with open(yaml_file, "r") as f:
                     settings = yaml.load(f, Loader=yaml.FullLoader)
+
                 self.custom_model_settings[f"{publisher_name}_{model_name}"] = settings
                 self.custom_model_settings_paths[f"{publisher_name}_{model_name}"] = yaml_file
 

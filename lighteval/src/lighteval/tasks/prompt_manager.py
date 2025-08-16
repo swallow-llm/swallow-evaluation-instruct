@@ -159,14 +159,24 @@ class PromptManager:
         contexts = []
         offset = 2 if system_prompt is not None else 1
         for i in range(0, len(role_content_list), offset + 1):
-            if  type(self.model) in [LiteLLMClient, InferenceProvidersClient]:
+            if type(self.model) in [LiteLLMClient, InferenceProvidersClient]:
                 c = role_content_list[: i + offset]
             else:
+                if self.model.__class__.__name__ == "VLLMModel":
+                    optional_kwargs = self.model._config.chat_template_kwargs()
+                else:
+                    optional_kwargs = {}
                 c = self.model.tokenizer.apply_chat_template(
-                    role_content_list[: i + offset], add_generation_prompt=True, tokenize=False, add_special_tokens=False
+                    role_content_list[: i + offset],
+                    add_generation_prompt=True, tokenize=False, add_special_tokens=False,
+                    **optional_kwargs
                 )
             contexts.append(c)
 
+        if doc.specific is None:
+            doc.specific = {"apply_result": contexts}
+        else:
+            doc.specific["apply_result"] = contexts
 
         return contexts, 0
 
@@ -243,8 +253,12 @@ class PromptManager:
             return output, num_effective_fewshots
 
         elif use_chat_template:
+            if self.model.__class__.__name__ == "VLLMModel":
+                optional_kwargs = self.model._config.chat_template_kwargs()
+            else:
+                optional_kwargs = {}
             return self.model.tokenizer.apply_chat_template(
-                output, tokenize=False, add_generation_prompt=True
+                output, tokenize=False, add_generation_prompt=True, **optional_kwargs
             ), num_effective_fewshots
 
         return output, num_effective_fewshots

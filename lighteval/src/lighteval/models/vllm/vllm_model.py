@@ -110,6 +110,17 @@ class VLLMModelConfig:
         if not self.generation_parameters:
             self.generation_parameters = GenerationParameters()
 
+    def chat_template_kwargs(self):
+        """Optional kwargs for tokenizer.apply_chat_template"""
+        arg_names = ("reasoning_effort",)
+        kwargs = {}
+        for name in arg_names:
+            value = getattr(self.generation_parameters, name, None)
+            kwargs[name] = value
+        # Noneのものは除外
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        return kwargs
+
 
 class VLLMModel(LightevalModel):
     def __init__(

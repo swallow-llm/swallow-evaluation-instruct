@@ -8,6 +8,7 @@
 # - max_n
 # - reasoning_parser (Set a proper parser if the model supports reasoning tags. Available parsers: https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)
 # - vllm_use_v1 (This option will be deprecated. Please don't use it. Official documentation: https://docs.vllm.ai/en/stable/configuration/env_vars.html)
+# - reasoning_effort: (For the litellm backend, this value is passed to litellm.completion(reasoning_effort=...). For the vLLM backend, it is passed to tokenizer.apply_chat_template(). Unsupported models will either raise an error or ignore this parameter.)
 
 # 'version' is the version of the custom settings.
 # You should update this value if you make any changes to the settings.
