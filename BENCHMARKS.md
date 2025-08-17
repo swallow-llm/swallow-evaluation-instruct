@@ -20,7 +20,8 @@ Swallowチームが実装したベンチマークの一覧は `lighteval tasks l
 * タスク分類：マルチホップ質問応答
 * 出典：[Ishii et al. (2024)](https://aclanthology.org/2024.lrec-main.831/)
 * lightevalタスクID：`swallow|jemhopqa_cot`
-* データセット：[tokyotech-llm/JEMHopQA](https://huggingface.co/datasets/tokyotech-llm/JEMHopQA)
+* データセット：[tokyotech-llm/JEMHopQA](https://huggingface.co/datasets/tokyotech-llm/JEMHopQA), [オリジナル](https://github.com/aiishii/JEMHopQA)
+* ライセンス：CC BY-SA 4.0
 * 設問数：120問
 * Chain-of-Thought (CoT) プロンプト：あり
 * 評価尺度：正規化後の文字F1 (f1_score_quasi)
@@ -38,6 +39,7 @@ Swallowチームが実装したベンチマークの一覧は `lighteval tasks l
 * 出典：[Huang et al. (2025)](https://arxiv.org/abs/2502.07346)
 * lightevalタスクID：`swallow|swallow_gpqa_ja`
 * データセット：[LLaMAX/BenchMAX_Science](https://huggingface.co/datasets/LLaMAX/BenchMAX_Science)
+* ライセンス：CC BY 4.0
 * 設問数：448問
 * CoTプロンプト：あり
 * 評価尺度：正解率
@@ -46,10 +48,18 @@ Swallowチームが実装したベンチマークの一覧は `lighteval tasks l
 「箇条書きにせよ」のような検証可能な指示を用いて対話における指示追従性を評価するベンチマーク IFEval [Zeng et al. (2024)](https://openreview.net/forum?id=tr0KidwPLc) の日本語ローカライズ版です．  
 単なる邦訳ではなく「漢字にふりがなをつけよ」のような日本語の表記に特有の指示が含まれています．
 
-* タスク分類：指示追従
+* タスク分類：オープンエンド対話の指示追従
+* 出典：[Dussolle et al. (2025)](https://aclanthology.org/2025.findings-naacl.344/), [実装](https://github.com/lightblue-tech/M-IFEval)
+* lightevalタスクID：`swallow|mifeval_ja`
+* データセット：[tokyotech-llm/M-IFEval-Ja](https://huggingface.co/datasets/tokyotech-llm/M-IFEval-Ja), [オリジナル](https://github.com/lightblue-tech/M-IFEval)
+* ライセンス：Apache License Version 2.0 [(LICENSE)](./lighteval/src/lighteval/tasks/swallow/mifeval_ja/LICENSE.txt)
 * 設問数：172問，226指示
-* 評価尺度：設問レベルの正解率 (instruct_level_strict_accuracy)
+* 評価尺度：指示レベルの正解率 (instruct_level_strict_accuracy)
 * その他の評価尺度
+    * 設問レベルの正解率：prompt_level_strict_accuracy
+    * 正規化後の指示レベルの正解率：instruct_level_loose_accuracy
+    * 正規化後の設問レベルの正解率：prompt_level_loose_accuracy
+* その他：言語判定器の初期化を除き，出典の実装を忠実に再現しています．  
 
 ### WMT20 英日翻訳
 ニュース記事の翻訳を行うベンチマーク WMT20 [Barrault et al. (2020)](https://aclanthology.org/2020.wmt-1.1/) の英日翻訳サブセットです．
@@ -112,25 +122,31 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) をク
 * タスク分類：コード生成
 * 出典：[佐藤ら (2024)](https://www.anlp.jp/proceedings/annual_meeting/2024/pdf_dir/P10-9.pdf)
 * lightevalタスクID：`swallow|swallow_jhumaneval`
-* データセット：
+* データセット：[kogi-jwu/jhumaneval](https://huggingface.co/datasets/kogi-jwu/jhumaneval)
 * 設問数：164問
 * CoTプロンプト：なし
 * 推奨設定：temperature=0.2, top-p=0.95 [Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
-* 評価尺度：Pass@1 (N=10)（[Chen et al. (2021)](https://arxiv.org/abs/2107.03374) の不偏推定式に従う）．
+* 評価尺度：Pass@1, Pass@10 (N=10)（[Chen et al. (2021)](https://arxiv.org/abs/2107.03374) の不偏推定式に従う）．
 
 ### Japanese MT-Bench
-対話能力を評価するベンチマーク MT-Bench [Zheng et al. (2023)](https://openreview.net/forum?id=uccHPGDlao) の邦訳版です．
+オープンエンド対話における有用性を評価するベンチマーク MT-Bench [Zheng et al. (2023)](https://openreview.net/forum?id=uccHPGDlao) の日本語ローカライズ版です．
 
 * タスク分類：オープンエンド対話
-* 出典：[wandb-japan, llm-leaderboad](https://wandb.ai/wandb-japan/llm-leaderboard/artifacts/dataset/mtbench_en_referenceanswer/v0)（**これで良いのか自信がないです**）
-* データセット：[wandb-japan/llm-leaderboard](https://wandb.ai/wandb-japan/llm-leaderboard/artifacts/dataset/mtbench_en_referenceanswer/v0)  
-  * 採点プロンプト：`mtbench_ja_prompt:v1`
-  * 設問：`mtbench_ja_question:v4`
-  * 模範解答：`mtbench_ja_referenceanswer:v2` を Swallow チームで独自に校閲したデータ
+* 出典：Stability AI Japan, [Japanese MT-Bench](https://github.com/Stability-AI/FastChat)
 * lightevalタスクID：`swallow|japanese_mt_bench`
+* データセット：[tokyotech-llm/swallow_japanese_mt_bench](https://huggingface.co/datasets/tokyotech-llm/swallow_japanese_mt_bench), オリジナルのデータセットは以下の通りです．    
+  * 設問：[wandb-japan/llm-leaderboard](https://wandb.ai/wandb-japan/llm-leaderboard/artifacts/dataset/mtbench_en_referenceanswer/v0), `mtbench_ja_question:v4`
+  * 採点プロンプト：[wandb-japan/llm-leaderboard](https://wandb.ai/wandb-japan/llm-leaderboard/artifacts/dataset/mtbench_en_referenceanswer/v0), `mtbench_ja_prompt:v1`
+  * 模範解答：[wandb-japan/llm-leaderboard](https://wandb.ai/wandb-japan/llm-leaderboard/artifacts/dataset/mtbench_en_referenceanswer/v0), `mtbench_ja_referenceanswer:v2` を Swallow チームで独自に校閲したデータ
+* ライセンス：Apache License Version 2.0
 * 設問数：80問×2ターン
 * CoTプロンプト：なし
-* 評価尺度：5 回の試行（応答）を LLM-as-a-Judge により 1〜10 のスケールで採点し，平均値を採用．審判（judge）は `gpt-4o-2024-08-06` を用います．
+* 評価尺度：5 回の試行（応答）を LLM-as-a-Judge により 1〜10 のスケールで採点した平均値を10で割ります．審判（judge）は `gpt-4o-2024-08-06` を用います．  
+  カテゴリ×ターン別・カテゴリ別・ターン別・全設問 の4区分それぞれについてスコアの平均値を報告します．  
+    * カテゴリ×ターン別（例）：judge_score_writing_turn_1_avg
+    * カテゴリ別（例）：judge_score_roleplay_avg
+    * ターン別：judge_score_overall_turn_{1,2}_avg
+    * 全設問：judge_score_overall_avg
 
 ## 英語のベンチマーク
 
@@ -140,19 +156,20 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) をク
 * タスク分類：常識推論
 * CoTプロンプト：なし
 
-### LiveCodeBench v5--v6追加設問
-競技プログラミングの設問を用いてコード生成能力を評価する問題です．リリースv5およびv6で追加された設問のみを使用します． 
+### LiveCodeBench
+競技プログラミングの設問を用いたコード生成能力を評価するベンチマークです．  
+リーク対策のためにデータセットが定期的に更新されており，Swallowリーダーボードではv5およびv6で追加された設問（リリースID： `v5_v6`）を使用しています．  
 
 * タスク分類：コード生成
 * 出典：[Jain et al. (2025)](https://openreview.net/forum?id=chfJJYC3iL)
 * lightevalタスクID：`swallow|lcb:codegeneration_v5_v6`
-* データセット：
-* 設問数：342問
+* データセット：[livecodebench/code_generation_lite](https://huggingface.co/datasets/livecodebench/code_generation_lite)
+* 設問数：342問（リリースv5・v6追加設問）
 * CoTプロンプト：なし
 * 推奨設定：temperature=0.6, top-p=0.95
 * 評価尺度：Pass@1, Pass@10 (N=10) [Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
 * 派生版：`swallow|lcb:codegeneration_{リリースID}` を指定することで評価を行うリリースを変更できます．  
-  リリースIDの記法は LiveCodeBench公式実装 [LiveCodeBench/LiveCodeBench](https://github.com/LiveCodeBench/LiveCodeBench) を参照してください．
+  リリースIDの記法は LiveCodeBench公式リポジトリ [LiveCodeBench/LiveCodeBench](https://github.com/LiveCodeBench/LiveCodeBench) を参照してください．
 
 ### MMLU
 一般教養を問う 4 値選択式の英語設問で構成されるベンチマークです．
@@ -207,9 +224,9 @@ MMLU をクリーニングし，高難易度の設問を追加したベンチマ
 AIME（American Invitational Mathematics Exam）の 2024 年および 2025 年の設問で構成されます．
 
 * タスク分類：数学
-* 出典：（**わかりません**）
+* 出典：[Art of Problem Solving Wiki](https://artofproblemsolving.com/wiki/)
 * lightevalタスクID：`swallow|aime`
-* データセット：
+* データセット
   * 2024 年：[HuggingFaceH4/aime_2024](https://huggingface.co/datasets/HuggingFaceH4/aime_2024)
   * 2025 年：[yentinglin/aime_2025](https://huggingface.co/datasets/yentinglin/aime_2025)
 * 設問数：60問
@@ -223,21 +240,39 @@ AIME（American Invitational Mathematics Exam）の 2024 年および 2025 年�
 * 出典：[Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
 * lightevalタスクID：`swallow|humaneval`
 * データセット：[openai/openai_humaneval](https://huggingface.co/datasets/openai/openai_humaneval)
+* ライセンス：MIT License
 * 設問数：164問
 * CoTプロンプト：なし
 * 推奨設定：temperature=0.2, top-p=0.95 [Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
-* 評価尺度：Pass@1 (N=10)（[Chen et al. (2021)](https://arxiv.org/abs/2107.03374) の不偏推定式に従う）．
+* 評価尺度：Pass@1, Pass@10 (N=10)（[Chen et al. (2021)](https://arxiv.org/abs/2107.03374) の不偏推定式に従う）．
 
 ### HumanEval+
-（**わかりません**）（そもそも平均に含めないベンチマークなので書く必要がない？）
+コード生成能力を評価するベンチマーク HumanEval の設問はそのままで，単体テストを増強したベンチマークです．  
+
+* タスク分類：コード生成
+* 出典：[Liu et al. (2023)](https://papers.nips.cc/paper_files/paper/2023/hash/43e9d647ccd3e4b7b5baab53f0368686-Abstract-Conference.html)
+* lightevalタスクID：`swallow|humanevalplus`
+* データセット：[evalplus/humanevalplus](https://huggingface.co/datasets/evalplus/humanevalplus)
+* ライセンス：Apache License Version 2.0
+* 設問数：164問
+* CoTプロンプト：なし
+* 推奨設定：temperature=0.2, top-p=0.95 [Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
+* 評価尺度：Pass@1, Pass@10 (N=10)（[Chen et al. (2021)](https://arxiv.org/abs/2107.03374) の不偏推定式に従う）．
 
 ### MT-Bench
-対話能力を評価するベンチマークです．
+オープンエンド対話における有用性（usefulness, helpfulness）を評価するベンチマークです．  
 
 * タスク分類：オープンエンド対話
 * 出典：[Zheng et al. (2023)](https://openreview.net/forum?id=uccHPGDlao)
-* データセット：[FastChat/fastchat/llm_judge/data/mt_bench](https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge/data/mt_bench)
 * lightevalタスクID：`swallow|english_mt_bench`
+* データセット：[tokyotech-llm/swallow_english_mt_bench](https://huggingface.co/datasets/tokyotech-llm/swallow_english_mt_bench)
+    * オリジナル [FastChat/fastchat/llm_judge/data/mt_bench](https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge/data/mt_bench) の複製です
+* ライセンス：Apache License Version 2.0
 * 設問数：80問×2ターン
 * CoTプロンプト：なし
-* 評価尺度：5 回の試行（応答）を LLM-as-a-Judge により 1〜10 のスケールで採点し，平均値を採用．審判（judge）は `gpt-4o-2024-08-06` を用います．
+* 評価尺度：5 回の試行（応答）を LLM-as-a-Judge により 1〜10 のスケールで採点した平均値を10で割ります．審判（judge）は `gpt-4o-2024-08-06` を用います．  
+  カテゴリ×ターン別・カテゴリ別・ターン別・全設問 の4区分それぞれについてスコアの平均値を報告します．  
+    * カテゴリ×ターン別（例）：judge_score_writing_turn_1_avg
+    * カテゴリ別（例）：judge_score_roleplay_avg
+    * ターン別：judge_score_overall_turn_{1,2}_avg
+    * 全設問：judge_score_overall_avg
