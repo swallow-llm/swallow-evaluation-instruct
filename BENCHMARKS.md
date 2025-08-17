@@ -169,69 +169,73 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) をク
 * 推奨設定：temperature=0.6, top-p=0.95
 * 評価尺度：Pass@1, Pass@10 (N=10) [Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
 * 派生版：`swallow|lcb:codegeneration_{リリースID}` を指定することで評価を行うリリースを変更できます．  
-  リリースIDの記法は LiveCodeBench公式リポジトリ [LiveCodeBench/LiveCodeBench](https://github.com/LiveCodeBench/LiveCodeBench) を参照してください．
+  リリースIDの記法は LiveCodeBench公式リポジトリ [LiveCodeBench/LiveCodeBench](https://github.com/LiveCodeBench/LiveCodeBench) を参照してください．  
+* 実装の出典：lighteval標準実装 `extended|lcb:codegeneration` のプロンプトおよびコードブロック抽出を改変しています．
 
 ### MMLU
-一般教養を問う 4 値選択式の英語設問で構成されるベンチマークです．
-JMMLU と同じく，商用利用禁止の 3 科目を除く 53 科目について，科目別・カテゴリ別・全体の正解率を算出します．科目カテゴリは STEM／社会科学／人文科学／その他の 4 種類です．
+STEM・社会科学・人文科学・その他の4カテゴリに属する57科目から構成される，高校から大学学部および専門職試験に相当する一般教養を問う，4値選択式のベンチマークです．
 
 * タスク分類：一般教養
-* 出典：[Hendrycks et al.](https://openreview.net/forum?id=d7KBjmI3GmQ)
+* 出典：[Hendrycks et al. (2021)](https://openreview.net/forum?id=d7KBjmI3GmQ)
 * lightevalタスクID：`swallow|mmlu_english`
 * データセット：[lighteval/mmlu](https://huggingface.co/datasets/lighteval/mmlu)
 * 設問数：14,042問
 * CoTプロンプト：あり
-* 評価尺度：正解率．
+* 評価尺度：正解率．科目別・カテゴリ別・全体の正解率を算出します．
 
 ### MMLU-Pro
-MMLU をクリーニングし，高難易度の設問を追加したベンチマークです．
-出題形式は多肢選択式で，最大で 10 件の選択肢が提示されます．
+一般教養を問うベンチマーク MMLU の難易度を高めた，多値選択式のベンチマークです．  
+MMLU に対して，選択肢を最大10件に増加，推論を要求する設問の追加，および低品質な設問の削除が行われています．
 
 * タスク分類：一般教養
 * 出典：[Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3)
 * lightevalタスクID：`swallow|mmlu_pro_english`
 * データセット：[TIGER-Lab/MMLU-Pro](https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro)
+* ライセンス：MIT License
 * 設問数：12,032問
 * CoTプロンプト：あり
 * 評価尺度：正解率．
 
 ### GPQA（Diamond）
-博士課程レベルの科学問題を集めたベンチマーク GPQA のうち，高品質かつ高難易度な設問を抽出した Diamond サブセットです．
-出題形式は多肢選択式です．
+化学・物理学・生物学の博士課程レベルの設問を集めた4値選択式ベンチマーク GPQA のうち，高品質かつ非専門家の正答率が低い設問に限定した Diamond サブセットです．
 
 * タスク分類：科学
 * 出典：[Rein et al. (2024)](https://openreview.net/forum?id=Ti67584b98)
 * lightevalタスクID：`swallow|gpqa:diamond`
 * データセット：[Idavidrein/gpqa](https://huggingface.co/datasets/Idavidrein/gpqa)
+* ライセンス：CC BY 4.0
 * 設問数：198問
 * CoTプロンプト：あり
 * 評価尺度：正解率．
+* 実装の出典：lighteval標準実装 `lighteval|gpqa:diamond` の出力トークン数制限を解除しています．
 
 ### MATH-500
-数学能力を問うベンチマークです．
-高校の競技数学レベルの問題で構成された MATH データセット [Hendrycks et al. (2021)](https://openreview.net/forum?id=7Bywt2mQsCe) の test スプリットからランダムに抽出された 500 問で構成されます．
+数学能力を問う自由記述式のベンチマークです．
+高校の競技数学レベルの問題で構成された MATH データセット [Hendrycks et al. (2021)](https://openreview.net/forum?id=7Bywt2mQsCe) の test スプリットから [Lightman et al. (2024)](https://openreview.net/forum?id=v8L0pN6EOi) がランダムに抽出した 500 問で構成されます．
 
 * タスク分類：数学
-* 出典：[Lightman et al. (2024)](https://openreview.net/forum?id=v8L0pN6EOi)
+* 出典：[Hendrycks et al. (2021)](https://openreview.net/forum?id=7Bywt2mQsCe), [Lightman et al. (2024)](https://openreview.net/forum?id=v8L0pN6EOi)
 * lightevalタスクID：`swallow|math_500`
 * データセット：[HuggingFaceH4/MATH-500](https://huggingface.co/datasets/HuggingFaceH4/MATH-500)
 * 設問数：500問
 * CoTプロンプト：あり
-* 評価尺度：正解率．
+* 評価尺度：正解率．数式や数値による回答を正解と照合して正誤判定します．
+* 実装の出典：lighteval標準実装 `lighteval|math_500` の出力トークン数制限を解除しています．
 
-### AIME 24–25
-高難易度な数学能力を評価するベンチマークです．  
-AIME（American Invitational Mathematics Exam）の 2024 年および 2025 年の設問で構成されます．
+### AIME 2024–2025
+AIME（American Invitational Mathematics Examination）の2024年と2025年の過去問から構成される，数学オリンピック予選相当の数学能力を問う整数回答式のベンチマークです．  
+AIMEは主に米国高校生を対象とする試験で，代数・幾何・数論・確率・組合せ論から出題されます．
 
 * タスク分類：数学
 * 出典：[Art of Problem Solving Wiki](https://artofproblemsolving.com/wiki/)
 * lightevalタスクID：`swallow|aime`
 * データセット
-  * 2024 年：[HuggingFaceH4/aime_2024](https://huggingface.co/datasets/HuggingFaceH4/aime_2024)
-  * 2025 年：[yentinglin/aime_2025](https://huggingface.co/datasets/yentinglin/aime_2025)
+  * 2024年：[HuggingFaceH4/aime_2024](https://huggingface.co/datasets/HuggingFaceH4/aime_2024)
+  * 2025年：[yentinglin/aime_2025](https://huggingface.co/datasets/yentinglin/aime_2025)
 * 設問数：60問
 * CoTプロンプト：あり
 * 評価尺度：正解率．
+* 実装の出典：lighteval標準実装 `lighteval|aime{24,25}` の出力トークン数制限を解除しています．
 
 ### HumanEval
 コード生成能力を評価するベンチマークです．
@@ -247,7 +251,7 @@ AIME（American Invitational Mathematics Exam）の 2024 年および 2025 年�
 * 評価尺度：Pass@1, Pass@10 (N=10)（[Chen et al. (2021)](https://arxiv.org/abs/2107.03374) の不偏推定式に従う）．
 
 ### HumanEval+
-コード生成能力を評価するベンチマーク HumanEval の設問はそのままで，単体テストを増強したベンチマークです．  
+コード生成能力を評価するベンチマーク HumanEval の設問はそのままに，誤判定を減らすために単体テストを増強したベンチマークです．  
 
 * タスク分類：コード生成
 * 出典：[Liu et al. (2023)](https://papers.nips.cc/paper_files/paper/2023/hash/43e9d647ccd3e4b7b5baab53f0368686-Abstract-Conference.html)
