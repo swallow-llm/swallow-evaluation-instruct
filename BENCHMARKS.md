@@ -119,10 +119,11 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
 * タスク分類：一般教養
 * 出典：[Xuan et al. (2025)](https://arxiv.org/abs/2503.10497)
 * lightevalタスクID：`swallow|mmlu_prox_japanese`
-* データセット：[li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX)
+* データセット：[tokyotech-llm/MMLU-ProX-Japanese](https://huggingface.co/datasets/tokyotech-llm/MMLU-ProX-Japanese)
+    * オリジナル [li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX) を複製して科目別のサブセットを作成しました．
 * 設問数：11,759問
 * CoTプロンプト：あり
-* 評価尺度：正解率．
+* 評価尺度：正解率
 
 ### JHumanEval
 コード生成能力を評価するベンチマーク HumanEval [Chen et al. (2021)](https://arxiv.org/abs/2107.03374) の邦訳版です．
@@ -198,7 +199,7 @@ STEM・社会科学・人文科学・その他の4カテゴリに属する57科�
 * データセット：[lighteval/mmlu](https://huggingface.co/datasets/lighteval/mmlu)
 * 設問数：14,042問
 * CoTプロンプト：あり
-* 評価尺度：正解率．
+* 評価尺度：正解率
 
 ### MMLU-Pro
 一般教養を問うベンチマーク MMLU の難易度を高めた，多値選択式のベンチマークです．  
@@ -208,7 +209,8 @@ MMLU を発展させて，選択肢を最大10件に増加，推論を要求す�
 * タスク分類：一般教養
 * 出典：[Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3)
 * lightevalタスクID：`swallow|mmlu_pro_english`
-* データセット：[TIGER-Lab/MMLU-Pro](https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro)
+* データセット：[tokyotech-llm/MMLU-Pro](https://huggingface.co/datasets/tokyotech-llm/MMLU-Pro)
+    * オリジナル [TIGER-Lab/MMLU-Pro](https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro) の test split を複製して，科目ごとにサブセットを作成しました．
 * ライセンス：MIT License
 * 設問数：12,032問
 * CoTプロンプト：あり
@@ -222,6 +224,8 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
 * 出典：[Xuan et al. (2025)](https://arxiv.org/abs/2503.10497)
 * lightevalタスクID：`swallow|mmlu_prox_english`
 * データセット：[li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX)
+* データセット：[tokyotech-llm/MMLU-ProX-English](https://huggingface.co/datasets/tokyotech-llm/MMLU-ProX-English)
+    * オリジナル [li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX) の ja subset かつ test split を複製して，科目ごとにサブセットを作成しました．
 * 設問数：11,759問
 * CoTプロンプト：あり
 * 評価尺度：正解率
