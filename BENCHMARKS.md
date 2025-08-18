@@ -209,7 +209,7 @@ MMLU を発展させて，選択肢を最大10件に増加，推論を要求す�
 * タスク分類：一般教養
 * 出典：[Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3)
 * lightevalタスクID：`swallow|mmlu_pro_english`
-* データセット：[tokyotech-llm/MMLU-Pro](https://huggingface.co/datasets/tokyotech-llm/MMLU-Pro)
+* データセット：[tokyotech-llm/MMLU-Pro-English](https://huggingface.co/datasets/tokyotech-llm/MMLU-Pro-English)
     * オリジナル [TIGER-Lab/MMLU-Pro](https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro) の test split を複製して，科目ごとにサブセットを作成しました．
 * ライセンス：MIT License
 * 設問数：12,032問
