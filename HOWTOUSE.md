@@ -4,7 +4,7 @@
 
 # 大規模言語モデル評価フレームワーク swallow-evaluation-instruct Ver. 202508
 
-このリポジトリでは，[Swallowプロジェクト](https://swallow-llm.github.io/) にて事後学習ずみモデルの評価を想定して開発した包括的評価フレームワーク swallow-evaluation-instruct（以下，"本フレームワーク"）を配布しています．  
+このリポジトリでは，事後学習ずみモデルの評価を想定して[Swallowプロジェクト](https://swallow-llm.github.io/)にて開発した包括的評価フレームワーク swallow-evaluation-instruct（以下，"本フレームワーク"）を配布しています．  
 
 swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，日本語および英語のベンチマークの追加および利便性の改善をおこなったものです．
 LLMの研究開発にご活用ください．
@@ -49,17 +49,75 @@ deactivate
 
 ### 4. パスの追加
 最後に `~/.bashrc` に必要なパスを追加して uv に関する初期設定は終了です．
+
 ```sh
 echo 'export PATH="/.common_envs/bin:$PATH"' >> "$HOME/.bashrc"
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 ```
 
 ## 実行方法
-本フレームワークでは推論をvLLM [v0.9.2](https://github.com/vllm-project/vllm/releases/tag/v0.9.2)，評価をlighteval [v0.8.0](https://github.com/huggingface/lighteval/releases/tag/v0.8.0) で行っています．
-そのため，vLLMを先にserveしてから評価する方法（推奨）と，lightevalの中で直接vLLMを呼び出す方法の二つが可能です．
+[lighteval](https://github.com/huggingface/lighteval)はvLLMをはじめとする複数のバックエンドに対応していますが，本フレームワークではOpenAI API互換クライアントであるLiteLLMを使用してChat Completion APIを呼び出す方式を主にサポートしています．  
+オープンLLMを各自の計算環境で評価する場合は，vLLMでOpenAI互換APIをホスティングしてからLiteLLMバックエンドを使用してAPIを呼び出す方式を推奨します．
+また非推奨ではありますが，lightevalから直接vLLMを呼び出す方法も使用できます．  
 
-### １）vLLM serve → lighteval（推奨）
-vLLM serveコマンドで推論APIを立ててからlitellm経由でAPIを呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)のようなvLLMの豊富な機能を活用しながら評価を実行できます．  
+[lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/v0.8.0/en/index)も参照してください．  
+
+### 1. LiteLLMバックエンドで実行
+
+`lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` で，OpenAI互換の Chat Completion API を提供するモデルを評価することができます．OpenAIのGPT-4oで GPQA (Diamond) ベンチマークを評価する例を以下に示します．  
+
+```sh
+MODEL_NAME="openai/gpt-4o-2024-08-06" 
+BASE_URL="https://api.openai.com/v1/" # OpenAI API の URL
+API_KEY="{OpenAIのAPI Key}"
+TASK_ID="swallow|gpqa:diamond"
+
+cd swallow-evaluation-instruct
+
+uv run --isolated --locked --extra lighteval \
+    lighteval endpoint litellm \
+        "model=$MODEL_NAME,base_url=$BASE_URL,api_key=$API_KEY" \
+        "${TASK_ID}|0|0" \
+        --use-chat-template \
+        --output-dir ./lighteval/outputs
+```
+
+MODEL_ARGS には `model` や `base_url` を指定します．modelパラメータは `{プロバイダ名}/{MODEL ID}` という表記にします（例："openai/gpt-4o-2024-08-06"）．
+そのほか，generation_parameters によって文生成条件を指定できます．詳細は後述します．  
+
+TASK_ID はベンチマークの識別子です．swallow-evaluation-instruct ではlighteval公式実装に加えて，Swallowチームが実装したベンチマークを指定できます．  
+詳細は [Swallowチームが実装したベンチマーク一覧][./BENCHMARKS.md] を参照してください．
+
+OpenAI互換APIを提供するDeepInfraやGoogle AI Studioなどのプロバイダ（[LiteLLM Supported Providers](https://docs.litellm.ai/docs/providers)）についても同様のコマンドで評価できます．  
+ただしプロバイダやモデルによってはエラーが起きる場合があります．[Tips](./TIPS.md)
+
+### 2. vLLMでホスティング → LiteLLMバックエンドで実行
+
+[vLLM serveコマンド](https://docs.vllm.ai/en/v0.9.2/serving/openai_compatible_server.html)でOpenAI互換APIを立ててからLiteLLM経由でAPIを呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)などのvLLMの豊富な機能を活用しながら評価を実行できます．  
+
+```sh
+MODEL_NAME="hosted_vllm/Qwen/Qwen3-4B" # vLLMのプロバイダ名は "hosted_vllm" です
+TASK_ID="swallow|humaneval"
+
+uv run --isolated --locked --extra vllm \
+    vllm serve $MODEL_NAME \
+        --host localhost \
+        --port 8000 \
+        --reasoning-parser qwen3 \
+        --max-model-len 32768 &
+
+BASE_URL="http://localhost:8000/v1"
+# HuggingFace のモデルをローカルでサーブする場合には "http://localhost:(ポート番号)/v1" を指定．
+
+uv run --isolated --locked --extra lighteval \
+    lighteval endpoint litellm \
+        "model=$MODEL_NAME,base_url=$BASE_URL,generation_parameters={temperature:0.2,top_p:0.95}" \
+        "${TASK_ID}|0|0" \
+        --use-chat-template \
+        --output-dir ./lighteval/outputs
+```
+
+
 
 例えば，[tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)について[swallow|gpqa:diamond](BENCHMARKS#gpqadiamond)のタスクで評価したい場合は以下のように実行することができます．
 
