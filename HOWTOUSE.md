@@ -6,12 +6,16 @@
 
 このリポジトリでは，推論型モデルのような事後学習ずみモデルの評価を想定して[Swallowプロジェクト](https://swallow-llm.github.io/)にて開発した包括的評価フレームワーク swallow-evaluation-instruct（以下，"本フレームワーク"）を配布しています．  
 
-swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，日本語・英語ベンチマークの追加および利便性の改善をおこなったものです．
-LLMの研究開発にご活用ください．
+swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，日本語・英語ベンチマークの追加および利便性の改善をおこなったものです．この場をお借りしてフレームワーク開発者の皆様にお礼申し上げます．  
+
+事前学習ずみモデルの評価をお考えの方は [swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください．
+
+## 以前のバージョンをお探しの方へ
+以前のバージョンをご利用になりたい方は[Releases](https://github.com/swallow-llm/swallow-evaluation-instruct/releases)を参照してください．
 
 ## 環境構築
 本フレームワークでは環境管理に [uv](https://docs.astral.sh/uv/) を使用することを想定しています．
-従って，環境構築は以下の流れで行ってください．
+環境構築は以下の流れで行ってください．
 
 ### 1. uv のインストール
 まず uv をインストールしてください．
@@ -64,8 +68,8 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 ```
 
 ## 実行方法
-[lighteval](https://github.com/huggingface/lighteval)はvLLMをはじめとする複数のバックエンドに対応していますが，本フレームワークではOpenAI API互換クライアントであるLiteLLMを使用してChat Completion APIを呼び出す方式を主にサポートしています．  
-オープンLLMを各自の計算環境で評価する場合は，vLLMでOpenAI互換APIをホスティングしてからLiteLLMバックエンドを使用してAPIを呼び出す方式を推奨します．
+[lighteval](https://github.com/huggingface/lighteval)はvLLMをはじめとする複数のバックエンドに対応していますが，本フレームワークではOpenAI API互換クライアントであるLiteLLMを使用してChat Completion API（推論API）を呼び出す方式を主にサポートしています．  
+オープンLLMを各自の計算環境で評価する場合は，vLLMで推論APIをホスティングしてからLiteLLMバックエンドを使用してAPIを呼び出す方式を推奨します．
 
 以下に，各方式の実行方法を説明します．コマンド例と同等のシェルスクリプトを [./scripts/examples](./scripts/examples) に格納しています．
 
@@ -212,7 +216,7 @@ uv run --isolated --locked --extra lighteval \
 ### MODEL_ARGS のかわりに設定ファイルを使う方法
 
 `"model=$MODEL_NAME,api_key=$API_KEY,base_url=$BASE_URL"` のような lighteval の実行時引数 MODEL_ARGS は，以下に例示するようなYAML形式の設定ファイル（.yaml）に置き換えることができます．
-モデルIDやAPIのエンドポイントなどは `base_params` 以下に書き，temperatureやtop_pなどの文生成条件は `generation` 以下に書きます．
+モデルIDやAPIのエンドポイントなどは `base_params` 以下に書き，temperatureやtop_pなどの文生成条件は `generation` 以下に書きます．Ref. [設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)
 
 ```yaml
 # config.yaml
@@ -236,40 +240,46 @@ lighteval endpoint litellm \
     --output-dir ./lighteval/outputs
 ```
 
-#### 4. 主要な環境変数
-* `OPENAI_API_KEY`：MT-Bench(日英) で LLM-as-a-judge として OpenAI のモデル（gpt-4o-2024-08-06）を使うために使用します．
-* `LITELLM_CONCURRENT_CALLS`：LiteLLM 内で推論APIを呼ぶときの最大並列数．大きくすると処理速度は向上するかもしれませんが，推論APIの挙動が不安定になることもあります．
+## 詳細な設定
 
+本フレームワークの動作に影響する環境変数，評価に影響するlightevalの実行時引数および文生成条件，およびvLLMでモデルをホスティングする際の主な設定項目を説明します．
 
-#### 5. 主要な lighteval 実行時引数
-lighteval を用いた評価は以下のフォーマットで実行しています：
-```sh
-lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]
-```
+### 環境変数
 
-本節では上記のうち `[OPTIONS]` と `{MODEL_ARGS}` について，主要なもの・Swallow独自(*)なものを説明します．
-なお，`{MODEL_ARGS}` は [config の書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)に倣って base_params と generation に分けて説明をします．
+主な環境変数は以下のとおりです．  
+
+* `OPENAI_API_KEY`：MT-Bench(日英) で LLM-as-a-judge として OpenAI のモデルを呼び出すために使用します．  
+* `LITELLM_CONCURRENT_CALLS`：LiteLLMが推論APIを呼ぶときの最大並列数．大きくすると処理速度は向上するかもしれませんが，推論APIの挙動が不安定になることもあります．  
+
+### lighteval 実行時引数
+
+lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` のうち，
+本節では `[OPTIONS]` および `{MODEL_ARGS}` の主要な項目およびSwallow独自(*)の項目を説明します．  
+なお `{MODEL_ARGS}` は [設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)に倣って，YAML形式ファイルの base_params と generation に分けて説明をします．
+
+ここで説明しない実行時引数については [lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/quicktour)を参照してください．
 
 > (*)：該当の引数には「（独自）」と記しております．
 
-##### I. `[OPTIONS]`
+#### `[OPTIONS]`
 
-* --system-prompt：モデルに与える system prompt．
-* --save-details：評価の詳細（プロンプト・応答・メトリクスなど）を .parquet で出力させるオプション．
-* --max-samples：評価対象のサンプル数．動作確認のためにサンプル数を絞って実行することなどができます．
+* `--system-prompt`：モデルに与えるシステムメッセージ．
+* `--save-details`：評価の詳細（プロンプト・モデルの応答文・メトリクスなど）を .parquet形式で保存するオプション．
+* `--use-chat-template`：ユーザーの発話やシステムメッセージを対話形式に整形するテンプレートを適用します．**原則として必須です．**
+* `--max-samples`：評価対象のサンプル数．動作確認のために数件だけ実行するような場合に便利です．
 
-##### II. `MODEL_ARGS` - base_params
+##### `MODEL_ARGS` - base_params
 * `model`：評価に用いるモデル名．プロバイダー名を先頭に付けてください．（例：`hosted_vllm`）
 * `base_url`：プロバイダーに対応するURL．（例：vLLM をセルフホストする場合：`http://localhost:8000/v1`）
 * `api_key`：プロバイダーに対応するAPIキー．（例：OpenAI の場合：`sk-...`）
-* `reasoniing_parser`（独自）：lighteval内（≠ vLLM内）で reasoning parser を使う場合用の引数．Swallow独自のパーサー（`deepseek_r1_markup`）はこちらからしか指定できないです．
+* `reasoning_parser`（独自）：lighteval内（≠ vLLM内）で reasoning parser を適用する場合の引数．vLLMのreasoning parserが非対応の推論型モデルを扱う場合に，Swallow独自のパーサー（`deepseek_r1_markup`）を指定できます．[Tips](./TIPS.md)
 
-##### III. `MODEL_ARGS` - generation
-* temperature：モデルに与える tempearture．
-* top_p：モデルに与える top_p．
-* max_n（独自）：一度の推論APIの呼び出しにおいて生成させる応答数の最大数．
-* max_new_tokens：モデルに与える max_new_tokens．
-
+##### `MODEL_ARGS` - generation
+* temperature：サンプリングの温度．
+* top_p：核サンプリング（[Holtzman et al. (2020)](https://openreview.net/forum?id=rygGQyrFvH)）のパラメータ．
+* max_n（独自）：推論APIの1回の呼び出しにおいて生成させる応答数の最大値．
+* max_new_tokens：出力トークン数の最大値．
+* `reasoning_effort`
 
 #### 6. 主要な vLLM serve 実行時引数
 * `model`(位置変数)：評価に用いるモデル名．先頭にプロバイダー名は付けないでください．
