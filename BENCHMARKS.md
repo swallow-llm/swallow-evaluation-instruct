@@ -198,6 +198,7 @@ STEM・社会科学・人文科学・その他の4カテゴリに属する57科�
 * 出典：[Hendrycks et al. (2021)](https://openreview.net/forum?id=d7KBjmI3GmQ)
 * lightevalタスクID：`swallow|mmlu_english`
 * データセット：[lighteval/mmlu](https://huggingface.co/datasets/lighteval/mmlu)
+* ライセンス：MIT License
 * 設問数：14,042問
 * CoTプロンプト：あり
 * 評価尺度：正解率
