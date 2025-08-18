@@ -121,6 +121,7 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
 * lightevalタスクID：`swallow|mmlu_prox_japanese`
 * データセット：[tokyotech-llm/MMLU-ProX-Japanese](https://huggingface.co/datasets/tokyotech-llm/MMLU-ProX-Japanese)
     * オリジナル [li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX) の ja subset かつ test split を複製して，科目別のサブセットを作成しました．
+* ライセンス：MIT License
 * 設問数：11,759問
 * CoTプロンプト：あり
 * 評価尺度：正解率
@@ -223,9 +224,9 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
 * タスク分類：一般教養
 * 出典：[Xuan et al. (2025)](https://arxiv.org/abs/2503.10497)
 * lightevalタスクID：`swallow|mmlu_prox_english`
-* データセット：[li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX)
 * データセット：[tokyotech-llm/MMLU-ProX-English](https://huggingface.co/datasets/tokyotech-llm/MMLU-ProX-English)
     * オリジナル [li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX) の en subset かつ test split を複製して，科目ごとにサブセットを作成しました．
+* ライセンス：MIT License
 * 設問数：11,759問
 * CoTプロンプト：あり
 * 評価尺度：正解率
