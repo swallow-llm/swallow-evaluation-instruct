@@ -16,10 +16,10 @@ echo "🐦 vLLM serve has started"
 uv run --isolated --locked --extra vllm \
     vllm serve "$MODEL_NAME" \
         --host localhost \
-        --port 25818 &
+        --port 25819 &
 VLLM_SERVER_PID=$!
 
-BASE_URL="http://localhost:25818/v1"
+BASE_URL="http://localhost:25819/v1"
 # HuggingFace のモデルをローカルでサーブする場合には "http://localhost:(ポート番号)/v1" を指定．
 
 wait_for_vllm_server "$BASE_URL" "$VLLM_SERVER_PID" 900
