@@ -109,7 +109,7 @@ STEM・社会科学・人文科学・その他の4カテゴリに属する56科�
 * ライセンス：CC BY-SA 4.0
 * 設問数：7,097問
 * CoTプロンプト：あり
-* 評価尺度：正解率．科目別・カテゴリ別・全体の正解率を算出します．
+* 評価尺度：正解率．
 
 ### MMLU-ProX（日本語）
 MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低品質な設問を削除したうえで邦訳した，一般教養を問うベンチマークです．
@@ -130,6 +130,7 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
 * 出典：[佐藤ら (2024)](https://www.anlp.jp/proceedings/annual_meeting/2024/pdf_dir/P10-9.pdf)
 * lightevalタスクID：`swallow|swallow_jhumaneval`
 * データセット：[kogi-jwu/jhumaneval](https://huggingface.co/datasets/kogi-jwu/jhumaneval)
+* ライセンス：MIT License
 * 設問数：164問
 * CoTプロンプト：なし
 * 推奨設定：temperature=0.2, top-p=0.95 [Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
@@ -158,10 +159,16 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
 ## 英語のベンチマーク
 
 ### HellaSwag
-次に起こる出来事を予測する4択の選択式問題です．
+日常的な状況の文脈から次に起こる出来事を予測する常識推論能力を問う，4値選択式のベンチマークです。
 
 * タスク分類：常識推論
-* CoTプロンプト：なし
+* 出典：[Zellers et al. (2019)](https://aclanthology.org/P19-1472/)
+* lightevalタスクID：`swallow|hellaswag`
+* データセット：[Datasets](https://huggingface.co/docs/datasets/index) library `hellaswag`, [オリジナル](https://github.com/rowanz/hellaswag)
+* ライセンス：MIT License
+* 設問数：10,042件
+* CoTプロンプト：あり
+* 評価尺度：正解率
 
 ### LiveCodeBench
 競技プログラミングの設問を用いたコード生成能力を評価するベンチマークです．  
