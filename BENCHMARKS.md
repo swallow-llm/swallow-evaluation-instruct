@@ -8,9 +8,10 @@ swallow-evaluation-instruct では，[lighteval公式実装](https://github.com/
 Swallowチームが実装したベンチマークの一覧は `lighteval tasks list` コマンドの "swallow" suite に表示されます．
 
 ## 共通事項
-* 明示なき限り，実験設定はゼロショットを推奨します．  
-* MT-Benchを除きデコーディングパラメータは実行時に自由に指定できます．推奨設定がある場合は明記しています．  
+* 深い推論を妨げる可能性があるため，実験設定はゼロショットを推奨します．  
 * MT-Benchはマルチターン対話，それ以外はシングルターン対話で出題・回答する形式を採用しています．
+* MT-Benchを除き，デコーディングパラメータは実行時に自由に指定できます．推奨設定がある場合は明記しています．  
+  なおSwallowリーダーボードの場合，コンテキスト長さは最長32,768トークン，推奨設定を書いていないベンチマークは貪欲法（temperature=0）を採用しています．  
 
 ## 日本語のベンチマーク
 
@@ -59,7 +60,7 @@ Swallowチームが実装したベンチマークの一覧は `lighteval tasks l
     * 設問レベルの正解率：prompt_level_strict_accuracy
     * 正規化後の指示レベルの正解率：instruct_level_loose_accuracy
     * 正規化後の設問レベルの正解率：prompt_level_loose_accuracy
-* その他：言語判定器の初期化を除き，出典の実装を忠実に再現しています．  
+* 実装の出典：Dussolleらの実装 [lightblue-tech/M-IFEval](https://github.com/lightblue-tech/M-IFEval) を忠実に再現したうえで，言語判定器の初期化処理を追加しています．
 
 ### WMT20 英日翻訳
 ニュース記事の翻訳を行うベンチマーク WMT20 [Barrault et al. (2020)](https://aclanthology.org/2020.wmt-1.1/) の英日翻訳サブセットです．
@@ -69,8 +70,11 @@ Swallowチームが実装したベンチマークの一覧は `lighteval tasks l
 * データセット：[lighteval/sacrebleu_manual/wmt20/en-ja.jsonl](https://huggingface.co/datasets/lighteval/sacrebleu_manual/blob/main/wmt20/en-ja.jsonl)
 * 設問数：1,000文
 * CoTプロンプト：なし
-* 評価尺度：BLEU（corpus BLEU；全文書のマイクロ平均）
-  分かち書きは MeCab+IPADIC 互換の Janome を使用し，BLEU は sacreBLEU を用います．モデル出力から翻訳文を抽出できなかった場合は空文字として扱います．
+* 評価尺度：BLEU（corpus BLEU；全設問のマイクロ平均）  
+  分かち書きは MeCab+IPADIC 互換の Janome を使用し，計算には sacreBLEU ([Post (2018)](https://aclanthology.org/W18-6319/)) を用います．モデル出力から翻訳文を抽出できなかった場合は空文字として扱います．  
+* その他の評価尺度
+    * Nagisa分かち書きによるBLEU ([JP LM Eval. Harness](https://github.com/tdcyamadaya/lm-evaluation-harness-jp-stable)準拠)：bleu_lmevalja
+* 注意事項：プロンプトで指示するとおり `日本語: ` に続けて邦訳文を出力する必要があるため，指示追従性の低いモデルはスコアが極端に低くなる場合があります．  
 
 ### WMT20 日英翻訳
 ニュース記事の翻訳を行うベンチマーク WMT20 [Barrault et al. (2020)](https://aclanthology.org/2020.wmt-1.1/) の日英翻訳サブセットです．
@@ -80,35 +84,38 @@ Swallowチームが実装したベンチマークの一覧は `lighteval tasks l
 * データセット：[lighteval/sacrebleu_manual/wmt20/ja-en.jsonl](https://huggingface.co/datasets/lighteval/sacrebleu_manual/blob/main/wmt20/ja-en.jsonl)
 * 設問数：993文
 * CoTプロンプト：なし
-* 評価尺度：BLEU（corpus BLEU；前処理・算出法は前項と同様）．
+* 評価尺度：BLEU（corpus BLEU；全設問のマイクロ平均）．計算には sacreBLEU ([Post (2018)](https://aclanthology.org/W18-6319/)) を用います．モデル出力から翻訳文を抽出できなかった場合は空文字として扱います．  
+* 注意事項：プロンプトで指示するとおり `English: ` に続けて英訳文を出力する必要があるため，指示追従性の低いモデルはスコアが極端に低くなる場合があります．  
 
 ### MCLM MATH-100（日本語）
-競技レベルの多言語数学ベンチマーク MCLM [Son et al. (2025)](https://aclanthology.org/2025.acl-long.699/) のうち，MATH-500 [Lightman et al. (2024)](https://openreview.net/forum?id=v8L0pN6EOi) をソースとするサブセット MT-MATH100 から，日本語の設問を抽出したものです．
+多言語の競技数学ベンチマークスイート MCLM [Son et al. (2025)](https://aclanthology.org/2025.acl-long.699/) のうち，MATH-500 [Lightman et al. (2024)](https://openreview.net/forum?id=v8L0pN6EOi) を出典とするサブセット MT-MATH100 から日本語の設問を抽出したものです．  
 
 * タスク分類：数学
 * lightevalタスクID：`swallow|math_100_japanese`
 * データセット：[amphora/MCLM](https://huggingface.co/datasets/amphora/MCLM)
+* ライセンス：MIT License
 * 設問数：99問
 * CoTプロンプト：あり
-* 評価尺度：正解率．
+* 評価尺度：正解率．数式や数値による回答を正解と照合して正誤判定します．
 
 ### JMMLU
-一般教養を問う 4 値選択式ベンチマーク MMLU [Hendrycks et al.](https://openreview.net/forum?id=d7KBjmI3GmQ) の邦訳版です．
-商用利用禁止の 3 科目を除く 53 科目について，科目別・カテゴリ別・全体の正解率を算出します．科目カテゴリは STEM／社会科学／人文科学／その他の 4 種類です．
+一般教養を問う4値選択式ベンチマーク MMLU [Hendrycks et al.](https://openreview.net/forum?id=d7KBjmI3GmQ) の邦訳版です．
+STEM・社会科学・人文科学・その他の4カテゴリに属する56科目のうち，CC BY-NC-ND 4.0ライセンスの3科目を除く53科目を評価します．
 
-* タスク分類：一般教養（多肢択一）
+* タスク分類：一般教養
 * 出典：[尹ら (2024)](https://www.anlp.jp/proceedings/annual_meeting/2024/pdf_dir/A7-5.pdf)
 * lightevalタスクID：`swallow|swallow_jmmlu`
 * データセット：[nlp-waseda/JMMLU](https://huggingface.co/datasets/nlp-waseda/JMMLU)
+* ライセンス：CC BY-SA 4.0
 * 設問数：7,097問
 * CoTプロンプト：あり
-* 評価尺度：正解率（科目・カテゴリ・全体）．
+* 評価尺度：正解率．科目別・カテゴリ別・全体の正解率を算出します．
 
 ### MMLU-ProX（日本語）
-MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) をクリーニングして邦訳したベンチマークです．
-出題形式は MMLU-Pro と同じく多肢選択式で，最大で 10 件の選択肢が提示されます．
+MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低品質な設問を削除したうえで邦訳した，一般教養を問うベンチマークです．
+出題形式は MMLU-Pro と同じく多肢選択式で，最大で10件の選択肢が提示されます．
 
-* タスク分類：一般教養（多肢択一）
+* タスク分類：一般教養
 * 出典：[Xuan et al. (2025)](https://arxiv.org/abs/2503.10497)
 * lightevalタスクID：`swallow|mmlu_prox_japanese`
 * データセット：[li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX)
@@ -168,12 +175,12 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) をク
 * CoTプロンプト：なし
 * 推奨設定：temperature=0.6, top-p=0.95
 * 評価尺度：Pass@1, Pass@10 (N=10) [Chen et al. (2021)](https://arxiv.org/abs/2107.03374)
-* 派生版：`swallow|lcb:codegeneration_{リリースID}` を指定することで評価を行うリリースを変更できます．  
+* 派生版：`swallow|lcb:codegeneration_{リリースID}` を指定することで評価するリリースを変更できます．  
   リリースIDの記法は LiveCodeBench公式リポジトリ [LiveCodeBench/LiveCodeBench](https://github.com/LiveCodeBench/LiveCodeBench) を参照してください．  
 * 実装の出典：lighteval標準実装 `extended|lcb:codegeneration` のプロンプトおよびコードブロック抽出を改変しています．
 
 ### MMLU
-STEM・社会科学・人文科学・その他の4カテゴリに属する57科目から構成される，高校から大学学部および専門職試験に相当する一般教養を問う，4値選択式のベンチマークです．
+STEM・社会科学・人文科学・その他の4カテゴリに属する57科目で構成される，高校から大学学部および専門職試験に相当する一般教養を問う4値選択式のベンチマークです．
 
 * タスク分類：一般教養
 * 出典：[Hendrycks et al. (2021)](https://openreview.net/forum?id=d7KBjmI3GmQ)
@@ -181,11 +188,12 @@ STEM・社会科学・人文科学・その他の4カテゴリに属する57科�
 * データセット：[lighteval/mmlu](https://huggingface.co/datasets/lighteval/mmlu)
 * 設問数：14,042問
 * CoTプロンプト：あり
-* 評価尺度：正解率．科目別・カテゴリ別・全体の正解率を算出します．
+* 評価尺度：正解率．
 
 ### MMLU-Pro
 一般教養を問うベンチマーク MMLU の難易度を高めた，多値選択式のベンチマークです．  
-MMLU に対して，選択肢を最大10件に増加，推論を要求する設問の追加，および低品質な設問の削除が行われています．
+MMLU を発展させて，選択肢を最大10件に増加，推論を要求する設問の追加，および低品質な設問の削除が行われています．
+ビジネス・法学・心理学・生物学・化学・歴史・保健/医療・経済学・数学・物理学・計算機科学・哲学・工学・その他の14カテゴリで構成されます．
 
 * タスク分類：一般教養
 * 出典：[Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3)
@@ -195,6 +203,18 @@ MMLU に対して，選択肢を最大10件に増加，推論を要求する設�
 * 設問数：12,032問
 * CoTプロンプト：あり
 * 評価尺度：正解率．
+
+### MMLU-ProX (英語)
+MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低品質な設問を削除して29言語に翻訳した，一般教養を問う多言語ベンチマークの英語サブセットです．
+出題形式は MMLU-Pro と同じく多肢選択式で，最大で10件の選択肢が提示されます．
+
+* タスク分類：一般教養
+* 出典：[Xuan et al. (2025)](https://arxiv.org/abs/2503.10497)
+* lightevalタスクID：`swallow|mmlu_prox_english`
+* データセット：[li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX)
+* 設問数：11,759問
+* CoTプロンプト：あり
+* 評価尺度：正解率
 
 ### GPQA（Diamond）
 化学・物理学・生物学の博士課程レベルの設問を集めた4値選択式ベンチマーク GPQA のうち，高品質かつ非専門家の正答率が低い設問に限定した Diamond サブセットです．
