@@ -132,7 +132,7 @@ MODEL_ARGS の generation_parameters にはtemperatureのような文生成条�
 [tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)で 日本語MT-Benchを評価する例を以下に示します．
 
 ```sh
-MODEL_NAME="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5"
+MODEL_NAME="hosted_vllm/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5"
 TASK_ID="swallow|japanese_mt_bench"
 
 export OPENAI_API_KEY="{LLM-as-a-Judgeに使うOpenAI API Key}" 
