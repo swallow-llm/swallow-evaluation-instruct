@@ -73,7 +73,7 @@ Swallowチームが実装したベンチマークの一覧は `lighteval tasks l
 * 評価尺度：BLEU（corpus BLEU；全設問のマイクロ平均）  
   分かち書きは MeCab+IPADIC 互換の Janome を使用し，計算には sacreBLEU ([Post (2018)](https://aclanthology.org/W18-6319/)) を用います．モデル出力から翻訳文を抽出できなかった場合は空文字として扱います．  
 * その他の評価尺度
-    * Nagisa分かち書きによるBLEU ([JP LM Eval. Harness](https://github.com/tdcyamadaya/lm-evaluation-harness-jp-stable)準拠)：bleu_lmevalja
+    * Nagisa [taishi-i/nagisa](https://github.com/taishi-i/nagisa) で分かち書きしたBLEU ([JP LM Eval. Harness](https://github.com/tdcyamadaya/lm-evaluation-harness-jp-stable)準拠)：bleu_lmevalja
 * 注意事項：プロンプトで指示するとおり `日本語: ` に続けて邦訳文を出力する必要があるため，指示追従性の低いモデルはスコアが極端に低くなる場合があります．  
 
 ### WMT20 日英翻訳
