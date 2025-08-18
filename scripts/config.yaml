@@ -1,0 +1,11 @@
+# config.yaml
+model:
+    base_params:
+        model_name: hosted_vllm/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5
+        base_url: http://localhost:8000/v1
+
+    generation:
+        temperature: 0.6
+        max_new_tokens: 8092
+        top_p: 0.9
+        max_n: 1
