@@ -83,7 +83,7 @@ bash scripts/qsub/environment/setup_t4_uv_envs.sh
 | カテゴリ | 変数名 | 説明 | 備考 |
 | -- | -- | -- | -- |
 | Common | `NODE_KIND` | 使いたいノード．<br> tsubame ["node_q", "node_f", "cpu_16"]，<br> abci ["rt_HG", "rt_HF", "rt_HC"]，<br> local ["gpu_*" (*はGPUの数), "cpu"] | 13B以下なら"node_q"や"rt_HG"や"gpu_2"，<br> 13B超なら"node_f"や"rt_HF"や"gpu_4"，<br> OpenAIやDeepInfraのAPIを使うなら"cpu_16"や"rt_HC"や"cpu"を選ぶと良い．|
-| Common | `MODEL_NAME`| 評価するモデルのHuggingFaceID．| HuggingFaceのモデルカード上部にあるコピーボタンから取得できる．openAIのmodelに関しては、openai/~のようにすること。|
+| Common | `MODEL_NAME`| 評価するモデルのHuggingFaceID．| HuggingFaceのモデルカード上部にあるコピーボタンから取得できる．openAIのmodelに関しては、openai/~のようにすること.|
 | Special | `PROVIDER` | 評価するモデルを serve するための provider．| HuggingFaceのモデルであれば"vllm"（デフォルト），OpenAI のモデルなら"openai"を指定．Deepinfra を使う場合は"deepinfra"を指定する．|
 | Special | `CUSTOM_SETTINGS` | 使いたい custom model settings の名前．| 例：`default`，`reasoning`，`code`． |
 | Special | `PREDOWNLOAD_MODEL` | ジョブを投げる前に HuggingFace からモデルをダウンロードするかどうかの設定．| OpenAI や DeepInfra のモデルを評価する場合は必ず `false` にすること． |
