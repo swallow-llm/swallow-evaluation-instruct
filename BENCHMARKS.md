@@ -8,10 +8,11 @@ swallow-evaluation-instruct では，[lighteval公式実装](https://github.com/
 Swallowチームが実装したベンチマークの一覧は `lighteval tasks list` コマンドの "swallow" suite に表示されます．
 
 ## 共通事項
-* 深い推論を妨げる可能性があるため，実験設定はゼロショットを推奨します．  
 * MT-Benchはマルチターン対話，それ以外はシングルターン対話で出題・回答する形式を採用しています．
 * MT-Benchを除き，デコーディングパラメータは実行時に自由に指定できます．推奨設定がある場合は明記しています．  
   なおSwallowリーダーボードの場合，コンテキスト長さは最長32,768トークン，推奨設定を書いていないベンチマークは貪欲法（temperature=0）を採用しています．  
+* 深い推論を妨げる可能性があるため，タスクIDの後ろに0をつけてゼロショットで評価することを推奨します．  
+  例： `swallow|swallow_jmmlu|0|0`
 
 ## 日本語のベンチマーク
 
@@ -118,10 +119,12 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
 * タスク分類：一般教養
 * 出典：[Xuan et al. (2025)](https://arxiv.org/abs/2503.10497)
 * lightevalタスクID：`swallow|mmlu_prox_japanese`
-* データセット：[li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX)
+* データセット：[tokyotech-llm/MMLU-ProX-Japanese](https://huggingface.co/datasets/tokyotech-llm/MMLU-ProX-Japanese)
+    * オリジナル [li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX) の ja subset かつ test split を複製して，科目別のサブセットを作成しました．
+* ライセンス：MIT License
 * 設問数：11,759問
 * CoTプロンプト：あり
-* 評価尺度：正解率．
+* 評価尺度：正解率
 
 ### JHumanEval
 コード生成能力を評価するベンチマーク HumanEval [Chen et al. (2021)](https://arxiv.org/abs/2107.03374) の邦訳版です．
@@ -155,7 +158,8 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
     * カテゴリ別（例）：judge_score_roleplay_avg
     * ターン別：judge_score_overall_turn_{1,2}_avg
     * 全設問：judge_score_overall_avg
-* 事前準備： OpenAI API Key を 環境変数 `OPENAI_API_KEY` に設定してください．
+* 事前準備：OpenAI API Key を 環境変数 `OPENAI_API_KEY` に設定してください．  
+* 注意事項：コンテキスト超過エラーを防ぐため，1ターン目の応答文（深い推論過程を含まない最終出力）は最長8,192文字で切り詰めます．  
 
 ## 英語のベンチマーク
 
@@ -194,9 +198,10 @@ STEM・社会科学・人文科学・その他の4カテゴリに属する57科�
 * 出典：[Hendrycks et al. (2021)](https://openreview.net/forum?id=d7KBjmI3GmQ)
 * lightevalタスクID：`swallow|mmlu_english`
 * データセット：[lighteval/mmlu](https://huggingface.co/datasets/lighteval/mmlu)
+* ライセンス：MIT License
 * 設問数：14,042問
 * CoTプロンプト：あり
-* 評価尺度：正解率．
+* 評価尺度：正解率
 
 ### MMLU-Pro
 一般教養を問うベンチマーク MMLU の難易度を高めた，多値選択式のベンチマークです．  
@@ -206,7 +211,8 @@ MMLU を発展させて，選択肢を最大10件に増加，推論を要求す�
 * タスク分類：一般教養
 * 出典：[Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3)
 * lightevalタスクID：`swallow|mmlu_pro_english`
-* データセット：[TIGER-Lab/MMLU-Pro](https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro)
+* データセット：[tokyotech-llm/MMLU-Pro-English](https://huggingface.co/datasets/tokyotech-llm/MMLU-Pro-English)
+    * オリジナル [TIGER-Lab/MMLU-Pro](https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro) の test split を複製して，科目ごとにサブセットを作成しました．
 * ライセンス：MIT License
 * 設問数：12,032問
 * CoTプロンプト：あり
@@ -219,7 +225,9 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
 * タスク分類：一般教養
 * 出典：[Xuan et al. (2025)](https://arxiv.org/abs/2503.10497)
 * lightevalタスクID：`swallow|mmlu_prox_english`
-* データセット：[li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX)
+* データセット：[tokyotech-llm/MMLU-ProX-English](https://huggingface.co/datasets/tokyotech-llm/MMLU-ProX-English)
+    * オリジナル [li-lab/MMLU-ProX](https://huggingface.co/datasets/li-lab/MMLU-ProX) の en subset かつ test split を複製して，科目ごとにサブセットを作成しました．
+* ライセンス：MIT License
 * 設問数：11,759問
 * CoTプロンプト：あり
 * 評価尺度：正解率
@@ -309,3 +317,4 @@ AIMEは主に米国高校生を対象とする試験で，代数・幾何・数�
     * ターン別：judge_score_overall_turn_{1,2}_avg
     * 全設問：judge_score_overall_avg
 * 事前準備：OpenAI API Key を 環境変数 `OPENAI_API_KEY` に設定してください．
+* 注意事項：コンテキスト超過エラーを防ぐため，1ターン目の応答文（深い推論過程を含まない最終出力）は最長8,192文字で切り詰めます．  
