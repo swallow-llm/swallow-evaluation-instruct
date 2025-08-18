@@ -68,14 +68,14 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 ```
 
 ## 実行方法
-[lighteval](https://github.com/huggingface/lighteval)はvLLMをはじめとする複数のバックエンドに対応していますが，本フレームワークではOpenAI API互換クライアントであるLiteLLMを使用してChat Completion API（推論API）を呼び出す方式を主にサポートしています．  
+[lighteval](https://github.com/huggingface/lighteval)はvLLMをはじめとする複数のバックエンドに対応していますが，本フレームワークではOpenAI API互換クライアントの[LiteLLM](https://docs.litellm.ai/docs/)を使用してChat Completion API（以下，"推論API"）を呼び出す方式を主にサポートしています．  
 オープンLLMを各自の計算環境で評価する場合は，vLLMで推論APIをホスティングしてからLiteLLMバックエンドを使用してAPIを呼び出す方式を推奨します．
 
 以下に，各方式の実行方法を説明します．コマンド例と同等のシェルスクリプトを [./scripts/examples](./scripts/examples) に格納しています．
 
 ### 1. LiteLLMバックエンドで実行
 
-`lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` で，OpenAI互換の Chat Completion API を提供するモデルを評価することができます．OpenAI o3 で GPQA (Diamond) ベンチマークを評価する例を以下に示します．  
+`lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` で，OpenAI互換の推論APIを提供するモデルを評価することができます．OpenAI o3 で GPQA (Diamond) ベンチマークを評価する例を以下に示します．  
 
 ```sh
 MODEL_NAME="openai/o3-2025-04-16" 
@@ -98,7 +98,7 @@ MODEL_ARGSのかわりにYAML設定ファイルパスを指定することもで
 TASK_ID はベンチマークの識別子です．swallow-evaluation-instruct ではlighteval公式実装に加えて，Swallowチームが実装したベンチマークを指定できます．  
 詳細は [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md) を参照してください．
 
-OpenAI互換APIを提供するDeepInfraやGoogle AI Studioなどのプロバイダ（[LiteLLM Supported Providers](https://docs.litellm.ai/docs/providers)）についても同様のコマンドで評価できます．  
+OpenAI互換の推論APIを提供するDeepInfraやGoogle AI Studioなどのプロバイダ（[LiteLLM Supported Providers](https://docs.litellm.ai/docs/providers)）についても同様のコマンドで評価できます．  
 ただしプロバイダやモデルによってはエラーが起きる場合があります．[Tips](./TIPS.md)
 
 ### 2. vLLMでホスティング → LiteLLMバックエンドで実行
@@ -142,7 +142,7 @@ uv run --isolated --locked --extra lighteval \
 ```
 
 `vllm serve` の引数 `--reasoning-parser` を指定することで，推論過程（reasoning_content）および最終出力（content）に分離したモデルの出力を受け取ることができます．  
-本フレームワークはモデルの最終出力から回答を抽出して正誤判定する仕様にしています（[評価方針](./EVALUATION_PRINCIPLE.md)）ので **推論型モデルの場合は必ず `--reasoning-parser` を指定してください．**
+本フレームワークはモデルの最終出力から回答を抽出して正誤判定する仕様にしています（[評価方針](./EVALUATION_POLICY.md)）ので **推論型モデルの場合は必ず `--reasoning-parser` を指定してください．**
 
 MODEL_ARGS の generation_parameters にはtemperatureのような文生成条件を指定できます．詳細は後述します．  
 **本フレームワークではデフォルトの文生成条件を定義していませんので，モデルやベンチマークごとに適切な条件を指定してください．** Ref. [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)
