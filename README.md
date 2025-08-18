@@ -272,7 +272,7 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 * `model`：評価に用いるモデル名．プロバイダー名を先頭に付けてください．（例：`hosted_vllm`）
 * `base_url`：プロバイダーに対応するURL．（例：vLLM をセルフホストする場合：`http://localhost:8000/v1`）
 * `api_key`：プロバイダーに対応するAPIキー．（例：OpenAI の場合：`sk-...`）
-* `reasoning_parser`（独自）：lighteval内（≠ vLLM内）で適用する reasoning parser の名前．vLLMのreasoning parserが非対応の推論型モデルに対して，Swallow独自のパーサー（`deepseek_r1_markup`）を適用できます．[Tips](./TIPS.md)
+* `reasoning_parser`（独自）：lighteval内（≠ vLLM内）で適用する reasoning parser の名前．vLLM非対応の推論型モデルを評価する場合，またはlightevalからvLLMを直接起動する場合のみ使用します．vLLMのreasoning parserに加えて，Swallow独自のパーサー（`deepseek_r1_markup`）を指定できます．[Tips](./TIPS.md)
 
 #### `MODEL_ARGS` - generation
 * `temperature`：サンプリングの温度．
