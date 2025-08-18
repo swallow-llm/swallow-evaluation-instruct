@@ -140,7 +140,7 @@ export OPENAI_API_KEY="{LLM-as-a-Judgeに使うOpenAI API Key}"
 uv run --isolated --locked --extra vllm \
     vllm serve $MODEL_NAME \
         --host localhost \
-        --port 8000
+        --port 8000 &
 
 BASE_URL="http://localhost:8000/v1"
 
