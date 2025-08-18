@@ -1,7 +1,7 @@
 # Swallowチームが実装したベンチマーク一覧
 
 swallow-evaluation-instruct では，[lighteval公式実装](https://github.com/huggingface/lighteval/releases/tag/v0.8.0)に加えて，Swallowチームが実装したベンチマークを評価することができます．  
-本文書ではSwallowチームが実装したベンチマークを紹介します．  
+本文書ではSwallowチームが新規に実装またはlighteval公式実装を改変したベンチマークを紹介します． 
 
 ## ベンチマーク一覧の表示
 
