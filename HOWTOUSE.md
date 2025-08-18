@@ -144,6 +144,8 @@ uv run --isolated --locked --extra vllm \
 
 BASE_URL="http://localhost:8000/v1"
 
+
+
 uv run --isolated --locked --extra lighteval \
     lighteval endpoint litellm \
         "model=hosted_vllm/$MODEL_NAME,base_url=$BASE_URL" \
@@ -230,3 +232,25 @@ lighteval endpoint litellm \
     --use-chat-template \
     --output-dir ./lighteval/outputs
 ```
+
+## 環境変数
+* `OPENAI_API_KEY`：
+* `LITELLM_CONCURRENT_CALLS`：
+
+## lighteval 実行時引数
+* --system-prompt
+* --save-details
+* --max-samples
+
+### lighteval MODEL_ARGS
+* `model`：
+* `base_url`：
+* `api_key`：
+* `reasoniing_parser`：
+
+#### MODEL_ARGS - generation_parameters
+* temperature：
+* top_p：
+* max_n：
+* max_new_tokens：
+
