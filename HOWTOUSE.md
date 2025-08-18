@@ -141,7 +141,7 @@ uv run --isolated --locked --extra lighteval \
         --save-details
 ```
 
-`vllm serve` の引数 `--reasoning-parser` を指定することで，深い推論過程（reasoning_content）および最終出力（content）に分離したモデルの出力を受け取ることができます．  
+`vllm serve` の引数 `--reasoning-parser` を指定することで，推論過程（reasoning_content）および最終出力（content）に分離したモデルの出力を受け取ることができます．  
 本フレームワークはモデルの最終出力から回答を抽出して正誤判定する仕様にしています（[評価方針](./EVALUATION_PRINCIPLE.md)）ので **推論型モデルの場合は必ず `--reasoning-parser` を指定してください．**
 
 MODEL_ARGS の generation_parameters にはtemperatureのような文生成条件を指定できます．詳細は後述します．  
@@ -242,7 +242,7 @@ lighteval endpoint litellm \
 
 ## 詳細な設定
 
-本フレームワークの動作に影響する環境変数，評価に影響するlightevalの実行時引数および文生成条件，およびvLLMでモデルをホスティングする際の主な設定項目を説明します．
+本フレームワークの動作に影響する環境変数，評価に影響するlightevalの実行時引数や文生成条件，およびvLLMでモデルをホスティングする際の主な設定項目を説明します．
 
 ### 環境変数
 
@@ -268,24 +268,38 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 * `--use-chat-template`：ユーザーの発話やシステムメッセージを対話形式に整形するテンプレートを適用します．**原則として必須です．**
 * `--max-samples`：評価対象のサンプル数．動作確認のために数件だけ実行するような場合に便利です．
 
-##### `MODEL_ARGS` - base_params
+#### `MODEL_ARGS` - base_params
 * `model`：評価に用いるモデル名．プロバイダー名を先頭に付けてください．（例：`hosted_vllm`）
 * `base_url`：プロバイダーに対応するURL．（例：vLLM をセルフホストする場合：`http://localhost:8000/v1`）
 * `api_key`：プロバイダーに対応するAPIキー．（例：OpenAI の場合：`sk-...`）
-* `reasoning_parser`（独自）：lighteval内（≠ vLLM内）で reasoning parser を適用する場合の引数．vLLMのreasoning parserが非対応の推論型モデルを扱う場合に，Swallow独自のパーサー（`deepseek_r1_markup`）を指定できます．[Tips](./TIPS.md)
+* `reasoning_parser`（独自）：lighteval内（≠ vLLM内）で適用する reasoning parser の名前．vLLMのreasoning parserが非対応の推論型モデルに対して，Swallow独自のパーサー（`deepseek_r1_markup`）を適用できます．[Tips](./TIPS.md)
 
-##### `MODEL_ARGS` - generation
-* temperature：サンプリングの温度．
-* top_p：核サンプリング（[Holtzman et al. (2020)](https://openreview.net/forum?id=rygGQyrFvH)）のパラメータ．
-* max_n（独自）：推論APIの1回の呼び出しにおいて生成させる応答数の最大値．
-* max_new_tokens：出力トークン数の最大値．
-* `reasoning_effort`
+#### `MODEL_ARGS` - generation
+* `temperature`：サンプリングの温度．
+* `top_p`：核サンプリング（[Holtzman et al. (2020)](https://openreview.net/forum?id=rygGQyrFvH)）のパラメータ．
+* `max_new_tokens`：出力トークン数の最大値．
+* `reasoning_effort`（独自）：推論の深さ（例："middle"）．LiteLLMが対応しているOpenAI o系列などの推論型モデルで利用できます．Ref. [Reasoning models](https://platform.openai.com/docs/guides/reasoning)
+* `max_n`（独自）：推論APIの1回の呼び出しにおいて生成させる応答数の最大値．
 
-#### 6. 主要な vLLM serve 実行時引数
-* `model`(位置変数)：評価に用いるモデル名．先頭にプロバイダー名は付けないでください．
-* --port：セルフホストするためのポート番号．衝突すると serve に失敗します．
-* --hf-token：HuggingFaceのトークン．モデルをロードするときに使用されます．
-* --tensor-parallel-size：GPUの並列数．モデルのヘッドの数に対して約数でなければなりません．
-* --max-model-len：モデルへの入力）モデルからの回答の長さの和の上限．
+### vLLM serve 実行時引数
+`vllm serve` コマンドの主な実行時引数は以下の通りです．
 
-> その他の実行時引数については公式のドキュメント：[vLLM CLI Guide](https://github.com/vllm-project/vllm/blob/v0.9.2/docs/cli/README.md)をご参照ください．
+* `model`(位置引数)：評価に用いるモデル名．HuggingFace Model ID または Model Checkpoint のパスを指定します．
+* `--reasoning_parser`：推論型モデルの出力を推論過程および最終出力に分離するparserの名前．**推論型モデルの場合は必ず指定してください．** 選択肢は公式ドキュメントを参照ください．[Reasoning Outputs](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)
+* `--port`：セルフホストするためのポート番号．衝突すると serve に失敗します．
+* `--hf-token`：HuggingFaceのトークン．モデルをロードするときに使用されます．
+* `--tensor-parallel-size`：GPUの並列数．注意機構のヘッド数に対して約数でなければなりません．
+* `--max-model-len`：モデルの最大コンテキスト長（入力と出力の和）．
+
+その他の実行時引数については公式のドキュメント：[vLLM CLI Guide](https://github.com/vllm-project/vllm/blob/v0.9.2/docs/cli/README.md)をご参照ください．
+
+## ライセンス
+
+本フレームワークは MIT License で配布します．ベンチマークのライセンスは [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md) を参照してください．
+
+## 関連資料
+本フレームワークの利用に関連する資料は以下の通りです．
+
+* [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)
+* [評価における課題と解決策](./TIPS.md)
+* [評価方針](./EVALUATION_POLICY.md)
