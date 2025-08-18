@@ -266,3 +266,13 @@ lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]
 * top_p：モデルに与える top_p．
 * max_n（独自）：一度の推論APIの呼び出しにおいて生成させる応答数の最大数．
 * max_new_tokens：モデルに与える max_new_tokens．
+
+
+#### 6. 主要な vLLM serve 実行時引数
+* `model`(位置変数)：評価に用いるモデル名．先頭にプロバイダー名は付けないでください．
+* --port：セルフホストするためのポート番号．衝突すると serve に失敗します．
+* --hf-token：HuggingFaceのトークン．モデルをロードするときに使用されます．
+* --tensor-parallel-size：GPUの並列数．モデルのヘッドの数に対して約数でなければなりません．
+* --max-model-len：モデルへの入力）モデルからの回答の長さの和の上限．
+
+> その他の実行時引数については公式のドキュメント：[vLLM CLI Guide](https://github.com/vllm-project/vllm/blob/v0.9.2/docs/cli/README.md)をご参照ください．
