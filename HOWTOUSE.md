@@ -4,9 +4,9 @@
 
 # 大規模言語モデル評価フレームワーク swallow-evaluation-instruct Ver. 202508
 
-このリポジトリでは，事後学習ずみモデルの評価を想定して[Swallowプロジェクト](https://swallow-llm.github.io/)にて開発した包括的評価フレームワーク swallow-evaluation-instruct（以下，"本フレームワーク"）を配布しています．  
+このリポジトリでは，推論型モデルのような事後学習ずみモデルの評価を想定して[Swallowプロジェクト](https://swallow-llm.github.io/)にて開発した包括的評価フレームワーク swallow-evaluation-instruct（以下，"本フレームワーク"）を配布しています．  
 
-swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，日本語および英語のベンチマークの追加および利便性の改善をおこなったものです．
+swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，日本語・英語ベンチマークの追加および利便性の改善をおこなったものです．
 LLMの研究開発にご活用ください．
 
 ## 環境構築
@@ -47,6 +47,12 @@ hf auth login --token (ここに huggingface token を書く)
 deactivate
 ```
 
+新しいモデルに対応する必要がある場合は，vLLMやLiteLLM, transformersなど推論に関するパッケージを適宜更新してください．  
+ただしパッケージの更新成否および更新した場合の動作は保証しておりません．  
+
+```
+uv lock --upgrade-package vllm litellm transformers
+```
 
 
 ### 4. パスの追加
@@ -72,8 +78,6 @@ MODEL_NAME="openai/o3-2025-04-16"
 BASE_URL="https://api.openai.com/v1/" # OpenAI API の URL
 API_KEY="{OpenAIのAPI Key}"
 TASK_ID="swallow|gpqa:diamond"
-
-cd swallow-evaluation-instruct
 
 uv run --isolated --locked --extra lighteval \
     lighteval endpoint litellm \
@@ -153,22 +157,20 @@ uv run --isolated --locked --extra lighteval \
 システムメッセージで推論の有無や深さを制御するモデルや，推奨システムメッセージがある場合に使用します．
 
 ### 3. [非推奨] lightevalからvLLMを直接起動する
-[標準的な lighteval の実行方法](https://huggingface.co/docs/lighteval/quicktour)に則って，vLLMを直接起動して動かすことも可能です．  
-ただしvLLM V0モードのみをサポート（Ref. [vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)）していること，およびvLLM起動時引数のサポートが不完全であることから，先に紹介している[vLLMでホスティングしてから評価する方式](#2-vllmでホスティング--litellmバックエンドで実行)を推奨します．
+[lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/quicktour)で説明されているとおり `lighteval vllm MODEL_ARGS` によってvLLMを直接起動して動かすことも可能です．  
+ただしこの方式は vLLM V0エンジンのみをサポート（Ref. [vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)）していること，およびvLLM実行時引数のサポートが不完全であることから，先に紹介している[vLLMでホスティングしてから評価する方式](#2-vllmでホスティング--litellmバックエンドで実行)を推奨します．
 
-例えば，[tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)について[swallow|gpqa:diamond](BENCHMARKS#gpqadiamond)のタスクで評価したい場合は以下のように実行することができます．
+[tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)で GPQA (Diamond) ベンチマークを評価する例を以下に示します．
 
 ```sh
 export VLLM_WORKER_MULTIPROC_METHOD=spawn
-export VLLM_USE_V1=0 # vLLM V0モードを指定する設定
+export VLLM_USE_V1=0 # vLLM V0エンジンを指定
 
 MODEL_NAME="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5"
 TASK_ID="swallow|gpqa:diamond"
 
-MODEL_ARGS="pretrained=$MODEL_NAME"
-# ここで dtype，tensor_parallel_size，max_model_length，gpu_memory_utlization，そして各種 generation_parameters なども指定することができる．
-
-cd swallow-evaluation-instruct-private
+MODEL_ARGS="pretrained=$MODEL_NAME,generation_parameters={temperature:0.0}"
+# MODEL_ARGSには dtype，tensor_parallel_size，max_model_length，gpu_memory_utlization，そして各種 generation_parameters なども指定できる．
 
 uv run --isolated --locked --extra lighteval \
     lighteval vllm \
@@ -176,8 +178,7 @@ uv run --isolated --locked --extra lighteval \
         "${TASK_ID}|0|0" \
         --use-chat-template \
         --output-dir ./lighteval/outputs \
-        # --reasoning-parser (reasoning parser はここで指定)
-        # --system-prompt （System prompt はここで指定）
+        --system-prompt "あなたは誠実で優秀な日本人のアシスタントです。"
 ```
 
 
