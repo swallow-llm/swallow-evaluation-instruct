@@ -8,10 +8,11 @@ swallow-evaluation-instruct では，[lighteval公式実装](https://github.com/
 Swallowチームが実装したベンチマークの一覧は `lighteval tasks list` コマンドの "swallow" suite に表示されます．
 
 ## 共通事項
-* 深い推論を妨げる可能性があるため，実験設定はゼロショットを推奨します．  
 * MT-Benchはマルチターン対話，それ以外はシングルターン対話で出題・回答する形式を採用しています．
 * MT-Benchを除き，デコーディングパラメータは実行時に自由に指定できます．推奨設定がある場合は明記しています．  
   なおSwallowリーダーボードの場合，コンテキスト長さは最長32,768トークン，推奨設定を書いていないベンチマークは貪欲法（temperature=0）を採用しています．  
+* 深い推論を妨げる可能性があるため，タスクIDの後ろに0をつけてゼロショットで評価することを推奨します．  
+  例： `swallow|swallow_jmmlu|0|0`
 
 ## 日本語のベンチマーク
 
@@ -155,7 +156,8 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
     * カテゴリ別（例）：judge_score_roleplay_avg
     * ターン別：judge_score_overall_turn_{1,2}_avg
     * 全設問：judge_score_overall_avg
-* 事前準備： OpenAI API Key を 環境変数 `OPENAI_API_KEY` に設定してください．
+* 事前準備：OpenAI API Key を 環境変数 `OPENAI_API_KEY` に設定してください．  
+* 注意事項：コンテキスト超過エラーを防ぐため，1ターン目の応答文（深い推論過程を含まない最終出力）は最長8,192文字で切り詰めます．  
 
 ## 英語のベンチマーク
 
@@ -309,3 +311,4 @@ AIMEは主に米国高校生を対象とする試験で，代数・幾何・数�
     * ターン別：judge_score_overall_turn_{1,2}_avg
     * 全設問：judge_score_overall_avg
 * 事前準備：OpenAI API Key を 環境変数 `OPENAI_API_KEY` に設定してください．
+* 注意事項：コンテキスト超過エラーを防ぐため，1ターン目の応答文（深い推論過程を含まない最終出力）は最長8,192文字で切り詰めます．  
