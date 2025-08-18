@@ -47,6 +47,8 @@ hf auth login --token (ここに huggingface token を書く)
 deactivate
 ```
 
+
+
 ### 4. パスの追加
 最後に `~/.bashrc` に必要なパスを追加して uv に関する初期設定は終了です．
 
@@ -58,16 +60,15 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 ## 実行方法
 [lighteval](https://github.com/huggingface/lighteval)はvLLMをはじめとする複数のバックエンドに対応していますが，本フレームワークではOpenAI API互換クライアントであるLiteLLMを使用してChat Completion APIを呼び出す方式を主にサポートしています．  
 オープンLLMを各自の計算環境で評価する場合は，vLLMでOpenAI互換APIをホスティングしてからLiteLLMバックエンドを使用してAPIを呼び出す方式を推奨します．
-また非推奨ではありますが，lightevalから直接vLLMを呼び出す方法も使用できます．  
 
 [lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/v0.8.0/en/index)も参照してください．  
 
 ### 1. LiteLLMバックエンドで実行
 
-`lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` で，OpenAI互換の Chat Completion API を提供するモデルを評価することができます．OpenAIのGPT-4oで GPQA (Diamond) ベンチマークを評価する例を以下に示します．  
+`lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` で，OpenAI互換の Chat Completion API を提供するモデルを評価することができます．OpenAI o3 で GPQA (Diamond) ベンチマークを評価する例を以下に示します．  
 
 ```sh
-MODEL_NAME="openai/gpt-4o-2024-08-06" 
+MODEL_NAME="openai/o3-2025-04-16" 
 BASE_URL="https://api.openai.com/v1/" # OpenAI API の URL
 API_KEY="{OpenAIのAPI Key}"
 TASK_ID="swallow|gpqa:diamond"
@@ -83,7 +84,7 @@ uv run --isolated --locked --extra lighteval \
 ```
 
 MODEL_ARGS には `model` や `base_url` を指定します．modelパラメータは `{プロバイダ名}/{MODEL ID}` という表記にします（例："openai/gpt-4o-2024-08-06"）．
-そのほか，generation_parameters によって文生成条件を指定できます．詳細は後述します．  
+MODEL_ARGSのかわりにYAML設定ファイルパスを指定することもできます．詳細は後述します．  
 
 TASK_ID はベンチマークの識別子です．swallow-evaluation-instruct ではlighteval公式実装に加えて，Swallowチームが実装したベンチマークを指定できます．  
 詳細は [Swallowチームが実装したベンチマーク一覧][./BENCHMARKS.md] を参照してください．
@@ -94,6 +95,7 @@ OpenAI互換APIを提供するDeepInfraやGoogle AI Studioなどのプロバイ�
 ### 2. vLLMでホスティング → LiteLLMバックエンドで実行
 
 [vLLM serveコマンド](https://docs.vllm.ai/en/v0.9.2/serving/openai_compatible_server.html)でOpenAI互換APIを立ててからLiteLLM経由でAPIを呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)などのvLLMの豊富な機能を活用しながら評価を実行できます．  
+Qwen3 で HumanEval ベンチマークを評価する例を以下に示します．  
 
 ```sh
 MODEL_NAME="hosted_vllm/Qwen/Qwen3-4B" # vLLMのプロバイダ名は "hosted_vllm" です
@@ -117,42 +119,42 @@ uv run --isolated --locked --extra lighteval \
         --output-dir ./lighteval/outputs
 ```
 
+`vllm serve` の引数 `--reasoning-parser` を指定することで，深い推論過程（reasoning_content）および最終出力（content）に分離したモデルの出力を受け取ることができます．  
+本フレームワークは最終出力から回答を抽出して正誤判定する仕様にしています（[評価方針](./EVALUATION_PRINCIPLE.md)）ので **推論型モデルの場合は必ず `--reasoning-parser` を指定してください．**
 
+MODEL_ARGS の generation_parameters にはtemperatureのような文生成条件を指定できます．詳細は後述します．  
 
-例えば，[tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)について[swallow|gpqa:diamond](BENCHMARKS#gpqadiamond)のタスクで評価したい場合は以下のように実行することができます．
+非推論型モデルの場合は `--reasoning-parser` が不要なのでシンプルな実行時引数になります．  
+[tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)で 日本語MT-Benchを評価する例を以下に示します．
 
 ```sh
 MODEL_NAME="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5"
-TASK_ID="swallow|gpqa:diamond"
+TASK_ID="swallow|japanese_mt_bench"
 
-# API_KEY="" 
-# OpenAIの推論APIや，それと互換性のあるNVIDIA NIM，DeepInfra の推論APIを使用する場合には対応するAPIキーを指定．
-
-cd swallow-evaluation-instruct-private
+export OPENAI_API_KEY="{LLM-as-a-Judgeに使うOpenAI API Key}" 
 
 uv run --isolated --locked --extra vllm \
-    vllm serve --model $MODEL_NAME \
+    vllm serve $MODEL_NAME \
         --host localhost \
-        --port 8000 \
-        # --reasoning-parser (vLLM 公式の reasoning parser はここで指定)
+        --port 8000
 
 BASE_URL="http://localhost:8000/v1"
-# HuggingFace のモデルをローカルでサーブする場合には "http://localhost:(ポート番号)/v1" を指定．
-# 各種推論APIを用いる場合には，OpenAIであれば "https://api.openai.com/v1" を，
-# DeepInfraであれば "https://api.deepinfra.com/v1/openai" のように適当なURLを指定する．
 
 uv run --isolated --locked --extra lighteval \
     lighteval endpoint litellm \
-        "model=$MODEL_NAME,base_url=$BASE_URL" \ # 必要なら api_key=$API_KEY を追加
+        "model=$MODEL_NAME,base_url=$BASE_URL" \
         "${TASK_ID}|0|0" \
         --use-chat-template \
+        --system-prompt "あなたは誠実で優秀な日本人のアシスタントです。" \
         --output-dir ./lighteval/outputs
 ```
 
+`--system-prompt` には，いわゆるシステムメッセージを指定できます．  
+システムメッセージで推論の有無や深さを制御するモデルや，推奨システムメッセージがある場合に使用します．
 
-### 2）lighteval → vLLM （非推奨）
+### 3. [非推奨] lightevalからvLLMを直接起動する
 [標準的な lighteval の実行方法](https://huggingface.co/docs/lighteval/quicktour)に則って，vLLMを直接起動して動かすことも可能です．  
-ただし，**OpenAIなどの推論APIが使用できない**点や，**vLLM V0モードのみをサポート**（Ref. [vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)）している点，**vLLM実行時引数のサポートが不完全**である点から，先に紹介している[vLLMをserveしてから評価する方法](#１vllm-serve--lighteval推奨)を推奨します．
+ただしvLLM V0モードのみをサポート（Ref. [vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)）していること，およびvLLM起動時引数のサポートが不完全であることから，先に紹介している[vLLMでホスティングしてから評価する方式](#2-vllmでホスティング--litellmバックエンドで実行)を推奨します．
 
 例えば，[tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)について[swallow|gpqa:diamond](BENCHMARKS#gpqadiamond)のタスクで評価したい場合は以下のように実行することができます．
 
