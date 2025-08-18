@@ -91,7 +91,7 @@ MODEL_ARGS には `model` や `base_url` を指定します．modelパラメー�
 MODEL_ARGSのかわりにYAML設定ファイルパスを指定することもできます．詳細は後述します．  
 
 TASK_ID はベンチマークの識別子です．swallow-evaluation-instruct ではlighteval公式実装に加えて，Swallowチームが実装したベンチマークを指定できます．  
-詳細は [Swallowチームが実装したベンチマーク一覧][./BENCHMARKS.md] を参照してください．
+詳細は [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md) を参照してください．
 
 OpenAI互換APIを提供するDeepInfraやGoogle AI Studioなどのプロバイダ（[LiteLLM Supported Providers](https://docs.litellm.ai/docs/providers)）についても同様のコマンドで評価できます．  
 ただしプロバイダやモデルによってはエラーが起きる場合があります．[Tips](./TIPS.md)
