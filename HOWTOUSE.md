@@ -233,24 +233,36 @@ lighteval endpoint litellm \
     --output-dir ./lighteval/outputs
 ```
 
-## 環境変数
-* `OPENAI_API_KEY`：
-* `LITELLM_CONCURRENT_CALLS`：
+#### 4. 主要な環境変数
+* `OPENAI_API_KEY`：MT-Bench(日英) で LLM-as-a-judge として OpenAI のモデル（gpt-4o-2024-08-06）を使うために使用します．
+* `LITELLM_CONCURRENT_CALLS`：LiteLLM 内で推論APIを呼ぶときの最大並列数．大きくすると処理速度は向上するかもしれませんが，推論APIの挙動が不安定になることもああります．
 
-## lighteval 実行時引数
-* --system-prompt
-* --save-details
-* --max-samples
 
-### lighteval MODEL_ARGS
-* `model`：
-* `base_url`：
-* `api_key`：
-* `reasoniing_parser`：
+#### 5. 主要な lighteval 実行時引数
+lighteval を用いた評価は以下のフォーマットで実行しています：
+```sh
+lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]
+```
 
-#### MODEL_ARGS - generation_parameters
-* temperature：
-* top_p：
-* max_n：
-* max_new_tokens：
+本節では上記のうち `[OPTIONS]` と `{MODEL_ARGS}` について，主要なもの・Swallow独自(*)なものを説明します．
+なお，`{MODEL_ARGS}` は [config の書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)に倣って base_params と generation に分けて説明をします．
 
+> (*)：該当の引数には「（独自）」と記しております．
+
+##### I. `[OPTIONS]`
+
+* --system-prompt：モデルに与える system prompt．
+* --save-details：評価の詳細（プロンプト・応答・メトリクスなど）を .parquet で出力させるオプション．
+* --max-samples：評価対象のサンプル数．動作確認のためにサンプル数を絞って実行することなどができます．
+
+##### II. `MODEL_ARGS` - base_params
+* `model`：評価に用いるモデル名．プロバイダー名が先頭に付く．（例：`hosted_vllm`）
+* `base_url`：プロバイダーに対応するURL．（例：vLLM をセルフホストする場合：`http://localhost:8000/v1`）
+* `api_key`：プロバイダーに対応するAPIキー．（例：OpenAI の場合：`sk-...`）
+* `reasoniing_parser`（独自）：lighteval内（≠ vLLM内）で reasoning parser を使う場合用の引数．Swallow独自のパーサー（`deepseek_r1_markup`）はこちらからしか指定できないです．
+
+##### III. `MODEL_ARGS` - generation
+* temperature：モデルに与える tempearture．
+* top_p：モデルに与える top_p．
+* max_n（独自）：一度の推論APIの呼び出しにおいて生成させる応答数の最大数．
+* max_new_tokens：モデルに与える max_new_tokens．
