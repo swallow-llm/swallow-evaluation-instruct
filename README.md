@@ -22,7 +22,7 @@ swallow-evaluation-instruct は，HuggingFace社が開発した評価フレー�
     - [2. オープンモデルを自身の計算環境で評価](#2-オープンモデルを自身の計算環境で評価)
       - [\[推奨\] 2.1. vLLMでホスティング -\> LiteLLMバックエンドで実行](#推奨-21-vllmでホスティング---litellmバックエンドで実行)
       - [\[非推奨\] 2.2. lightevalからvLLMを直接起動する](#非推奨-22-lightevalからvllmを直接起動する)
-      - [MODEL\_ARGS のかわりに設定ファイルを使う方法](#model_args-のかわりに設定ファイルを使う方法)
+    - [3. MODEL\_ARGS のかわりに設定ファイルを使う方法](#3-model_args-のかわりに設定ファイルを使う方法)
   - [詳細な設定](#詳細な設定)
     - [環境変数](#環境変数)
     - [lighteval 実行時引数](#lighteval-実行時引数)
@@ -257,7 +257,7 @@ uv run --isolated --locked --extra lighteval \
         --save-details
 ```
 
-#### MODEL_ARGS のかわりに設定ファイルを使う方法
+### 3. MODEL_ARGS のかわりに設定ファイルを使う方法
 
 `"model=$MODEL_NAME,api_key=$API_KEY,base_url=$BASE_URL"` のような lighteval の実行時引数 MODEL_ARGS は，以下に例示するようなYAML形式の設定ファイル（.yaml）に置き換えることができます．
 モデルIDやAPIのエンドポイントなどは `base_params` 以下に書き，temperatureやtop_pなどの文生成条件は `generation` 以下に書きます（参考：[設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)）．
@@ -341,13 +341,19 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 
 本フレームワークは MIT License で配布します．ベンチマークのライセンスは [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md) を参照してください．
 
-## 謝辞・貢献
+## 謝辞
 
-本フレームワークの開発者および謝辞は [ACKNOWLEDGMENTS](./ACKNOWLEDGMENTS.md) を参照してください．
+本成果物 swallow-evaluation-instruct は，産総研政策予算プロジェクト「フィジカル領域の生成AI基盤モデルに関する研究開発」の結果得られたものです．
+またモデルの評価については、国立研究開発法人 産業技術総合研究所が構築・運用する AI 橋渡しクラウド（ABCI: AI Bridging Cloud Infrastructure）の「大規模言語モデル構築支援プログラム」の支援を受けました．
+本研究は，東京科学大学のスーパーコンピュータ TSUBAME4.0 を利用して実施しました．
+
+## 開発者
+
+本フレームワークの開発者は [CONTRIBUTORS](./CONTRIBUTORS.md) を参照してください．
 
 ## 関連資料
 本フレームワークの利用に関連する資料は以下の通りです．
 
 * [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)
 * [評価における課題と解決策](./TIPS.md)
-* [評価方針](./EVALUATION_POLICY.md)
+* ~~[評価方針](./EVALUATION_POLICY.md)~~
