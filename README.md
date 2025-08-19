@@ -319,9 +319,10 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 #### `[OPTIONS]`
 
 * `--system-prompt`：モデルに与えるシステムメッセージ．
-* `--save-details`：評価の詳細（プロンプト・モデルの応答文・メトリクスなど）を .parquet形式で保存するオプション．
+* `--save-details`：評価の詳細（プロンプト・モデルの応答文・メトリクスなど）をParquet形式で保存するオプション．
 * `--use-chat-template`：ユーザーの発話やシステムメッセージを対話形式に整形するテンプレートを適用します．**原則として必須です．**
 * `--max-samples`：評価対象のサンプル数．動作確認のために数件だけ実行するような場合に便利です．
+* `--output-dir`：評価結果の保存先．保存先を "DIR" とすると，評価結果は `DIR/results/モデル名/` 配下に，評価の詳細は `DIR/details/モデル名/` 配下にそれぞれ保存されます．
 
 #### `MODEL_ARGS` - base_params
 * `model`：評価に用いるモデル名．プロバイダー名を先頭に付けてください．（例：`hosted_vllm`）
