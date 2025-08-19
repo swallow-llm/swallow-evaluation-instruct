@@ -31,6 +31,7 @@ swallow-evaluation-instruct は，HuggingFace社が開発した評価フレー�
       - [`MODEL_ARGS` - generation](#model_args---generation)
     - [vLLM serve 実行時引数](#vllm-serve-実行時引数)
   - [ライセンス](#ライセンス)
+  - [謝辞・貢献](#謝辞・貢献)
   - [関連資料](#関連資料)
 
 ## 以前のバージョンをお探しの方へ
@@ -339,6 +340,10 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 ## ライセンス
 
 本フレームワークは MIT License で配布します．ベンチマークのライセンスは [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md) を参照してください．
+
+## 謝辞・貢献
+
+本フレームワークの開発者および謝辞は [ACKNOWLEDGMENTS](./ACKNOWLEDGMENTS.md) を参照してください．
 
 ## 関連資料
 本フレームワークの利用に関連する資料は以下の通りです．
