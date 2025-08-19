@@ -290,7 +290,7 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 `vllm serve` コマンドの主な実行時引数は以下の通りです．
 
 * `model`(位置引数)：評価に用いるモデル名．HuggingFace Model ID または Model Checkpoint のパスを指定します．
-* `--reasoning_parser`：推論型モデルの出力を推論過程および最終出力に分離するparserの名前．**推論型モデルの場合は必ず指定してください．** 選択肢は公式ドキュメントを参照ください．[Reasoning Outputs](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)
+* `--reasoning_parser`：推論型モデルの出力を推論過程および最終出力に分離するparserの名前．**推論型モデルの場合は必ず指定してください．** 選択肢は公式ドキュメントを参照ください．[Reasoning Outputs](https://docs.vllm.ai/en/v0.9.2/features/reasoning_outputs.html)
 * `--port`：セルフホストするためのポート番号．衝突すると serve に失敗します．
 * `--hf-token`：HuggingFaceのトークン．モデルをロードするときに使用されます．
 * `--tensor-parallel-size`：GPUの並列数．注意機構のヘッド数に対して約数でなければなりません．
