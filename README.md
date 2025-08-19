@@ -182,7 +182,7 @@ uv run --isolated --locked --extra lighteval \
         --save-details
 ```
 
-`vllm serve` の引数 `--reasoning-parser` を指定することで，推論過程（reasoning_content）および最終出力（content）が分離されたモデルの出力を受け取ることができます．本フレームワークはモデルの最終出力から回答を抽出して正誤判定する仕様となっています（参考：[評価方針](./EVALUATION_POLICY.md)）ので **推論型モデルの場合は必ず `--reasoning-parser` を指定してください．**
+`vllm serve` の引数 `--reasoning-parser` を指定することで，推論過程（reasoning_content）および最終出力（content）が分離されたモデルの出力を受け取ることができます．本フレームワークはモデルの最終出力から回答を抽出して正誤判定する仕様となっていますので **推論型モデルの場合は必ず `--reasoning-parser` を指定してください．**
 
 MODEL_ARGS の generation_parameters にはtemperatureのような文生成条件を指定できます．詳細は後述します．**本フレームワークではデフォルトの文生成条件を定義していませんので，モデルやベンチマークごとに適切な条件を指定してください**（参考：[Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)）．
 
@@ -335,13 +335,13 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 * `top_p`：核サンプリング（[Holtzman et al. (2020)](https://openreview.net/forum?id=rygGQyrFvH)）のパラメータ．
 * `max_new_tokens`：出力トークン数の最大値．
 * `reasoning_effort`（独自）：推論の深さ（例："middle"）．LiteLLMが対応しているOpenAI o系列などの推論型モデルで利用できます（参考：[Reasoning models](https://platform.openai.com/docs/guides/reasoning)）
-* `max_n`（独自）：推論APIの1回の呼び出しにおいて生成させる応答数の最大値．
+* `max_n`（独自）：推論APIの1回の呼び出しにおいて生成させる応答数の最大値（いわゆる"n"の上限値）．OpenAIのように応答数を制限しているプロバイダは1を指定してください（参考：[Tips](./TIPS.md)）．
 
 ### vLLM serve 実行時引数
 `vllm serve` コマンドの主な実行時引数は以下の通りです．
 
 * `model`(位置引数)：評価に用いるモデル名．HuggingFace Model ID または Model Checkpoint のパスを指定します．
-* `--reasoning_parser`：推論型モデルの出力を推論過程および最終出力に分離するparserの名前．**推論型モデルの場合は必ず指定してください．** 選択肢は公式ドキュメントを参照ください（[Reasoning Outputs](https://docs.vllm.ai/en/v0.9.2/features/reasoning_outputs.html)）．
+* `--reasoning-parser`：推論型モデルの出力を推論過程および最終出力に分離するparserの名前．**推論型モデルの場合は必ず指定してください．** 選択肢は公式ドキュメントを参照ください（[Reasoning Outputs](https://docs.vllm.ai/en/v0.9.2/features/reasoning_outputs.html)）．
 * `--port`：セルフホストするためのポート番号．衝突すると serve に失敗します．
 * `--hf-token`：HuggingFaceのトークン．モデルをロードするときに使用されます．
 * `--tensor-parallel-size`：GPUの並列数．注意機構のヘッド数に対して約数でなければなりません．
@@ -368,4 +368,3 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 
 * [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)
 * [評価における課題と解決策](./TIPS.md)
-* ~~[評価方針](./EVALUATION_POLICY.md)~~
