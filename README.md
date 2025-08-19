@@ -209,7 +209,7 @@ uv run --isolated --locked --extra lighteval \
 `--system-prompt` には，いわゆるシステムメッセージを指定できます．システムメッセージで推論の有無や深さを制御するモデルや，推奨システムメッセージがデフォルトと異なる場合に使用します．
 
 #### [非推奨] 2.2. lightevalからvLLMを直接起動する
-[lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/quicktour)で説明されているとおり `lighteval vllm MODEL_ARGS` によってvLLMを直接起動して実行することも可能です．ただし，この方式は vLLM V0エンジンのみをサポート（[vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)を参照）していること，およびvLLM実行時引数のサポートが不完全であることから，先に紹介している[vLLMでホスティングしてから評価する方式](#2-vllmでホスティング--litellmバックエンドで実行)を推奨します．
+[lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/quicktour)で説明されているとおり `lighteval vllm MODEL_ARGS` によってvLLMを直接起動して実行することも可能です．ただし，この方式は vLLM V0エンジンのみをサポート（[vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)を参照）していること，およびvLLM実行時引数のサポートが不完全であることから，先に紹介している[vLLMでホスティングしてから評価する方式](#推奨-21-vllmでホスティング---litellmバックエンドで実行)を推奨します．
 
 [tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)で GPQA (Diamond) ベンチマークを評価する例を以下に示します．
 
