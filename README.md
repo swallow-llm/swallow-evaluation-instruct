@@ -16,7 +16,7 @@ swallow-evaluation-instruct は，HuggingFace社が開発した評価フレー�
 ## 環境構築
 本フレームワークでは環境管理に [uv](https://docs.astral.sh/uv/) を使用することを想定しています．
 環境構築は以下の流れで行ってください． \
-なお，以下の操作を一つのシェルスクリプトにまとめた `setup_env.sh` が `scripts` にございますので，適宜ご活用ください．
+なお，以下の一連の操作を一つのシェルスクリプトにまとめたものが [./scripts/setup_env.sh](./scripts/setup_env.sh) にございますので，適宜ご活用ください．
 
 
 ### 1. uv のインストール
