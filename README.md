@@ -6,7 +6,7 @@
 
 このリポジトリでは，推論型モデルのような事後学習済みモデルの評価を想定して[Swallowプロジェクト](https://swallow-llm.github.io/)にて開発した包括的評価フレームワーク swallow-evaluation-instruct（以下，"本フレームワーク"）を配布しています．  
 
-swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，日本語・英語ベンチマークの追加および利便性の改善をおこなったものです．この場をお借りしてlighteval開発者およびベンチマーク開発者の皆様にお礼申し上げます．  
+swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，[日本語・英語ベンチマークの追加](./BENCHMARKS.md)および利便性の改善をおこなったものです．この場をお借りしてlighteval開発者およびベンチマーク開発者の皆様にお礼申し上げます．  
 
 （事後学習を施していない）事前学習済みモデルの評価をお考えの方は [swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください．
 
@@ -22,7 +22,8 @@ swallow-evaluation-instruct は，HuggingFace社が開発した評価フレー�
     - [2. オープンモデルを自身の計算環境で評価](#2-オープンモデルを自身の計算環境で評価)
       - [\[推奨\] 2.1. vLLMでホスティング -\> LiteLLMバックエンドで実行](#推奨-21-vllmでホスティング---litellmバックエンドで実行)
       - [\[非推奨\] 2.2. lightevalからvLLMを直接起動する](#非推奨-22-lightevalからvllmを直接起動する)
-      - [MODEL\_ARGS のかわりに設定ファイルを使う方法](#model_args-のかわりに設定ファイルを使う方法)
+    - [3. MODEL\_ARGS のかわりに設定ファイルを使う方法](#3-model_args-のかわりに設定ファイルを使う方法)
+    - [4. 評価結果の出力先](#4-評価結果の出力先)
   - [詳細な設定](#詳細な設定)
     - [環境変数](#環境変数)
     - [lighteval 実行時引数](#lighteval-実行時引数)
@@ -181,7 +182,7 @@ uv run --isolated --locked --extra lighteval \
         --save-details
 ```
 
-`vllm serve` の引数 `--reasoning-parser` を指定することで，推論過程（reasoning_content）および最終出力（content）が分離されたモデルの出力を受け取ることができます．本フレームワークはモデルの最終出力から回答を抽出して正誤判定する仕様となっています（参考：[評価方針](./EVALUATION_POLICY.md)）ので **推論型モデルの場合は必ず `--reasoning-parser` を指定してください．**
+`vllm serve` の引数 `--reasoning-parser` を指定することで，推論過程（reasoning_content）および最終出力（content）が分離されたモデルの出力を受け取ることができます．本フレームワークはモデルの最終出力から回答を抽出して正誤判定する仕様となっていますので **推論型モデルの場合は必ず `--reasoning-parser` を指定してください．**
 
 MODEL_ARGS の generation_parameters にはtemperatureのような文生成条件を指定できます．詳細は後述します．**本フレームワークではデフォルトの文生成条件を定義していませんので，モデルやベンチマークごとに適切な条件を指定してください**（参考：[Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)）．
 
@@ -257,7 +258,7 @@ uv run --isolated --locked --extra lighteval \
         --save-details
 ```
 
-#### MODEL_ARGS のかわりに設定ファイルを使う方法
+### 3. MODEL_ARGS のかわりに設定ファイルを使う方法
 
 `"model=$MODEL_NAME,api_key=$API_KEY,base_url=$BASE_URL"` のような lighteval の実行時引数 MODEL_ARGS は，以下に例示するようなYAML形式の設定ファイル（.yaml）に置き換えることができます．
 モデルIDやAPIのエンドポイントなどは `base_params` 以下に書き，temperatureやtop_pなどの文生成条件は `generation` 以下に書きます（参考：[設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)）．
@@ -286,6 +287,11 @@ lighteval endpoint litellm \
     --save-details
 ```
 
+### 4. 評価結果の出力先
+
+評価した結果のスコアは標準出力に表示されるほかに，評価設定および結果が `--output-dir` で指定したディレクトリ配下にモデル名とともにJSON形式で保存されます（例：`./lighteval/outputs/results/openai/o3-2025-04-16/results_{タイムスタンプ}.json`）．
+またlighteval実行時引数 `--save-details` を付けた場合は，各設問に対するプロンプトやモデルの応答文などの詳細がParquet形式で保存されます（[Tips](./TIPS.md)参照）．
+
 ## 詳細な設定
 
 本フレームワークの動作に影響する環境変数，評価に影響するlightevalの実行時引数や文生成条件，およびvLLMでモデルをホスティングする際の主な設定項目を説明します．
@@ -299,18 +305,24 @@ lighteval endpoint litellm \
 
 ### lighteval 実行時引数
 
-lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` のうち，本節では `[OPTIONS]` および `{MODEL_ARGS}` の主要な項目およびSwallow独自(*)の項目を説明します．なお `{MODEL_ARGS}` は [設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)に倣って，YAML形式ファイルの base_params と generation に分けて説明をします．
+lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` のうち，本節では `TASK_ID`，`[OPTIONS]` および `{MODEL_ARGS}` の主要な項目およびSwallow独自(*)の項目を説明します．なお `{MODEL_ARGS}` は [設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)に倣って，YAML形式ファイルの base_params と generation に分けて説明をします．
 
 ここで説明しない実行時引数については [lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/quicktour)を参照してください．
 
 > (*)：該当の引数には「（独自）」と記しております．
 
+
+#### `TASK_ID`
+
+評価したいベンチマークのタスクIDを `{タスクID}|0|0` という形式で指定します（例：`swallow|gpqa:diamond|0|0`）．タスクID直後の数字はFew-shot数を表していますが，[Swallowチームが実装したベンチマーク](./BENCHMARKS.md)ではゼロショット設定を意味する `0|0` を指定することを推奨します．
+
 #### `[OPTIONS]`
 
 * `--system-prompt`：モデルに与えるシステムメッセージ．
-* `--save-details`：評価の詳細（プロンプト・モデルの応答文・メトリクスなど）を .parquet形式で保存するオプション．
+* `--save-details`：評価の詳細（プロンプト・モデルの応答文・メトリクスなど）をParquet形式で保存するオプション．
 * `--use-chat-template`：ユーザーの発話やシステムメッセージを対話形式に整形するテンプレートを適用します．**原則として必須です．**
 * `--max-samples`：評価対象のサンプル数．動作確認のために数件だけ実行するような場合に便利です．
+* `--output-dir`：評価結果の保存先．保存先を "DIR" とすると，評価結果は `DIR/results/モデル名/` 配下に，評価の詳細は `DIR/details/モデル名/` 配下にそれぞれタイムスタンプとともに保存されます．
 
 #### `MODEL_ARGS` - base_params
 * `model`：評価に用いるモデル名．プロバイダー名を先頭に付けてください．（例：`hosted_vllm`）
@@ -323,13 +335,13 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 * `top_p`：核サンプリング（[Holtzman et al. (2020)](https://openreview.net/forum?id=rygGQyrFvH)）のパラメータ．
 * `max_new_tokens`：出力トークン数の最大値．
 * `reasoning_effort`（独自）：推論の深さ（例："middle"）．LiteLLMが対応しているOpenAI o系列などの推論型モデルで利用できます（参考：[Reasoning models](https://platform.openai.com/docs/guides/reasoning)）
-* `max_n`（独自）：推論APIの1回の呼び出しにおいて生成させる応答数の最大値．
+* `max_n`（独自）：推論APIの1回の呼び出しにおいて生成させる応答数の最大値（いわゆる"n"の上限値）．OpenAIのように応答数を制限しているプロバイダは1を指定してください（参考：[Tips](./TIPS.md)）．
 
 ### vLLM serve 実行時引数
 `vllm serve` コマンドの主な実行時引数は以下の通りです．
 
 * `model`(位置引数)：評価に用いるモデル名．HuggingFace Model ID または Model Checkpoint のパスを指定します．
-* `--reasoning_parser`：推論型モデルの出力を推論過程および最終出力に分離するparserの名前．**推論型モデルの場合は必ず指定してください．** 選択肢は公式ドキュメントを参照ください（[Reasoning Outputs](https://docs.vllm.ai/en/v0.9.2/features/reasoning_outputs.html)）．
+* `--reasoning-parser`：推論型モデルの出力を推論過程および最終出力に分離するparserの名前．**推論型モデルの場合は必ず指定してください．** 選択肢は公式ドキュメントを参照ください（[Reasoning Outputs](https://docs.vllm.ai/en/v0.9.2/features/reasoning_outputs.html)）．
 * `--port`：セルフホストするためのポート番号．衝突すると serve に失敗します．
 * `--hf-token`：HuggingFaceのトークン．モデルをロードするときに使用されます．
 * `--tensor-parallel-size`：GPUの並列数．注意機構のヘッド数に対して約数でなければなりません．
@@ -341,13 +353,18 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 
 本フレームワークは MIT License で配布します．ベンチマークのライセンスは [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md) を参照してください．
 
-## 謝辞・貢献
+## 謝辞
 
-本フレームワークの開発者および謝辞は [ACKNOWLEDGMENTS](./ACKNOWLEDGMENTS.md) を参照してください．
+本成果物 swallow-evaluation-instruct は，産総研政策予算プロジェクト「フィジカル領域の生成AI基盤モデルに関する研究開発」の結果得られたものです．
+またモデルの評価については、国立研究開発法人 産業技術総合研究所が構築・運用する AI 橋渡しクラウド（ABCI: AI Bridging Cloud Infrastructure）の「大規模言語モデル構築支援プログラム」の支援を受けました．
+本研究は，東京科学大学のスーパーコンピュータ TSUBAME4.0 を利用して実施しました．
+
+## 開発者
+
+本フレームワークの開発者は [CONTRIBUTORS](./CONTRIBUTORS.md) を参照してください．
 
 ## 関連資料
 本フレームワークの利用に関連する資料は以下の通りです．
 
 * [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)
 * [評価における課題と解決策](./TIPS.md)
-* [評価方針](./EVALUATION_POLICY.md)
