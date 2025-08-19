@@ -179,7 +179,7 @@ done
 
 uv run --isolated --locked --extra lighteval \
     lighteval endpoint litellm \
-        "model=hosted_vllm/$MODEL_NAME,base_url=$BASE_URL" \
+        "model=$MODEL_NAME,base_url=$BASE_URL" \
         "${TASK_ID}|0|0" \
         --use-chat-template \
         --system-prompt "あなたは誠実で優秀な日本人のアシスタントです。" \
