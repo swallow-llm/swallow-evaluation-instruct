@@ -23,6 +23,7 @@ swallow-evaluation-instruct は，HuggingFace社が開発した評価フレー�
       - [\[推奨\] 2.1. vLLMでホスティング -\> LiteLLMバックエンドで実行](#推奨-21-vllmでホスティング---litellmバックエンドで実行)
       - [\[非推奨\] 2.2. lightevalからvLLMを直接起動する](#非推奨-22-lightevalからvllmを直接起動する)
     - [3. MODEL\_ARGS のかわりに設定ファイルを使う方法](#3-model_args-のかわりに設定ファイルを使う方法)
+    - [4. 評価結果の出力](#4-評価結果の出力)
   - [詳細な設定](#詳細な設定)
     - [環境変数](#環境変数)
     - [lighteval 実行時引数](#lighteval-実行時引数)
@@ -285,6 +286,11 @@ lighteval endpoint litellm \
     --output-dir ./lighteval/outputs \
     --save-details
 ```
+
+### 4. 評価結果の出力
+
+評価した結果のスコアは標準出力に表示されるほかに，同一の内容が `--output-dir` で指定したディレクトリ配下にモデル名とともにJSON形式で保存されます（例：`./lighteval/outputs/results/openai/o3-2025-04-16/results_{タイムスタンプ}.json`）．
+またlighteval実行時引数 `--save-details` を付けた場合は，各設問に対するプロンプトやモデルの応答文などの詳細がParquet形式で保存されます（[Tips](./TIPS.md)参照）．
 
 ## 詳細な設定
 
