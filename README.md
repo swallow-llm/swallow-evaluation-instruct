@@ -6,9 +6,9 @@
 
 このリポジトリでは，推論型モデルのような事後学習済みモデルの評価を想定して[Swallowプロジェクト](https://swallow-llm.github.io/)にて開発した包括的評価フレームワーク swallow-evaluation-instruct（以下，"本フレームワーク"）を配布しています．  
 
-swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，日本語・英語ベンチマークの追加および利便性の改善をおこなったものです．この場をお借りしてフレームワーク開発者およびベンチマーク開発者の皆様にお礼申し上げます．  
+swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，日本語・英語ベンチマークの追加および利便性の改善をおこなったものです．この場をお借りしてlighteval開発者およびベンチマーク開発者の皆様にお礼申し上げます．  
 
-事前学習済みモデルの評価をお考えの方は [swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください．
+（事後学習を施していない）事前学習済みモデルの評価をお考えの方は [swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください．
 
 ## 以前のバージョンをお探しの方へ
 以前のバージョンをご利用になりたい方は[Releases](https://github.com/swallow-llm/swallow-evaluation-instruct/releases)を参照してください．
@@ -16,7 +16,7 @@ swallow-evaluation-instruct は，HuggingFace社が開発した評価フレー�
 ## 環境構築
 本フレームワークでは環境管理に [uv](https://docs.astral.sh/uv/) を使用することを想定しています．
 環境構築は以下の流れで行ってください． \
-なお，以下の一連の操作を一つのシェルスクリプトにまとめたものが [./scripts/setup_env.sh](./scripts/setup_env.sh) にございますので，適宜ご活用ください．
+なお，以下の一連の操作を一つのシェルスクリプトにまとめたものが [./scripts/setup_env.sh](./scripts/setup_env.sh) にありますので，適宜ご活用ください．
 
 
 ### 1. uv のインストール
@@ -47,14 +47,13 @@ uv pip install huggingface_hub[cli]
 ```
 
 ここでインストールした `huggingface_hub` を用いて huggingface へのログインを済ませておくのをお勧めします．
-これにより，ライセンスの承諾が必要なモデルなどを評価することができるようになります．
+これにより，ライセンスの承諾が必要なモデルなどを評価できるようになります．
 ```sh
 hf auth login --token (ここに huggingface token を書く)
 deactivate
 ```
 
-新しいモデルに対応する必要がある場合は，vLLMやLiteLLM, transformersなど推論に関するパッケージを適宜更新してください．  
-ただしパッケージの更新成否および更新した場合の動作は保証しておりません．  
+新しいモデルに対応する必要がある場合は，[vLLM](https://github.com/vllm-project/vllm)や[LiteLLM](https://github.com/BerriAI/litellm), [transformers](https://github.com/huggingface/transformers)など推論に関するパッケージを適宜更新してください．ただし，パッケージの更新成否および更新した場合の動作は保証しておりません．  
 
 ```
 uv lock --upgrade-package vllm litellm transformers
@@ -70,14 +69,13 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 ```
 
 ## 実行方法
-[lighteval](https://github.com/huggingface/lighteval)はvLLMをはじめとする複数のバックエンドに対応していますが，本フレームワークではOpenAI API互換クライアントの[LiteLLM](https://docs.litellm.ai/docs/)を使用してChat Completion API（以下，"推論API"）を呼び出す方式を主にサポートしています．  
-オープンLLMを各自の計算環境で評価する場合は，vLLMで推論APIをホスティングしてからLiteLLMバックエンドを使用してAPIを呼び出す方式を推奨します．
+lightevalはvLLMをはじめとする複数のバックエンドに対応していますが，本フレームワークではOpenAI API互換クライアントのLiteLLMを使用してChat Completion API（以下，"推論API"）を呼び出す方式を主にサポートしています．オープンLLMを各自の計算環境で評価する場合は，vLLMで推論APIをホスティングしてからLiteLLMバックエンドを使用し，APIを呼び出す方式を推奨します．
 
 以下に，各方式の実行方法を説明します．コマンド例と同等のシェルスクリプトを [./scripts/examples](./scripts/examples) に格納しています．
 
 ### 1. LiteLLMバックエンドで実行
 
-`lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` で，OpenAI互換の推論APIを提供するモデルを評価することができます．OpenAI o3 で GPQA (Diamond) ベンチマークを評価する例を以下に示します．  
+`lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` で，OpenAI互換の推論APIを提供するモデルを評価できます．OpenAI o3 で GPQA (Diamond) ベンチマークを評価する例を以下に示します．  
 
 ```sh
 MODEL_NAME="openai/o3-2025-04-16" 
@@ -95,17 +93,15 @@ uv run --isolated --locked --extra lighteval \
 ```
 
 MODEL_ARGS には `model` や `base_url` を指定します．modelパラメータは `{プロバイダ名}/{MODEL ID}` という表記にします（例："openai/gpt-4o-2024-08-06"）．
-MODEL_ARGSのかわりにYAML設定ファイルパスを指定することもできます．詳細は後述します．  
+MODEL_ARGSのかわりにYAML設定ファイルのパスを指定できます．詳細は後述します．  
 
-TASK_ID はベンチマークの識別子です．swallow-evaluation-instruct ではlighteval公式実装に加えて，Swallowチームが実装したベンチマークを指定できます．  
-詳細は [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md) を参照してください．
+TASK_ID はベンチマークの識別子です．swallow-evaluation-instruct ではlighteval公式実装に加えて，Swallowチームが実装したベンチマークを指定できます．詳細は [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md) を参照してください．
 
-OpenAI互換の推論APIを提供するDeepInfraやGoogle AI Studioなどのプロバイダ（[LiteLLM Supported Providers](https://docs.litellm.ai/docs/providers)）についても同様のコマンドで評価できます．  
-ただしプロバイダやモデルによってはエラーが起きる場合があります．[Tips](./TIPS.md)
+OpenAI互換の推論APIを提供するDeepInfraやGoogle AI Studioなどのプロバイダ（[LiteLLM Supported Providers](https://docs.litellm.ai/docs/providers)）についても同様のコマンドで評価できます．ただし，プロバイダやモデルによってはエラーが起きる場合があります（[Tips](./TIPS.md)参照）．
 
 ### 2. vLLMでホスティング → LiteLLMバックエンドで実行
 
-[vLLM serveコマンド](https://docs.vllm.ai/en/v0.9.2/serving/openai_compatible_server.html)でOpenAI互換APIを立ててからLiteLLM経由でAPIを呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)などのvLLMの豊富な機能を活用しながら評価を実行できます．  
+[vLLM serveコマンド](https://docs.vllm.ai/en/v0.9.2/serving/openai_compatible_server.html)でOpenAI互換APIを起動し，そのAPIをLiteLLM経由で呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)などのvLLMの豊富な機能を活用しながら評価を実行できます．  
 
 #### 2-1. 推論型モデルの実行例
 
@@ -152,16 +148,13 @@ uv run --isolated --locked --extra lighteval \
         --save-details
 ```
 
-`vllm serve` の引数 `--reasoning-parser` を指定することで，推論過程（reasoning_content）および最終出力（content）に分離したモデルの出力を受け取ることができます．  
-本フレームワークはモデルの最終出力から回答を抽出して正誤判定する仕様にしています（[評価方針](./EVALUATION_POLICY.md)）ので **推論型モデルの場合は必ず `--reasoning-parser` を指定してください．**
+`vllm serve` の引数 `--reasoning-parser` を指定することで，推論過程（reasoning_content）および最終出力（content）が分離されたモデルの出力を受け取ることができます．本フレームワークはモデルの最終出力から回答を抽出して正誤判定する仕様となっています（参考：[評価方針](./EVALUATION_POLICY.md)）ので **推論型モデルの場合は必ず `--reasoning-parser` を指定してください．**
 
-MODEL_ARGS の generation_parameters にはtemperatureのような文生成条件を指定できます．詳細は後述します．  
-**本フレームワークではデフォルトの文生成条件を定義していませんので，モデルやベンチマークごとに適切な条件を指定してください．** Ref. [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)
+MODEL_ARGS の generation_parameters にはtemperatureのような文生成条件を指定できます．詳細は後述します．**本フレームワークではデフォルトの文生成条件を定義していませんので，モデルやベンチマークごとに適切な条件を指定してください**（参考：[Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)）．
 
 #### 2-2. 非推論型モデルの実行例
 
-非推論型モデルの場合についても説明します．
-この場合は `--reasoning-parser` が不要なのでシンプルな実行時引数になります．  
+非推論型モデルの場合についても説明します．この場合は `--reasoning-parser` が不要なのでシンプルな実行時引数になります．  
 [tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)で 日本語MT-Benchを評価する例を以下に示します．
 
 ```sh
@@ -204,12 +197,10 @@ uv run --isolated --locked --extra lighteval \
         --save-details
 ```
 
-`--system-prompt` には，いわゆるシステムメッセージを指定できます．  
-システムメッセージで推論の有無や深さを制御するモデルや，推奨システムメッセージがデフォルトと異なる場合に使用します．
+`--system-prompt` には，いわゆるシステムメッセージを指定できます．システムメッセージで推論の有無や深さを制御するモデルや，推奨システムメッセージがデフォルトと異なる場合に使用します．
 
 ### 3. [非推奨] lightevalからvLLMを直接起動する
-[lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/quicktour)で説明されているとおり `lighteval vllm MODEL_ARGS` によってvLLMを直接起動して実行することも可能です．  
-ただしこの方式は vLLM V0エンジンのみをサポート（Ref. [vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)）していること，およびvLLM実行時引数のサポートが不完全であることから，先に紹介している[vLLMでホスティングしてから評価する方式](#2-vllmでホスティング--litellmバックエンドで実行)を推奨します．
+[lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/quicktour)で説明されているとおり `lighteval vllm MODEL_ARGS` によってvLLMを直接起動して実行することも可能です．ただし，この方式は vLLM V0エンジンのみをサポート（[vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)を参照）していること，およびvLLM実行時引数のサポートが不完全であることから，先に紹介している[vLLMでホスティングしてから評価する方式](#2-vllmでホスティング--litellmバックエンドで実行)を推奨します．
 
 [tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)で GPQA (Diamond) ベンチマークを評価する例を以下に示します．
 
@@ -236,7 +227,7 @@ uv run --isolated --locked --extra lighteval \
 ### MODEL_ARGS のかわりに設定ファイルを使う方法
 
 `"model=$MODEL_NAME,api_key=$API_KEY,base_url=$BASE_URL"` のような lighteval の実行時引数 MODEL_ARGS は，以下に例示するようなYAML形式の設定ファイル（.yaml）に置き換えることができます．
-モデルIDやAPIのエンドポイントなどは `base_params` 以下に書き，temperatureやtop_pなどの文生成条件は `generation` 以下に書きます．Ref. [設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)
+モデルIDやAPIのエンドポイントなどは `base_params` 以下に書き，temperatureやtop_pなどの文生成条件は `generation` 以下に書きます（参考：[設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)）．
 
 ```yaml
 # config.yaml
@@ -275,9 +266,7 @@ lighteval endpoint litellm \
 
 ### lighteval 実行時引数
 
-lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` のうち，
-本節では `[OPTIONS]` および `{MODEL_ARGS}` の主要な項目およびSwallow独自(*)の項目を説明します．  
-なお `{MODEL_ARGS}` は [設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)に倣って，YAML形式ファイルの base_params と generation に分けて説明をします．
+lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` のうち，本節では `[OPTIONS]` および `{MODEL_ARGS}` の主要な項目およびSwallow独自(*)の項目を説明します．なお `{MODEL_ARGS}` は [設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)に倣って，YAML形式ファイルの base_params と generation に分けて説明をします．
 
 ここで説明しない実行時引数については [lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/quicktour)を参照してください．
 
@@ -294,20 +283,20 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 * `model`：評価に用いるモデル名．プロバイダー名を先頭に付けてください．（例：`hosted_vllm`）
 * `base_url`：プロバイダーに対応するURL．（例：vLLM をセルフホストする場合：`http://localhost:8000/v1`）
 * `api_key`：プロバイダーに対応するAPIキー．（例：OpenAI の場合：`sk-...`）
-* `reasoning_parser`（独自）：lighteval内（≠ vLLM内）で適用する reasoning parser の名前．vLLM非対応の推論型モデルを評価する場合，またはlightevalからvLLMを直接起動する場合のみ使用します．vLLMのreasoning parserに加えて，Swallow独自のパーサー（`deepseek_r1_markup`）を指定できます．[Tips](./TIPS.md)
+* `reasoning_parser`（独自）：lighteval内（≠ vLLM内）で適用する reasoning parser の名前．vLLM非対応の推論型モデルを評価する場合，またはlightevalからvLLMを直接起動する場合のみ使用します．vLLMのreasoning parserに加えて，Swallow独自のパーサー（`deepseek_r1_markup`）を指定できます（参考：[Tips](./TIPS.md)）．
 
 #### `MODEL_ARGS` - generation
 * `temperature`：サンプリングの温度．
 * `top_p`：核サンプリング（[Holtzman et al. (2020)](https://openreview.net/forum?id=rygGQyrFvH)）のパラメータ．
 * `max_new_tokens`：出力トークン数の最大値．
-* `reasoning_effort`（独自）：推論の深さ（例："middle"）．LiteLLMが対応しているOpenAI o系列などの推論型モデルで利用できます．Ref. [Reasoning models](https://platform.openai.com/docs/guides/reasoning)
+* `reasoning_effort`（独自）：推論の深さ（例："middle"）．LiteLLMが対応しているOpenAI o系列などの推論型モデルで利用できます（参考：[Reasoning models](https://platform.openai.com/docs/guides/reasoning)）
 * `max_n`（独自）：推論APIの1回の呼び出しにおいて生成させる応答数の最大値．
 
 ### vLLM serve 実行時引数
 `vllm serve` コマンドの主な実行時引数は以下の通りです．
 
 * `model`(位置引数)：評価に用いるモデル名．HuggingFace Model ID または Model Checkpoint のパスを指定します．
-* `--reasoning_parser`：推論型モデルの出力を推論過程および最終出力に分離するparserの名前．**推論型モデルの場合は必ず指定してください．** 選択肢は公式ドキュメントを参照ください．[Reasoning Outputs](https://docs.vllm.ai/en/v0.9.2/features/reasoning_outputs.html)
+* `--reasoning_parser`：推論型モデルの出力を推論過程および最終出力に分離するparserの名前．**推論型モデルの場合は必ず指定してください．** 選択肢は公式ドキュメントを参照ください（[Reasoning Outputs](https://docs.vllm.ai/en/v0.9.2/features/reasoning_outputs.html)）．
 * `--port`：セルフホストするためのポート番号．衝突すると serve に失敗します．
 * `--hf-token`：HuggingFaceのトークン．モデルをロードするときに使用されます．
 * `--tensor-parallel-size`：GPUの並列数．注意機構のヘッド数に対して約数でなければなりません．
