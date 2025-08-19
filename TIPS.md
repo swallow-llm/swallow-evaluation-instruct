@@ -68,7 +68,7 @@ LiveCodeBenchのように深い推論を必要とする高難易度のベンチ�
 
 ### [非推奨・動作保証外] 事前学習済みモデルをむりやり評価したい
 
-[Swallowチームが実装したベンチマーク](./BENCHMARKS.md)はすべてゼロショット設定かつ"考えてから解く"ことができる事後学習済みモデルを想定した仕様になっていますので，"続きの単語を予測する"事前学習済みモデルの評価に使うことは非推奨かつ動作を保証しておりません（[swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください）．
+[Swallowチームが実装したベンチマーク](./BENCHMARKS.md)はすべてゼロショット設定かつ"考えてから解く"ことができる事後学習済みモデルを想定した仕様になっていますので，"続きの単語を予測する"事前学習済みモデルの評価に使うことは非推奨かつ動作を保証しておりません（かわりに [swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください）．
 
 非推奨を承知のうえで事前学習済みモデルをむりやり評価したい場合は `vllm serve` 実行時引数の `--chat-template` に `./resources/chat_template_base_model.jinja` を指定してください．このチャットテンプレートは設問のプロンプトを対話形式ではなくただの平文としてモデルに渡す働きをします．実行例を以下に示します．
 
