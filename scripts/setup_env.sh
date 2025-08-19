@@ -24,6 +24,10 @@ uv pip install huggingface_hub[cli]
 # HuggingFace のログインを行う場合は，自身の huggingface token を書き，コメントアウトを外してから実行すること．
 # hf auth login --token (ここに huggingface token を書く)
 
+# 新しいモデルに対応するためにパッケージを更新する場合は，以下のコメントアウトを外して実行すること．
+# ただし，パッケージの更新成否および更新した場合の動作は保証しておりません．
+# uv lock --upgrade-package vllm litellm transformers
+
 deactivate
 
 

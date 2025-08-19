@@ -16,7 +16,8 @@ uv run --isolated --locked --extra lighteval \
         "model=$MODEL_NAME,base_url=$BASE_URL,api_key=$API_KEY" \
         "${TASK_ID}|0|0" \
         --use-chat-template \
-        --output-dir ./lighteval/outputs
+        --output-dir ./lighteval/outputs \
+        --save-details
 
 
 # 結果の集計
