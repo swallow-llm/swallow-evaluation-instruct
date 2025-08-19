@@ -211,8 +211,8 @@ uv run --isolated --locked --extra lighteval \
         $MODEL_ARGS \
         "${TASK_ID}|0|0" \
         --use-chat-template \
-        --output-dir ./lighteval/outputs \
         --system-prompt "あなたは誠実で優秀な日本人のアシスタントです。" \
+        --output-dir ./lighteval/outputs \
         --save-details
 ```
 
@@ -240,7 +240,9 @@ lighteval endpoint litellm \
     "config.yaml" \ # MODEL_ARGSのかわりに設定ファイルのパスを書く
     "${TASK_ID}|0|0" \
     --use-chat-template \
-    --output-dir ./lighteval/outputs
+    --system-prompt "あなたは誠実で優秀な日本人のアシスタントです。" \
+    --output-dir ./lighteval/outputs \
+    --save-details
 ```
 
 ## 詳細な設定
