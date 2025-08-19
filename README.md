@@ -305,11 +305,16 @@ lighteval endpoint litellm \
 
 ### lighteval 実行時引数
 
-lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` のうち，本節では `[OPTIONS]` および `{MODEL_ARGS}` の主要な項目およびSwallow独自(*)の項目を説明します．なお `{MODEL_ARGS}` は [設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)に倣って，YAML形式ファイルの base_params と generation に分けて説明をします．
+lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` のうち，本節では `TASK_ID`，`[OPTIONS]` および `{MODEL_ARGS}` の主要な項目およびSwallow独自(*)の項目を説明します．なお `{MODEL_ARGS}` は [設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)に倣って，YAML形式ファイルの base_params と generation に分けて説明をします．
 
 ここで説明しない実行時引数については [lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/quicktour)を参照してください．
 
 > (*)：該当の引数には「（独自）」と記しております．
+
+
+#### `TASK_ID`
+
+評価したいベンチマークのタスクIDを `{タスクID}|0|0` という形式で指定します（例：`swallow|gpqa:diamond|0|0`）．タスクID直後の数字はFew-shot数を表していますが，[Swallowチームが実装したベンチマーク](./BENCHMARKS.md)ではゼロショット設定を意味する `0|0` を指定することを推奨します．
 
 #### `[OPTIONS]`
 
