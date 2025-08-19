@@ -10,6 +10,29 @@ swallow-evaluation-instruct は，HuggingFace社が開発した評価フレー�
 
 （事後学習を施していない）事前学習済みモデルの評価をお考えの方は [swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください．
 
+- [大規模言語モデル評価フレームワーク swallow-evaluation-instruct Ver. 202508](#大規模言語モデル評価フレームワーク-swallow-evaluation-instruct-ver-202508)
+  - [以前のバージョンをお探しの方へ](#以前のバージョンをお探しの方へ)
+  - [環境構築](#環境構築)
+    - [1. uv のインストール](#1-uv-のインストール)
+    - [2. uv 内への python のインストール](#2-uv-内への-python-のインストール)
+    - [3. 共通パッケージのインストール](#3-共通パッケージのインストール)
+    - [4. パスの追加](#4-パスの追加)
+  - [実行方法](#実行方法)
+    - [1. OpenAI互換の推論APIを提供するモデルの評価](#1-openai互換の推論apiを提供するモデルの評価)
+    - [2. オープンモデルを自身の計算環境で評価](#2-オープンモデルを自身の計算環境で評価)
+      - [\[推奨\] 2.1. vLLMでホスティング -\> LiteLLMバックエンドで実行](#推奨-21-vllmでホスティング---litellmバックエンドで実行)
+      - [\[非推奨\] 2.2. lightevalからvLLMを直接起動する](#非推奨-22-lightevalからvllmを直接起動する)
+      - [MODEL\_ARGS のかわりに設定ファイルを使う方法](#model_args-のかわりに設定ファイルを使う方法)
+  - [詳細な設定](#詳細な設定)
+    - [環境変数](#環境変数)
+    - [lighteval 実行時引数](#lighteval-実行時引数)
+      - [`[OPTIONS]`](#options)
+      - [`MODEL_ARGS` - base\_params](#model_args---base_params)
+      - [`MODEL_ARGS` - generation](#model_args---generation)
+    - [vLLM serve 実行時引数](#vllm-serve-実行時引数)
+  - [ライセンス](#ライセンス)
+  - [関連資料](#関連資料)
+
 ## 以前のバージョンをお探しの方へ
 以前のバージョンをご利用になりたい方は[Releases](https://github.com/swallow-llm/swallow-evaluation-instruct/releases)を参照してください．
 
@@ -69,11 +92,15 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 ```
 
 ## 実行方法
+本フレームワークでは，OpenAI API互換のChat Completion API（以下，"推論API"）を提供するモデルの評価とvLLMでのホスティングが可能なオープンモデルの評価をサポートしています．
+
+<!-- 
 lightevalはvLLMをはじめとする複数のバックエンドに対応していますが，本フレームワークではOpenAI API互換クライアントのLiteLLMを使用してChat Completion API（以下，"推論API"）を呼び出す方式を主にサポートしています．オープンLLMを各自の計算環境で評価する場合は，vLLMで推論APIをホスティングしてからLiteLLMバックエンドを使用し，APIを呼び出す方式を推奨します．
+-->
 
 以下に，各方式の実行方法を説明します．コマンド例と同等のシェルスクリプトを [./scripts/examples](./scripts/examples) に格納しています．
 
-### 1. LiteLLMバックエンドで実行
+### 1. OpenAI互換の推論APIを提供するモデルの評価
 
 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [OPTIONS]` で，OpenAI互換の推論APIを提供するモデルを評価できます．OpenAI o3 で GPQA (Diamond) ベンチマークを評価する例を以下に示します．  
 
@@ -99,20 +126,25 @@ TASK_ID はベンチマークの識別子です．swallow-evaluation-instruct �
 
 OpenAI互換の推論APIを提供するDeepInfraやGoogle AI Studioなどのプロバイダ（[LiteLLM Supported Providers](https://docs.litellm.ai/docs/providers)）についても同様のコマンドで評価できます．ただし，プロバイダやモデルによってはエラーが起きる場合があります（[Tips](./TIPS.md)参照）．
 
-### 2. vLLMでホスティング → LiteLLMバックエンドで実行
+### 2. オープンモデルを自身の計算環境で評価
 
-[vLLM serveコマンド](https://docs.vllm.ai/en/v0.9.2/serving/openai_compatible_server.html)でOpenAI互換APIを起動し，そのAPIをLiteLLM経由で呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)などのvLLMの豊富な機能を活用しながら評価を実行できます．  
+オープンモデルを各自の計算環境で評価する場合は，vLLMで推論APIをホスティングしてからLiteLLMバックエンドを使用し，APIを呼び出す方式を推奨します．
 
-#### 2-1. 推論型モデルの実行例
+#### [推奨] 2.1. vLLMでホスティング -> LiteLLMバックエンドで実行
 
-Qwen3 で HumanEval ベンチマークを評価する例を以下に示します．  
+[vLLM serveコマンド](https://docs.vllm.ai/en/v0.9.2/serving/openai_compatible_server.html)でOpenAI互換APIを起動し，そのAPIをLiteLLM経由で呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)などのvLLMの豊富な機能を活用しながら評価を実行できます．
+
+**推論型モデルの評価実行例**
+
+Qwen3 で HumanEval ベンチマークを評価する例を以下に示します．
+例では1つのシェルスクリプト内でvLLMのホスティング（`vLLM serve`）とLiteLLMバックエンドによる評価の実行を行っていますが，それぞれを分離して明示的に別のプロセスで行うことも可能です．
 
 ```sh
 MODEL_ID="Qwen/Qwen3-4B"
 # vLLMでセルフホストする場合のプロバイダ名は "hosted_vllm" とします
 MODEL_NAME="hosted_vllm/${MODEL_ID}"
 TASK_ID="swallow|humaneval"
-# vLLMのセルフホストの状況がVLLM_LOG_FILEに表示されます
+# vLLMのセルフホストの状況がVLLM_LOG_FILEに出力されます
 VLLM_LOG_FILE="./vllm.log"
 
 setsid uv run --isolated --locked --extra vllm \
@@ -152,7 +184,7 @@ uv run --isolated --locked --extra lighteval \
 
 MODEL_ARGS の generation_parameters にはtemperatureのような文生成条件を指定できます．詳細は後述します．**本フレームワークではデフォルトの文生成条件を定義していませんので，モデルやベンチマークごとに適切な条件を指定してください**（参考：[Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)）．
 
-#### 2-2. 非推論型モデルの実行例
+**非推論型モデルの評価実行例**
 
 非推論型モデルの場合についても説明します．この場合は `--reasoning-parser` が不要なのでシンプルな実行時引数になります．  
 [tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)で 日本語MT-Benchを評価する例を以下に示します．
@@ -161,13 +193,13 @@ MODEL_ARGS の generation_parameters にはtemperatureのような文生成条�
 MODEL_ID="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5"
 MODEL_NAME="hosted_vllm/${MODEL_ID}"
 TASK_ID="swallow|japanese_mt_bench"
-# vLLMのセルフホストの状況がVLLM_LOG_FILEに表示されます
+# vLLMのセルフホストの状況がVLLM_LOG_FILEに出力されます
 VLLM_LOG_FILE="./vllm.log"
 
 export OPENAI_API_KEY="{LLM-as-a-Judgeに使うOpenAI API Key}" 
 
 setsid uv run --isolated --locked --extra vllm \
-    vllm serve $MODEL_NAME \
+    vllm serve $MODEL_ID \
         --host localhost \
         --port 8000 >"$VLLM_LOG_FILE" 2>&1 &
 
@@ -199,8 +231,8 @@ uv run --isolated --locked --extra lighteval \
 
 `--system-prompt` には，いわゆるシステムメッセージを指定できます．システムメッセージで推論の有無や深さを制御するモデルや，推奨システムメッセージがデフォルトと異なる場合に使用します．
 
-### 3. [非推奨] lightevalからvLLMを直接起動する
-[lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/quicktour)で説明されているとおり `lighteval vllm MODEL_ARGS` によってvLLMを直接起動して実行することも可能です．ただし，この方式は vLLM V0エンジンのみをサポート（[vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)を参照）していること，およびvLLM実行時引数のサポートが不完全であることから，先に紹介している[vLLMでホスティングしてから評価する方式](#2-vllmでホスティング--litellmバックエンドで実行)を推奨します．
+#### [非推奨] 2.2. lightevalからvLLMを直接起動する
+[lighteval公式ドキュメント](https://huggingface.co/docs/lighteval/quicktour)で説明されているとおり `lighteval vllm MODEL_ARGS` によってvLLMを直接起動して実行することも可能です．ただし，この方式は vLLM V0エンジンのみをサポート（[vLLM V1](https://docs.vllm.ai/en/stable/usage/v1_guide.html)を参照）していること，およびvLLM実行時引数のサポートが不完全であることから，先に紹介している[vLLMでホスティングしてから評価する方式](#推奨-21-vllmでホスティング---litellmバックエンドで実行)を推奨します．
 
 [tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5](https://huggingface.co/tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5)で GPQA (Diamond) ベンチマークを評価する例を以下に示します．
 
@@ -224,7 +256,7 @@ uv run --isolated --locked --extra lighteval \
         --save-details
 ```
 
-### MODEL_ARGS のかわりに設定ファイルを使う方法
+#### MODEL_ARGS のかわりに設定ファイルを使う方法
 
 `"model=$MODEL_NAME,api_key=$API_KEY,base_url=$BASE_URL"` のような lighteval の実行時引数 MODEL_ARGS は，以下に例示するようなYAML形式の設定ファイル（.yaml）に置き換えることができます．
 モデルIDやAPIのエンドポイントなどは `base_params` 以下に書き，temperatureやtop_pなどの文生成条件は `generation` 以下に書きます（参考：[設定ファイルの書き方](https://huggingface.co/docs/lighteval/v0.8.0/en/use-litellm-as-backend)）．
