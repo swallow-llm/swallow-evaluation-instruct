@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+# このスクリプトはクローンしたリポジトリのルートディレクトリで実行してください．
+
 # 1. uv のインストール
 curl -LsSf https://astral.sh/uv/install.sh | sh
 export PATH="$HOME/.local/bin:$PATH"
@@ -12,9 +14,6 @@ uv python pin 3.10.14
 
 
 # 3. 共通パッケージのインストール
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-cd "$SCRIPT_DIR/.."
-
 uv venv ".common_envs"
 source ".common_envs/bin/activate"
 

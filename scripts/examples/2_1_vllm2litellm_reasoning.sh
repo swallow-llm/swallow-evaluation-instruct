@@ -1,12 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
+# このスクリプトはクロンしたリポジトリのルートディレクトリで実行してください．
+
 MODEL_ID="Qwen/Qwen3-4B" 
 # vLLMでセルフホストする場合のプロバイダ名は "hosted_vllm" とします
 MODEL_NAME="hosted_vllm/${MODEL_ID}"
 TASK_ID="swallow|humaneval"
 
-cd swallow-evaluation-instruct
 source scripts/examples/utils.sh
 
 

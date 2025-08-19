@@ -1,13 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
+# このスクリプトはクローンしたリポジトリのルートディレクトリで実行してください．
+
 MODEL_ID="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5"
 MODEL_NAME="hosted_vllm/${MODEL_ID}"
 TASK_ID="swallow|japanese_mt_bench"
 
 export OPENAI_API_KEY="{LLM-as-a-Judgeに使うOpenAI API Key}" 
-
-cd swallow-evaluation-instruct
 source scripts/examples/utils.sh
 
 

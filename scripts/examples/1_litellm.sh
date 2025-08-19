@@ -1,12 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
+# このスクリプトはクローンしたリポジトリのルートディレクトリで実行してください．
+
 MODEL_NAME="openai/o3-2025-04-16" 
 BASE_URL="https://api.openai.com/v1/" # OpenAI API の URL
 API_KEY="{OpenAIのAPI Key}" 
 TASK_ID="swallow|gpqa:diamond"
-
-cd swallow-evaluation-instruct
 
 
 # 評価
