@@ -32,7 +32,8 @@ swallow-evaluation-instruct は，HuggingFace社が開発した評価フレー�
       - [`MODEL_ARGS` - generation](#model_args---generation)
     - [vLLM serve 実行時引数](#vllm-serve-実行時引数)
   - [ライセンス](#ライセンス)
-  - [謝辞・貢献](#謝辞・貢献)
+  - [謝辞](#謝辞)
+  - [開発者](#開発者)
   - [関連資料](#関連資料)
 
 ## 以前のバージョンをお探しの方へ
