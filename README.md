@@ -212,7 +212,8 @@ uv run --isolated --locked --extra lighteval \
         "${TASK_ID}|0|0" \
         --use-chat-template \
         --output-dir ./lighteval/outputs \
-        --system-prompt "あなたは誠実で優秀な日本人のアシスタントです。"
+        --system-prompt "あなたは誠実で優秀な日本人のアシスタントです。" \
+        --save-details
 ```
 
 ### MODEL_ARGS のかわりに設定ファイルを使う方法
