@@ -4,11 +4,11 @@
 
 # 大規模言語モデル評価フレームワーク swallow-evaluation-instruct Ver. 202508
 
-このリポジトリでは，推論型モデルのような事後学習ずみモデルの評価を想定して[Swallowプロジェクト](https://swallow-llm.github.io/)にて開発した包括的評価フレームワーク swallow-evaluation-instruct（以下，"本フレームワーク"）を配布しています．  
+このリポジトリでは，推論型モデルのような事後学習済みモデルの評価を想定して[Swallowプロジェクト](https://swallow-llm.github.io/)にて開発した包括的評価フレームワーク swallow-evaluation-instruct（以下，"本フレームワーク"）を配布しています．  
 
-swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，日本語・英語ベンチマークの追加および利便性の改善をおこなったものです．この場をお借りしてフレームワーク開発者の皆様にお礼申し上げます．  
+swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，日本語・英語ベンチマークの追加および利便性の改善をおこなったものです．この場をお借りしてフレームワーク開発者およびベンチマーク開発者の皆様にお礼申し上げます．  
 
-事前学習ずみモデルの評価をお考えの方は [swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください．
+事前学習済みモデルの評価をお考えの方は [swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください．
 
 ## 以前のバージョンをお探しの方へ
 以前のバージョンをご利用になりたい方は[Releases](https://github.com/swallow-llm/swallow-evaluation-instruct/releases)を参照してください．
@@ -221,7 +221,7 @@ MODEL_NAME="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5"
 TASK_ID="swallow|gpqa:diamond"
 
 MODEL_ARGS="pretrained=$MODEL_NAME,dtype=bfloat16,generation_parameters={temperature:0.0}"
-# MODEL_ARGSには dtype，tensor_parallel_size，max_model_length，gpu_memory_utilization，そして各種 generation_parameters なども指定できる．
+# MODEL_ARGSには tensor_parallel_size，max_model_length，gpu_memory_utilization，generation_parameters なども指定できる．
 
 uv run --isolated --locked --extra lighteval \
     lighteval vllm \
