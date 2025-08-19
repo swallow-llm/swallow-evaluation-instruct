@@ -6,7 +6,7 @@
 
 このリポジトリでは，推論型モデルのような事後学習済みモデルの評価を想定して[Swallowプロジェクト](https://swallow-llm.github.io/)にて開発した包括的評価フレームワーク swallow-evaluation-instruct（以下，"本フレームワーク"）を配布しています．  
 
-swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，日本語・英語ベンチマークの追加および利便性の改善をおこなったものです．この場をお借りしてlighteval開発者およびベンチマーク開発者の皆様にお礼申し上げます．  
+swallow-evaluation-instruct は，HuggingFace社が開発した評価フレームワーク [lighteval](https://github.com/huggingface/lighteval) (v0.8.0) (© 2024 Hugging Face) をフォークして，[日本語・英語ベンチマークの追加](./BENCHMARKS.md)および利便性の改善をおこなったものです．この場をお借りしてlighteval開発者およびベンチマーク開発者の皆様にお礼申し上げます．  
 
 （事後学習を施していない）事前学習済みモデルの評価をお考えの方は [swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください．
 
