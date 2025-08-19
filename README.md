@@ -10,6 +10,29 @@ swallow-evaluation-instruct は，HuggingFace社が開発した評価フレー�
 
 （事後学習を施していない）事前学習済みモデルの評価をお考えの方は [swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください．
 
+- [大規模言語モデル評価フレームワーク swallow-evaluation-instruct Ver. 202508](#大規模言語モデル評価フレームワーク-swallow-evaluation-instruct-ver-202508)
+  - [以前のバージョンをお探しの方へ](#以前のバージョンをお探しの方へ)
+  - [環境構築](#環境構築)
+    - [1. uv のインストール](#1-uv-のインストール)
+    - [2. uv 内への python のインストール](#2-uv-内への-python-のインストール)
+    - [3. 共通パッケージのインストール](#3-共通パッケージのインストール)
+    - [4. パスの追加](#4-パスの追加)
+  - [実行方法](#実行方法)
+    - [1. OpenAI互換の推論APIを提供するモデルの評価](#1-openai互換の推論apiを提供するモデルの評価)
+    - [2. オープンモデルを自身の計算環境で評価](#2-オープンモデルを自身の計算環境で評価)
+      - [\[推奨\] 2.1. vLLMでホスティング -\> LiteLLMバックエンドで実行](#推奨-21-vllmでホスティング---litellmバックエンドで実行)
+      - [\[非推奨\] 2.2. lightevalからvLLMを直接起動する](#非推奨-22-lightevalからvllmを直接起動する)
+      - [MODEL\_ARGS のかわりに設定ファイルを使う方法](#model_args-のかわりに設定ファイルを使う方法)
+  - [詳細な設定](#詳細な設定)
+    - [環境変数](#環境変数)
+    - [lighteval 実行時引数](#lighteval-実行時引数)
+      - [`[OPTIONS]`](#options)
+      - [`MODEL_ARGS` - base\_params](#model_args---base_params)
+      - [`MODEL_ARGS` - generation](#model_args---generation)
+    - [vLLM serve 実行時引数](#vllm-serve-実行時引数)
+  - [ライセンス](#ライセンス)
+  - [関連資料](#関連資料)
+
 ## 以前のバージョンをお探しの方へ
 以前のバージョンをご利用になりたい方は[Releases](https://github.com/swallow-llm/swallow-evaluation-instruct/releases)を参照してください．
 
