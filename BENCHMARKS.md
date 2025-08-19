@@ -158,6 +158,7 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
     * カテゴリ別（例）：judge_score_roleplay_avg
     * ターン別：judge_score_overall_turn_{1,2}_avg
     * 全設問：judge_score_overall_avg
+* 推奨設定：カテゴリごとに定められたtemperatureが自動的に適用されます．
 * 事前準備：OpenAI API Key を 環境変数 `OPENAI_API_KEY` に設定してください．  
 * 注意事項：コンテキスト超過エラーを防ぐため，1ターン目の応答文（深い推論過程を含まない最終出力）は最長8,192文字で切り詰めます．  
 
@@ -316,5 +317,6 @@ AIMEは主に米国高校生を対象とする試験で，代数・幾何・数�
     * カテゴリ別（例）：judge_score_roleplay_avg
     * ターン別：judge_score_overall_turn_{1,2}_avg
     * 全設問：judge_score_overall_avg
+* 推奨設定：カテゴリごとに定められたtemperatureが自動的に適用されます．
 * 事前準備：OpenAI API Key を 環境変数 `OPENAI_API_KEY` に設定してください．
 * 注意事項：コンテキスト超過エラーを防ぐため，1ターン目の応答文（深い推論過程を含まない最終出力）は最長8,192文字で切り詰めます．  
