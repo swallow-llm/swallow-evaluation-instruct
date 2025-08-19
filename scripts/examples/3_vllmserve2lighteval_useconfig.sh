@@ -31,7 +31,7 @@ wait_for_vllm_server "$BASE_URL" "$VLLM_SERVER_PID"
 echo "🐦 Evaluation has started"
 uv run --isolated --locked --extra lighteval \
     lighteval endpoint litellm \
-        "scripts/examples/2_3_config.yaml" \
+        "scripts/examples/3_config.yaml" \
         "${TASK_ID}|0|0" \
         --use-chat-template \
         --system-prompt "あなたは誠実で優秀な日本人のアシスタントです。" \
