@@ -65,7 +65,7 @@ uv lock --upgrade-package vllm litellm transformers
 最後に `~/.bashrc` に必要なパスを追加して uv に関する初期設定は終了です．
 
 ```sh
-echo 'export PATH="/.common_envs/bin:$PATH"' >> "$HOME/.bashrc"
+echo "export PATH=\"$(pwd)/.common_envs/bin:\$PATH\"" >> "$HOME/.bashrc"
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 ```
 
@@ -113,13 +113,19 @@ MODEL_ID="Qwen/Qwen3-4B"
 # vLLMでセルフホストする場合のプロバイダ名は "hosted_vllm" とします
 MODEL_NAME="hosted_vllm/${MODEL_ID}"
 TASK_ID="swallow|humaneval"
+# vLLMのセルフホストの状況がVLLM_LOG_FILEに表示されます
+VLLM_LOG_FILE="./vllm.log"
 
-uv run --isolated --locked --extra vllm \
-    vllm serve $MODEL_ID \
+setsid uv run --isolated --locked --extra vllm \
+    vllm serve "$MODEL_ID" \
         --host localhost \
         --port 8000 \
         --reasoning-parser qwen3 \
-        --max-model-len 32768 &
+        --max-model-len 32768 >"$VLLM_LOG_FILE" 2>&1 &
+
+VLLM_PID=$!
+VLLM_PGID=$(ps -o pgid= "$VLLM_PID" | tr -d ' ')
+trap 'kill -TERM -'"$VLLM_PGID"' 2>/dev/null; sleep 2; kill -KILL -'"$VLLM_PGID"' 2>/dev/null || true' EXIT INT TERM
 
 BASE_URL="http://localhost:8000/v1"
 # HuggingFace のモデルをローカルでサーブする場合には "http://localhost:(ポート番号)/v1" を指定．
@@ -157,13 +163,19 @@ MODEL_ARGS の generation_parameters にはtemperatureのような文生成条�
 MODEL_ID="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5"
 MODEL_NAME="hosted_vllm/${MODEL_ID}"
 TASK_ID="swallow|japanese_mt_bench"
+# vLLMのセルフホストの状況がVLLM_LOG_FILEに表示されます
+VLLM_LOG_FILE="./vllm.log"
 
 export OPENAI_API_KEY="{LLM-as-a-Judgeに使うOpenAI API Key}" 
 
-uv run --isolated --locked --extra vllm \
+setsid uv run --isolated --locked --extra vllm \
     vllm serve $MODEL_NAME \
         --host localhost \
-        --port 8000 &
+        --port 8000 >"$VLLM_LOG_FILE" 2>&1 &
+
+VLLM_PID=$!
+VLLM_PGID=$(ps -o pgid= "$VLLM_PID" | tr -d ' ')
+trap 'kill -TERM -'"$VLLM_PGID"' 2>/dev/null; sleep 2; kill -KILL -'"$VLLM_PGID"' 2>/dev/null || true' EXIT INT TERM
 
 BASE_URL="http://localhost:8000/v1"
 
@@ -204,7 +216,7 @@ MODEL_NAME="tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5"
 TASK_ID="swallow|gpqa:diamond"
 
 MODEL_ARGS="pretrained=$MODEL_NAME,dtype=bfloat16,generation_parameters={temperature:0.0}"
-# MODEL_ARGSには dtype，tensor_parallel_size，max_model_length，gpu_memory_utlization，そして各種 generation_parameters なども指定できる．
+# MODEL_ARGSには dtype，tensor_parallel_size，max_model_length，gpu_memory_utilization，そして各種 generation_parameters なども指定できる．
 
 uv run --isolated --locked --extra lighteval \
     lighteval vllm \
