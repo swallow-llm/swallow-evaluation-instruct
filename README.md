@@ -106,6 +106,9 @@ OpenAI互換の推論APIを提供するDeepInfraやGoogle AI Studioなどのプ�
 ### 2. vLLMでホスティング → LiteLLMバックエンドで実行
 
 [vLLM serveコマンド](https://docs.vllm.ai/en/v0.9.2/serving/openai_compatible_server.html)でOpenAI互換APIを立ててからLiteLLM経由でAPIを呼び出すことにより，[推論型モデルサポート](https://docs.vllm.ai/en/stable/features/reasoning_outputs.html)などのvLLMの豊富な機能を活用しながら評価を実行できます．  
+
+#### 2-1. 推論型モデルの実行例
+
 Qwen3 で HumanEval ベンチマークを評価する例を以下に示します．  
 
 ```sh
@@ -148,6 +151,8 @@ uv run --isolated --locked --extra lighteval \
 
 MODEL_ARGS の generation_parameters にはtemperatureのような文生成条件を指定できます．詳細は後述します．  
 **本フレームワークではデフォルトの文生成条件を定義していませんので，モデルやベンチマークごとに適切な条件を指定してください．** Ref. [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)
+
+#### 2-2. 非推論型モデルの実行例
 
 非推論型モデルの場合についても説明します．
 この場合は `--reasoning-parser` が不要なのでシンプルな実行時引数になります．  
