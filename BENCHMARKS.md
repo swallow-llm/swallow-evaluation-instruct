@@ -259,8 +259,8 @@ MMLU-Pro [Wang et al. (2024)](https://openreview.net/forum?id=y10DM6R2r3) の低
 * 実装の出典：lighteval標準実装 `lighteval|math_500` の出力トークン数制限を解除しています．
 
 ### AIME 2024–2025
-AIME（American Invitational Mathematics Examination）の2024年と2025年の過去問から構成される，数学オリンピック予選相当の数学能力を問う整数回答式のベンチマークです．  
-AIMEは主に米国高校生を対象とする試験で，代数・幾何・数論・確率・組合せ論から出題されます．
+AIME（American Invitational Mathematics Examination）の2024年と2025年の過去問から構成される，数学オリンピック予選相当の数学能力を問うベンチマークです．  
+AIMEは主に米国高校生を対象とする試験で，代数・幾何・数論・確率・組合せ論から出題され，整数解を回答します．
 
 * タスク分類：数学
 * 出典：[Art of Problem Solving Wiki](https://artofproblemsolving.com/wiki/)
