@@ -10,6 +10,8 @@ swallow-evaluation-instruct は，HuggingFace社が開発した評価フレー�
 
 （事後学習を施していない）事前学習済みモデルの評価をお考えの方は [swallow-evaluation](https://github.com/swallow-llm/swallow-evaluation) をご検討ください．
 
+[Swallow LLM Leaderboard v2](https://swallow-llm.github.io/swallow-leaderboard-v2.ja.html)には，本フレームワークを用いてさまざまな事後学習済みモデルを評価した結果を掲載しています．ぜひご覧ください．
+
 - [大規模言語モデル評価フレームワーク swallow-evaluation-instruct Ver. 202508](#大規模言語モデル評価フレームワーク-swallow-evaluation-instruct-ver-202508)
   - [以前のバージョンをお探しの方へ](#以前のバージョンをお探しの方へ)
   - [環境構築](#環境構築)
