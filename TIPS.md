@@ -19,7 +19,7 @@ df = pd.read_parquet(path)
 
 ### vLLMが対応していない推論型モデルを評価する
 
-まれにvLLMのreasoning parserが対応していない推論型モデルが存在します．たとえば [nvidia/Llama-3.1-Nemotron-Nano-8B-v1](https://huggingface.co/nvidia/Llama-3.1-Nemotron-Nano-8B-v1) は DeepSeek-R1 と同じく `<thinkg>, </think>` タグで推論過程をマークアップするモデルですが `vllm serve --reasoning-parser deepseek_r1` を実行するとエラーが生じます（vLLM v0.10.0で検証）．  
+まれにvLLMのreasoning parserが対応していない推論型モデルが存在します．たとえば [nvidia/Llama-3.1-Nemotron-Nano-8B-v1](https://huggingface.co/nvidia/Llama-3.1-Nemotron-Nano-8B-v1) は DeepSeek-R1 と同じく `<think>, </think>` タグで推論過程をマークアップするモデルですが `vllm serve --reasoning-parser deepseek_r1` を実行するとエラーが生じます（vLLM v0.10.0で検証）．  
 
 このようなモデルの場合は `vllm serve` 実行時引数から `--reasoning-parser` を削除して，かわりに lighteval 実行時引数の MODEL_ARGS で `reasoning_parser` を指定することにより，vLLMではなくlighteval内で推論過程と最終出力を分離することで評価を実行できます．  
 DeepSeek-R1形式でマークアップするモデルの場合は `deepseek_r1_markup` を指定してください．
