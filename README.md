@@ -359,8 +359,8 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 
 ## 謝辞
 
-本成果物 swallow-evaluation-instruct は，産総研政策予算プロジェクト「フィジカル領域の生成AI基盤モデルに関する研究開発」の結果得られたものです．
-またモデルの評価については、国立研究開発法人 産業技術総合研究所が構築・運用する AI 橋渡しクラウド（ABCI: AI Bridging Cloud Infrastructure）の「大規模言語モデル構築支援プログラム」の支援を受けました．
+本成果物 swallow-evaluation-instruct は，産総研政策予算プロジェクト「フィジカル領域の生成AI基盤モデルに関する研究開発」，文部科学省の補助事業「生成AIモデルの透明性・信頼性の確保に向けた研究開発拠点形成」，その他の支援によって構築されました．
+またモデルの評価については，産総研及びAIST Solutionsが提供するABCI 3.0を「ABCI 3.0開発加速利用」を支援を受けて利用しました．
 本研究は，東京科学大学のスーパーコンピュータ TSUBAME4.0 を利用して実施しました．
 
 ## 開発者
