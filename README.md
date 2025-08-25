@@ -371,3 +371,18 @@ lightevalの実行時引数 `lighteval endpoint litellm {MODEL_ARGS} {TASK_ID} [
 
 * [Swallowチームが実装したベンチマーク一覧](./BENCHMARKS.md)
 * [評価における課題と解決策](./TIPS.md)
+
+## 引用について
+
+本フレームワークを引用くださる場合は以下の書誌情報をお使いください．
+
+```
+@misc{swallow-evaluation-instruct-v202508,
+  author       = {{Swallow LLM Team} and Mizuki, Sakae and Saito, Koshiro and Oi, Masanari and Ichinose, Tatsuya and Matsushita, Naoya and Miyamoto, Sora and Nguyen, Tien Dung and Moon, Sangwhan},
+  title    = {大規模言語モデル評価フレームワーク swallow-evaluation-instruct},
+  url = {https://github.com/swallow-llm/swallow-evaluation-instruct},
+  howpublished = {\url{https://github.com/swallow-llm/swallow-evaluation-instruct}},
+  year     = {2025},
+  version  = {v202508}
+}
+```
