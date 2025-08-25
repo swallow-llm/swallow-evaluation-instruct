@@ -37,6 +37,7 @@ swallow-evaluation-instruct は，HuggingFace社が開発した評価フレー�
   - [謝辞](#謝辞)
   - [開発者](#開発者)
   - [関連資料](#関連資料)
+  - [引用について](#引用について)
 
 ## 以前のバージョンをお探しの方へ
 以前のバージョンをご利用になりたい方は[Releases](https://github.com/swallow-llm/swallow-evaluation-instruct/releases)を参照してください．
