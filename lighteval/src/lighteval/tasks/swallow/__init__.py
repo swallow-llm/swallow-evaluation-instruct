@@ -26,6 +26,7 @@ from .aime import aime_24_swallow, aime_25_swallow
 from .math_500 import math_500_swallow
 from .lcb_swallow import lcb_swallow_tasks
 from .humaneval_series import humaneval, humanevalplus
+from .jgpqa import lst_jgpqa_tasks
 
 TASKS_TABLE = [
     math_100_japanese,
@@ -53,3 +54,4 @@ TASKS_TABLE.extend(mmlu_prox_english_tasks)
 TASKS_TABLE.extend(mmlu_pro_english_tasks)
 TASKS_TABLE.extend(mmlu_english_tasks)
 TASKS_TABLE.extend(lcb_swallow_tasks)
+TASKS_TABLE.extend(lst_jgpqa_tasks)

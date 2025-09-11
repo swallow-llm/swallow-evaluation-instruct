@@ -39,8 +39,8 @@ dependencies = [
     { name = "psutil" },
     { name = "pyyaml" },
     { name = "safetensors" },
-    { name = "torch", version = "2.7.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f7/66/be171836d86dc5b8698b3a9bf4b9eb10cb53369729939f88bf650167588b/accelerate-1.10.0.tar.gz", hash = "sha256:8270568fda9036b5cccdc09703fef47872abccd56eb5f6d53b54ea5fb7581496", size = 392261, upload-time = "2025-08-07T10:54:51.664Z" }
 wheels = [
@@ -111,15 +111,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/61/62/06741b579156360248d1ec624842ad0edf697050bbaf7c3e46394e106ad1/aiosignal-1.4.0.tar.gz", hash = "sha256:f47eecd9468083c2029cc99945502cb7708b082c232f9aca65da147157b251c7", size = 25007, upload-time = "2025-07-03T22:54:43.528Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fb/76/641ae371508676492379f16e2fa48f4e2c11741bd63c48be4b12a6b09cba/aiosignal-1.4.0-py3-none-any.whl", hash = "sha256:053243f8b92b990551949e63930a839ff0cf0b0ebbe0597b0f3fb19e1a0fe82e", size = 7490, upload-time = "2025-07-03T22:54:42.156Z" },
-]
-
-[[package]]
-name = "airportsdata"
-version = "20250706"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/83/e0/311f397752cb15d3772c3856924773eaaab905f922f24ef19739a1de67eb/airportsdata-20250706.tar.gz", hash = "sha256:66d7a03e825d592d85ed650f2c1d4b4302d1c04f8f37a15f1eda29a5e03d4af0", size = 903223, upload-time = "2025-07-06T22:19:23.1Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/11/f359cbbde87b88b0f17503e9c17cae6dfc9117b756ce600087306f28f52d/airportsdata-20250706-py3-none-any.whl", hash = "sha256:750e882a75e391572ae859d4cb78cb801f5f2ca71b07849a381670cb01780677", size = 912715, upload-time = "2025-07-06T22:19:21.158Z" },
 ]
 
 [[package]]
@@ -222,6 +213,23 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/8a/89/817ad5d0411f136c484d535952aef74af9b25e0d99e90cdffbe121e6d628/cachetools-6.1.0.tar.gz", hash = "sha256:b4c4f404392848db3ce7aac34950d17be4d864da4b8b66911008e430bc544587", size = 30714, upload-time = "2025-06-16T18:51:03.07Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/00/f0/2ef431fe4141f5e334759d73e81120492b23b2824336883a91ac04ba710b/cachetools-6.1.0-py3-none-any.whl", hash = "sha256:1c7bb3cf9193deaf3508b7c5f2a79986c13ea38965c5adcff1f84519cf39163e", size = 11189, upload-time = "2025-06-16T18:51:01.514Z" },
+]
+
+[[package]]
+name = "cbor2"
+version = "5.7.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3a/89/01df16cdc9c60c07956756c90fe92c684021003079e358a78e213bce45a2/cbor2-5.7.0.tar.gz", hash = "sha256:3f6d843f4db4d0ec501c46453c22a4fbebb1abfb5b740e1bcab34c615cd7406b", size = 102374, upload-time = "2025-08-14T08:59:47.294Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0d/94/92870469f92b53f7d18a6a6def540ecd9deec0cc25448b0d28b1847a7820/cbor2-5.7.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:305edac16524df843d53ba086bc194c0975388e755ed177eb84e0324e3d705ec", size = 67903, upload-time = "2025-08-14T08:58:37.343Z" },
+    { url = "https://files.pythonhosted.org/packages/ea/cd/c6bbf2c11f48f08cbbd31647ce2b6b081f25e4723d5260fde0a6520a6e2f/cbor2-5.7.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:e00d7250e528a9a1bfd3b294799bdae96c158f72d95be58a3fbf97dab2467bbe", size = 68780, upload-time = "2025-08-14T08:58:39.004Z" },
+    { url = "https://files.pythonhosted.org/packages/7f/b7/17fe6e502b9884f3a7bdf6e9331688e290a546110dd14575aa09527b238f/cbor2-5.7.0-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:36b6e229b36147051ea1063ba0cd6225bfe6b5398ca0ac7b33fa91407ca75081", size = 254198, upload-time = "2025-08-14T08:58:40.293Z" },
+    { url = "https://files.pythonhosted.org/packages/fd/fb/6cc1dd51beb35f899f9f6621fd0df9ec733e1f4c27f334212107f7a05822/cbor2-5.7.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:06f8e9d8fa6d0ed7b8a81f4613a60e740be9bd5087de620e3b64007832dfd815", size = 247202, upload-time = "2025-08-14T08:58:42.101Z" },
+    { url = "https://files.pythonhosted.org/packages/34/2d/e51cd823cb918eed3180bbe0169955ccefa03817c0e4788024e9e56d3657/cbor2-5.7.0-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:90c1236e5bfad19493183f9a9ecd3705e3ad3eb02fce6d6381c12ece86147b15", size = 250001, upload-time = "2025-08-14T08:58:43.82Z" },
+    { url = "https://files.pythonhosted.org/packages/de/45/79a0320a4562537df3e589526d636963a06a95a66d7b6c366bdc8d9b3755/cbor2-5.7.0-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:afc6c6611b7529136ea4a04cf8711786640b687859c9688ae172726c305a83a1", size = 243743, upload-time = "2025-08-14T08:58:45.618Z" },
+    { url = "https://files.pythonhosted.org/packages/9b/6f/73baf2ba006fb297c7d022858352ae393ee3837be2d7cfa01b6d2519492b/cbor2-5.7.0-cp310-cp310-win_amd64.whl", hash = "sha256:be635795908d59f46303ab266fc6f3aa6543c742fa112fd1cd2e5307b91c6de4", size = 68045, upload-time = "2025-08-14T08:58:48.447Z" },
+    { url = "https://files.pythonhosted.org/packages/40/87/0c7c8d27738e8d7dca49dfb4092ef7fdfdec7ca64f27e344b79d8a80bd92/cbor2-5.7.0-cp310-cp310-win_arm64.whl", hash = "sha256:16a21233f11874b7067b136cb2910333b36c1dee455a42a7c8473a104753cf4a", size = 63963, upload-time = "2025-08-14T08:58:49.563Z" },
+    { url = "https://files.pythonhosted.org/packages/41/cc/0ce73676d2a0c9e5a9330c301940c50eb325dacf5f6d9690fd43a8817fe9/cbor2-5.7.0-py3-none-any.whl", hash = "sha256:a871e7a6f7cba1ddb02503ea974f15f6524c95078fbfe0b860fd4193d7c8f27a", size = 23828, upload-time = "2025-08-14T08:59:46.129Z" },
 ]
 
 [[package]]
@@ -328,38 +336,13 @@ wheels = [
 
 [[package]]
 name = "compressed-tensors"
-version = "0.10.1"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
-    "platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "pydantic" },
-    { name = "torch", version = "2.7.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "transformers", version = "4.52.4", source = { registry = "https://pypi.org/simple" } },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/40/eb/2229523a539e8074b238c225d168f734f6f056ab4ea2278eefe752f4a6f3/compressed_tensors-0.10.1.tar.gz", hash = "sha256:f99ce620ddcf8a657eaa7995daf5faa8e988d4b4cadc595bf2c4ff9346c2c19a", size = 126778, upload-time = "2025-06-06T18:25:16.538Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/5b/07/e70a0b9efc24a32740396c404e7213c62b8aeb4a577ed5a3f191f8d7806b/compressed_tensors-0.10.1-py3-none-any.whl", hash = "sha256:b8890735522c119900e8d4192cced0b0f70a98440ae070448cb699165c404659", size = 116998, upload-time = "2025-06-06T18:25:14.54Z" },
-]
-
-[[package]]
-name = "compressed-tensors"
 version = "0.10.2"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
-    "platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "sys_platform == 'darwin'",
-]
 dependencies = [
     { name = "pydantic" },
-    { name = "torch", version = "2.7.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "transformers", version = "4.53.3", source = { registry = "https://pypi.org/simple" } },
+    { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "transformers" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c0/86/d43d369abc81ec63ec7b8f6f27fc8b113ea0fd18a4116ae12063387b8b34/compressed_tensors-0.10.2.tar.gz", hash = "sha256:6de13ac535d7ffdd8890fad3d229444c33076170acaa8fab6bab8ecfa96c1d8f", size = 173459, upload-time = "2025-06-23T13:19:06.135Z" }
 wheels = [
@@ -438,29 +421,17 @@ wheels = [
 ]
 
 [[package]]
-name = "deprecated"
-version = "1.2.18"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "wrapt" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/98/97/06afe62762c9a8a86af0cfb7bfdab22a43ad17138b07af5b1a58442690a2/deprecated-1.2.18.tar.gz", hash = "sha256:422b6f6d859da6f2ef57857761bfb392480502a64c3028ca9bbe86085d72115d", size = 2928744, upload-time = "2025-01-27T10:46:25.7Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/6e/c6/ac0b6c1e2d138f1002bcf799d330bd6d85084fece321e662a14223794041/Deprecated-1.2.18-py2.py3-none-any.whl", hash = "sha256:bd5011788200372a32418f888e326a09ff80d0214bd961147cfed01b5c018eec", size = 9998, upload-time = "2025-01-27T10:46:09.186Z" },
-]
-
-[[package]]
 name = "depyf"
-version = "0.18.0"
+version = "0.19.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "astor" },
     { name = "dill", version = "0.3.8", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "dill", version = "0.4.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f9/ee/43a4cbba615abfc1eb2e5ff5eed3f80f38d58645b4d13d0ea06b9ca1909d/depyf-0.18.0.tar.gz", hash = "sha256:b99f0c383be949ae45d5d606fe444c71f375b55a57b8d6b20e7856670d52130d", size = 43050, upload-time = "2024-12-07T00:42:40.198Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/19/38/69157d711be575f1b9cf3177b64ef4ade44373fc02839f183fdd98ec2dd6/depyf-0.19.0.tar.gz", hash = "sha256:afed0916b32d141cc90fa6220df01885eda442ca43b297d5050eeb90b4a5cb44", size = 6171405, upload-time = "2025-04-20T08:07:41.224Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e7/d8/efc291d5c69a9905515055d23977643dd0d482ebfeb0dbabef1947ee75d8/depyf-0.18.0-py3-none-any.whl", hash = "sha256:007294d5bac19a38a0767d747be0f49b9ffdcea0394a822644142df22b33a3e1", size = 38839, upload-time = "2024-12-07T00:42:38.83Z" },
+    { url = "https://files.pythonhosted.org/packages/28/4d/1192acbcdc5e843f5e5d51f6e8788f2b60a9fe0b578ac385ded67a0b0b26/depyf-0.19.0-py3-none-any.whl", hash = "sha256:040b35fc0997d49df024b7d094f2a7836f91e9ed02f49982dd37e70aa3285ad5", size = 39034, upload-time = "2025-04-20T08:07:37.036Z" },
 ]
 
 [[package]]
@@ -769,36 +740,6 @@ wheels = [
 ]
 
 [[package]]
-name = "googleapis-common-protos"
-version = "1.70.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "protobuf", version = "3.20.3", source = { registry = "https://pypi.org/simple" } },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/39/24/33db22342cf4a2ea27c9955e6713140fedd51e8b141b5ce5260897020f1a/googleapis_common_protos-1.70.0.tar.gz", hash = "sha256:0e1b44e0ea153e6594f9f394fef15193a68aaaea2d843f83e2742717ca753257", size = 145903, upload-time = "2025-04-14T10:17:02.924Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/f1/62a193f0227cf15a920390abe675f386dec35f7ae3ffe6da582d3ade42c7/googleapis_common_protos-1.70.0-py3-none-any.whl", hash = "sha256:b8bfcca8c25a2bb253e0e0b0adaf8c00773e5e6af6fd92397576680b807e0fd8", size = 294530, upload-time = "2025-04-14T10:17:01.271Z" },
-]
-
-[[package]]
-name = "grpcio"
-version = "1.74.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/38/b4/35feb8f7cab7239c5b94bd2db71abb3d6adb5f335ad8f131abb6060840b6/grpcio-1.74.0.tar.gz", hash = "sha256:80d1f4fbb35b0742d3e3d3bb654b7381cd5f015f8497279a1e9c21ba623e01b1", size = 12756048, upload-time = "2025-07-24T18:54:23.039Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/66/54/68e51a90797ad7afc5b0a7881426c337f6a9168ebab73c3210b76aa7c90d/grpcio-1.74.0-cp310-cp310-linux_armv7l.whl", hash = "sha256:85bd5cdf4ed7b2d6438871adf6afff9af7096486fcf51818a81b77ef4dd30907", size = 5481935, upload-time = "2025-07-24T18:52:43.756Z" },
-    { url = "https://files.pythonhosted.org/packages/32/2a/af817c7e9843929e93e54d09c9aee2555c2e8d81b93102a9426b36e91833/grpcio-1.74.0-cp310-cp310-macosx_11_0_universal2.whl", hash = "sha256:68c8ebcca945efff9d86d8d6d7bfb0841cf0071024417e2d7f45c5e46b5b08eb", size = 10986796, upload-time = "2025-07-24T18:52:47.219Z" },
-    { url = "https://files.pythonhosted.org/packages/d5/94/d67756638d7bb07750b07d0826c68e414124574b53840ba1ff777abcd388/grpcio-1.74.0-cp310-cp310-manylinux_2_17_aarch64.whl", hash = "sha256:e154d230dc1bbbd78ad2fdc3039fa50ad7ffcf438e4eb2fa30bce223a70c7486", size = 5983663, upload-time = "2025-07-24T18:52:49.463Z" },
-    { url = "https://files.pythonhosted.org/packages/35/f5/c5e4853bf42148fea8532d49e919426585b73eafcf379a712934652a8de9/grpcio-1.74.0-cp310-cp310-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:e8978003816c7b9eabe217f88c78bc26adc8f9304bf6a594b02e5a49b2ef9c11", size = 6653765, upload-time = "2025-07-24T18:52:51.094Z" },
-    { url = "https://files.pythonhosted.org/packages/fd/75/a1991dd64b331d199935e096cc9daa3415ee5ccbe9f909aa48eded7bba34/grpcio-1.74.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c3d7bd6e3929fd2ea7fbc3f562e4987229ead70c9ae5f01501a46701e08f1ad9", size = 6215172, upload-time = "2025-07-24T18:52:53.282Z" },
-    { url = "https://files.pythonhosted.org/packages/01/a4/7cef3dbb3b073d0ce34fd507efc44ac4c9442a0ef9fba4fb3f5c551efef5/grpcio-1.74.0-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:136b53c91ac1d02c8c24201bfdeb56f8b3ac3278668cbb8e0ba49c88069e1bdc", size = 6329142, upload-time = "2025-07-24T18:52:54.927Z" },
-    { url = "https://files.pythonhosted.org/packages/bf/d3/587920f882b46e835ad96014087054655312400e2f1f1446419e5179a383/grpcio-1.74.0-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:fe0f540750a13fd8e5da4b3eaba91a785eea8dca5ccd2bc2ffe978caa403090e", size = 7018632, upload-time = "2025-07-24T18:52:56.523Z" },
-    { url = "https://files.pythonhosted.org/packages/1f/95/c70a3b15a0bc83334b507e3d2ae20ee8fa38d419b8758a4d838f5c2a7d32/grpcio-1.74.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:4e4181bfc24413d1e3a37a0b7889bea68d973d4b45dd2bc68bb766c140718f82", size = 6509641, upload-time = "2025-07-24T18:52:58.495Z" },
-    { url = "https://files.pythonhosted.org/packages/4b/06/2e7042d06247d668ae69ea6998eca33f475fd4e2855f94dcb2aa5daef334/grpcio-1.74.0-cp310-cp310-win32.whl", hash = "sha256:1733969040989f7acc3d94c22f55b4a9501a30f6aaacdbccfaba0a3ffb255ab7", size = 3817478, upload-time = "2025-07-24T18:53:00.128Z" },
-    { url = "https://files.pythonhosted.org/packages/93/20/e02b9dcca3ee91124060b65bbf5b8e1af80b3b76a30f694b44b964ab4d71/grpcio-1.74.0-cp310-cp310-win_amd64.whl", hash = "sha256:9e912d3c993a29df6c627459af58975b2e5c897d93287939b9d5065f000249b5", size = 4493971, upload-time = "2025-07-24T18:53:02.068Z" },
-]
-
-[[package]]
 name = "h11"
 version = "0.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -888,9 +829,6 @@ wheels = [
 [package.optional-dependencies]
 cli = [
     { name = "inquirerpy" },
-]
-hf-xet = [
-    { name = "hf-xet" },
 ]
 
 [[package]]
@@ -1094,16 +1032,16 @@ dependencies = [
     { name = "scikit-learn" },
     { name = "sentencepiece" },
     { name = "termcolor" },
-    { name = "torch", version = "2.7.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "transformers", version = "4.52.4", source = { registry = "https://pypi.org/simple" } },
+    { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "transformers" },
     { name = "typer" },
     { name = "uv" },
 ]
 
 [package.optional-dependencies]
 extended-tasks = [
-    { name = "openai", version = "1.99.7", source = { registry = "https://pypi.org/simple" } },
+    { name = "openai" },
     { name = "tiktoken" },
 ]
 litellm = [
@@ -1116,7 +1054,7 @@ math = [
 vllm = [
     { name = "more-itertools" },
     { name = "ray" },
-    { name = "vllm", version = "0.9.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "vllm" },
 ]
 
 [package.metadata]
@@ -1184,7 +1122,7 @@ provides-extras = ["litellm", "tgi", "optimum", "quantization", "adapters", "nan
 
 [[package]]
 name = "litellm"
-version = "1.75.5.post1"
+version = "1.75.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -1193,15 +1131,15 @@ dependencies = [
     { name = "importlib-metadata" },
     { name = "jinja2" },
     { name = "jsonschema" },
-    { name = "openai", version = "1.99.7", source = { registry = "https://pypi.org/simple" } },
+    { name = "openai" },
     { name = "pydantic" },
     { name = "python-dotenv" },
     { name = "tiktoken" },
     { name = "tokenizers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/10/97/6091a020895102a20f1da204ebe68c1293123555476b38e749f95ba5981c/litellm-1.75.5.post1.tar.gz", hash = "sha256:e40a0e4b25032755dc5df7f02742abe9e3b8836236363f605f3bdd363cb5a0d0", size = 10127846, upload-time = "2025-08-10T16:30:23.788Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d2/d8/08615bc4811d9a6df2b46f8efa7a0d6f7f8e1ca268a4c794540d9987a035/litellm-1.75.9.tar.gz", hash = "sha256:d8baf4b9988df599b55cb675808bbe22cedee2f099ba883684fe3f23af8d13a9", size = 10142656, upload-time = "2025-08-20T17:43:50.554Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8f/76/780f68a3b26227136a5147c76860aacedcae9bf1b7afc1c991ec9cad11bc/litellm-1.75.5.post1-py3-none-any.whl", hash = "sha256:1c72809a9c8f6e132ad06eb7e628f674c775b0ce6bfb58cbd37e8b585d929cb7", size = 8895997, upload-time = "2025-08-10T16:30:21.325Z" },
+    { url = "https://files.pythonhosted.org/packages/5d/b2/f21db9636d9fcd67b2c557c58aafb8a6e9b53864f7a40d645e09c2e3ab98/litellm-1.75.9-py3-none-any.whl", hash = "sha256:a72c3e05bcb0e50ac1804f0df09d0d7bf5cb41e84351e1609a960033b0ef01c1", size = 8920144, upload-time = "2025-08-20T17:43:48.327Z" },
 ]
 
 [[package]]
@@ -1357,7 +1295,11 @@ wheels = [
 ]
 
 [package.optional-dependencies]
-opencv = [
+audio = [
+    { name = "soundfile" },
+    { name = "soxr" },
+]
+image = [
     { name = "opencv-python-headless", version = "4.11.0.86", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "opencv-python-headless", version = "4.12.0.88", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
 ]
@@ -1388,8 +1330,7 @@ dependencies = [
     { name = "protobuf", version = "3.20.3", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "protobuf", version = "6.31.1", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "pyyaml", marker = "sys_platform == 'darwin'" },
-    { name = "transformers", version = "4.52.4", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "transformers", version = "4.53.3", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "transformers", marker = "sys_platform == 'darwin'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/af/4b/ed8ec01f182203b0897415a9d20f0cd8a141def77ad43deea18ffaba4c9c/mlx_lm-0.26.3.tar.gz", hash = "sha256:06cd74ee3eea920335c528e68feb854eede45fe4e5f149b464ac100c1dbeaded", size = 172096, upload-time = "2025-08-06T21:48:22.762Z" }
 wheels = [
@@ -1521,15 +1462,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/9d/6e/c38c7b691d8730663b6461fea210be40eb912fa4f9e9f91c29dcd249f963/nagisa-0.2.11-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:9ad987d23be7669e4c189e4edd7888b1827280d0f49171a1b31c147e65b91ec1", size = 21625678, upload-time = "2024-01-28T17:28:58.548Z" },
     { url = "https://files.pythonhosted.org/packages/86/42/bba6977e2979270a7a575f829582dcb579c40af4383fb1e808e378b486f2/nagisa-0.2.11-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:013432a265f86c18cdc6e8710ef43114d1409db6e03bfce93c456bc708bfe49e", size = 21638718, upload-time = "2024-01-28T17:29:04.207Z" },
     { url = "https://files.pythonhosted.org/packages/15/11/af5f2926c57c23e159069f5e8eaccc3d44fcecf09e6abbf174187d9e84be/nagisa-0.2.11-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:e4246d063d5daef3762c5aa48606423797ade62d3d215d92d7104c8606bca367", size = 21632520, upload-time = "2024-06-16T11:47:17.275Z" },
-]
-
-[[package]]
-name = "nest-asyncio"
-version = "1.6.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/83/f8/51569ac65d696c8ecbee95938f89d4abf00f47d58d48f6fbabfe8f0baefe/nest_asyncio-1.6.0.tar.gz", hash = "sha256:6f172d5449aca15afd6c646851f4e31e02c598d553a667e38cafa997cfec55fe", size = 7418, upload-time = "2024-01-21T14:25:19.227Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a0/c4/c2971a3ba4c6103a3d10c4b0f24f461ddc027f0f09763220cf35ca1401b3/nest_asyncio-1.6.0-py3-none-any.whl", hash = "sha256:87af6efd6b5e897c81050477ef65c62e2b2f35d51703cae01aff2905b1852e1c", size = 5195, upload-time = "2024-01-21T14:25:17.223Z" },
 ]
 
 [[package]]
@@ -1782,37 +1714,8 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "1.90.0"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
-    "platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "anyio" },
-    { name = "distro" },
-    { name = "httpx" },
-    { name = "jiter" },
-    { name = "pydantic" },
-    { name = "sniffio" },
-    { name = "tqdm" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/2d/30/0bdb712f5e25e823a76828136de6043f28bd69363886c417e05d7021420e/openai-1.90.0.tar.gz", hash = "sha256:9771982cdd5b6631af68c6a603da72ed44cd2caf73b49f717a72b71374bc565b", size = 471896, upload-time = "2025-06-20T20:22:18.349Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bd/e3/0d7a2ee7ae7293e794e7945ffeda942ff5e3a94de24be27cc3eb5ba6c188/openai-1.90.0-py3-none-any.whl", hash = "sha256:e5dcb5498ea6b42fec47546d10f1bcc05fb854219a7d953a5ba766718b212a02", size = 734638, upload-time = "2025-06-20T20:22:16.211Z" },
-]
-
-[[package]]
-name = "openai"
 version = "1.99.7"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
-    "platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "sys_platform == 'darwin'",
-]
 dependencies = [
     { name = "anyio" },
     { name = "distro" },
@@ -1826,6 +1729,30 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/d8/e3/14812e91dee4d7a1d6aa365ec722b9f2c7ecca3b4f1fb5c56c2c1d83de82/openai-1.99.7.tar.gz", hash = "sha256:d2f4211642b9dbcd8e3cc6e6ef1180ac149f80d2e5ab1ee7f5afdd8d34c9b33b", size = 505598, upload-time = "2025-08-11T15:13:10.693Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/64/2d/a41c49550a69374111647be22b587e3311a6fc31fc7370e14448e78018bc/openai-1.99.7-py3-none-any.whl", hash = "sha256:ef4165cc4f8872dd4a967d109f12b0b9c98a1e20ae05940c28701729c2883891", size = 786809, upload-time = "2025-08-11T15:13:08.537Z" },
+]
+
+[[package]]
+name = "openai-harmony"
+version = "0.0.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/92/94/01509d510bebf6606614e51113e5a415ced15b8f34aa98a8bf2539314650/openai_harmony-0.0.4.tar.gz", hash = "sha256:5c67ac6df349236fb7b64f57c3dbb0273efcdca24314daa108f2a482c427106c", size = 279848, upload-time = "2025-08-09T01:43:24.974Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a2/3e/6bb75a4d15a6aad0ba1b23193ca0d2c202cc1f3364ba840833374b7c9c1a/openai_harmony-0.0.4-cp38-abi3-macosx_10_12_x86_64.whl", hash = "sha256:3586d90c899cd41f8624e7b82a48c289f6e4be56c66304ecaf3a0ba88963a73f", size = 2772770, upload-time = "2025-08-09T01:43:14.839Z" },
+    { url = "https://files.pythonhosted.org/packages/34/41/2f256fba6762d028ed6f935f0015f71d81927a52b9a1c873679a409b72bf/openai_harmony-0.0.4-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:ef21a1e2384a65c62d5ec5e1cded9fe026f1d032d5c5d725110d1a8d330d8f54", size = 2633682, upload-time = "2025-08-09T01:43:12.681Z" },
+    { url = "https://files.pythonhosted.org/packages/05/88/ade63bd8f36603610040e7cc086bc134d57a99a742e05f7fcddfdf822ee1/openai_harmony-0.0.4-cp38-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:3cf2344366f10981bbc0f6d9949a0b2bb87151d209ed295943ed6ad8eda37932", size = 2963206, upload-time = "2025-08-09T01:43:02.433Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/ef/a65a0ff177fdf67bc0afd18bb9e7ad690d1b553a8eb5ebf27f601b22dbd0/openai_harmony-0.0.4-cp38-abi3-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:2d8d16d84702059833fb03b841b28c25600c54e83cadccef79af44e1c81166b1", size = 2724854, upload-time = "2025-08-09T01:43:04.606Z" },
+    { url = "https://files.pythonhosted.org/packages/8a/a1/ebaf0f55601a98609641283884d52dbfe9a1cf34b04f1cf80acb1560ab74/openai_harmony-0.0.4-cp38-abi3-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:97f1fe3909733212cc6b36f0f199b1421a9c57b79ec665f0322bd604cec47340", size = 2984312, upload-time = "2025-08-09T01:43:08.908Z" },
+    { url = "https://files.pythonhosted.org/packages/45/24/246f6f470bfbc89a117714b68f27cdaee12b31166237a227cc657780cc1d/openai_harmony-0.0.4-cp38-abi3-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:567cc568b6bf7b4d041b0c9aa7d6b2c9394f8af6065bc87fa6d23f207b5af9a7", size = 3447870, upload-time = "2025-08-09T01:43:06.734Z" },
+    { url = "https://files.pythonhosted.org/packages/1f/ec/dcdcace0ffcf3a532cca910e0c351b62d3a7decf0b091ea8cf856d2a67a6/openai_harmony-0.0.4-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:31e9bcac0902a309e2fc688e52f247eec7fffcd00d17e958b9a83a8fea6519c2", size = 3049306, upload-time = "2025-08-09T01:43:11.019Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/39/172f1048d935db1523a82b45fee5231ad6c622645e566706e6bcf3731da8/openai_harmony-0.0.4-cp38-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:96a63199c0d81095b5d5d1ae8ca82b64c1c13d18d4e30323ae9e8ab31bc80a3d", size = 3121347, upload-time = "2025-08-09T01:43:16.705Z" },
+    { url = "https://files.pythonhosted.org/packages/6b/36/8ee4ca5d0b25587121fd3621e6a6106fba80218cb6d159e1670aeb2b22ef/openai_harmony-0.0.4-cp38-abi3-musllinux_1_2_armv7l.whl", hash = "sha256:d38f2639f6bf7c3c34a5dfd79e29075811ae2fa9b895a63e76767f74a47a971e", size = 2952326, upload-time = "2025-08-09T01:43:18.841Z" },
+    { url = "https://files.pythonhosted.org/packages/ae/a0/ec8906393968679e269e23e957e11ff419978d1d077fb9af9561b161c988/openai_harmony-0.0.4-cp38-abi3-musllinux_1_2_i686.whl", hash = "sha256:038f1d6772d1be5213b36ae76e5d042022395ec35c428a73ccb8b839b2cecf6a", size = 3015832, upload-time = "2025-08-09T01:43:21.076Z" },
+    { url = "https://files.pythonhosted.org/packages/a8/bd/aa9e6e5cf140716dbcae17402fac2a81a9ebb3f934059ac0eec61cb447fc/openai_harmony-0.0.4-cp38-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:15e6d53a66502491a3675a536df30e271f976e6c5efe68250a65191efcb85c4f", size = 3221129, upload-time = "2025-08-09T01:43:23.146Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/22/2c7e1728689c7fa98a259ca2d14e718ea7af964516a617a9784f0d35d88a/openai_harmony-0.0.4-cp38-abi3-win32.whl", hash = "sha256:b9ee9e9ab6a237cebbe16563c787a6e83f3fcc034075c3d321dab94448426282", size = 2077125, upload-time = "2025-08-09T01:43:28.91Z" },
+    { url = "https://files.pythonhosted.org/packages/e7/93/3a08a06ff3bde7f4c264f86d437e6a5c49792a6e362383b3a669f39c9690/openai_harmony-0.0.4-cp38-abi3-win_amd64.whl", hash = "sha256:746f751de5033b3dbcfcd4a726a4c56ce452c593ad3d54472d8597ce8d8b6d44", size = 2444821, upload-time = "2025-08-09T01:43:26.846Z" },
 ]
 
 [[package]]
@@ -1873,173 +1800,19 @@ wheels = [
 ]
 
 [[package]]
-name = "opentelemetry-api"
-version = "1.27.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "deprecated" },
-    { name = "importlib-metadata" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c9/83/93114b6de85a98963aec218a51509a52ed3f8de918fe91eb0f7299805c3f/opentelemetry_api-1.27.0.tar.gz", hash = "sha256:ed673583eaa5f81b5ce5e86ef7cdaf622f88ef65f0b9aab40b843dcae5bef342", size = 62693, upload-time = "2024-08-28T21:35:31.445Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fb/1f/737dcdbc9fea2fa96c1b392ae47275165a7c641663fbb08a8d252968eed2/opentelemetry_api-1.27.0-py3-none-any.whl", hash = "sha256:953d5871815e7c30c81b56d910c707588000fff7a3ca1c73e6531911d53065e7", size = 63970, upload-time = "2024-08-28T21:35:00.598Z" },
-]
-
-[[package]]
-name = "opentelemetry-exporter-otlp"
-version = "1.27.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "opentelemetry-exporter-otlp-proto-grpc" },
-    { name = "opentelemetry-exporter-otlp-proto-http" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/fc/d3/8156cc14e8f4573a3572ee7f30badc7aabd02961a09acc72ab5f2c789ef1/opentelemetry_exporter_otlp-1.27.0.tar.gz", hash = "sha256:4a599459e623868cc95d933c301199c2367e530f089750e115599fccd67cb2a1", size = 6166, upload-time = "2024-08-28T21:35:33.746Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/59/6d/95e1fc2c8d945a734db32e87a5aa7a804f847c1657a21351df9338bd1c9c/opentelemetry_exporter_otlp-1.27.0-py3-none-any.whl", hash = "sha256:7688791cbdd951d71eb6445951d1cfbb7b6b2d7ee5948fac805d404802931145", size = 7001, upload-time = "2024-08-28T21:35:04.02Z" },
-]
-
-[[package]]
-name = "opentelemetry-exporter-otlp-proto-common"
-version = "1.27.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "opentelemetry-proto" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/cd/2e/7eaf4ba595fb5213cf639c9158dfb64aacb2e4c7d74bfa664af89fa111f4/opentelemetry_exporter_otlp_proto_common-1.27.0.tar.gz", hash = "sha256:159d27cf49f359e3798c4c3eb8da6ef4020e292571bd8c5604a2a573231dd5c8", size = 17860, upload-time = "2024-08-28T21:35:34.896Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/41/27/4610ab3d9bb3cde4309b6505f98b3aabca04a26aa480aa18cede23149837/opentelemetry_exporter_otlp_proto_common-1.27.0-py3-none-any.whl", hash = "sha256:675db7fffcb60946f3a5c43e17d1168a3307a94a930ecf8d2ea1f286f3d4f79a", size = 17848, upload-time = "2024-08-28T21:35:05.412Z" },
-]
-
-[[package]]
-name = "opentelemetry-exporter-otlp-proto-grpc"
-version = "1.27.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "deprecated" },
-    { name = "googleapis-common-protos" },
-    { name = "grpcio" },
-    { name = "opentelemetry-api" },
-    { name = "opentelemetry-exporter-otlp-proto-common" },
-    { name = "opentelemetry-proto" },
-    { name = "opentelemetry-sdk" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a1/d0/c1e375b292df26e0ffebf194e82cd197e4c26cc298582bda626ce3ce74c5/opentelemetry_exporter_otlp_proto_grpc-1.27.0.tar.gz", hash = "sha256:af6f72f76bcf425dfb5ad11c1a6d6eca2863b91e63575f89bb7b4b55099d968f", size = 26244, upload-time = "2024-08-28T21:35:36.314Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/80/32217460c2c64c0568cea38410124ff680a9b65f6732867bbf857c4d8626/opentelemetry_exporter_otlp_proto_grpc-1.27.0-py3-none-any.whl", hash = "sha256:56b5bbd5d61aab05e300d9d62a6b3c134827bbd28d0b12f2649c2da368006c9e", size = 18541, upload-time = "2024-08-28T21:35:06.493Z" },
-]
-
-[[package]]
-name = "opentelemetry-exporter-otlp-proto-http"
-version = "1.27.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "deprecated" },
-    { name = "googleapis-common-protos" },
-    { name = "opentelemetry-api" },
-    { name = "opentelemetry-exporter-otlp-proto-common" },
-    { name = "opentelemetry-proto" },
-    { name = "opentelemetry-sdk" },
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/31/0a/f05c55e8913bf58a033583f2580a0ec31a5f4cf2beacc9e286dcb74d6979/opentelemetry_exporter_otlp_proto_http-1.27.0.tar.gz", hash = "sha256:2103479092d8eb18f61f3fbff084f67cc7f2d4a7d37e75304b8b56c1d09ebef5", size = 15059, upload-time = "2024-08-28T21:35:37.079Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/2d/8d/4755884afc0b1db6000527cac0ca17273063b6142c773ce4ecd307a82e72/opentelemetry_exporter_otlp_proto_http-1.27.0-py3-none-any.whl", hash = "sha256:688027575c9da42e179a69fe17e2d1eba9b14d81de8d13553a21d3114f3b4d75", size = 17203, upload-time = "2024-08-28T21:35:08.141Z" },
-]
-
-[[package]]
-name = "opentelemetry-proto"
-version = "1.27.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "protobuf", version = "3.20.3", source = { registry = "https://pypi.org/simple" } },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/9a/59/959f0beea798ae0ee9c979b90f220736fbec924eedbefc60ca581232e659/opentelemetry_proto-1.27.0.tar.gz", hash = "sha256:33c9345d91dafd8a74fc3d7576c5a38f18b7fdf8d02983ac67485386132aedd6", size = 34749, upload-time = "2024-08-28T21:35:45.839Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/94/56/3d2d826834209b19a5141eed717f7922150224d1a982385d19a9444cbf8d/opentelemetry_proto-1.27.0-py3-none-any.whl", hash = "sha256:b133873de5581a50063e1e4b29cdcf0c5e253a8c2d8dc1229add20a4c3830ace", size = 52464, upload-time = "2024-08-28T21:35:21.434Z" },
-]
-
-[[package]]
-name = "opentelemetry-sdk"
-version = "1.27.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "opentelemetry-api" },
-    { name = "opentelemetry-semantic-conventions" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0d/9a/82a6ac0f06590f3d72241a587cb8b0b751bd98728e896cc4cbd4847248e6/opentelemetry_sdk-1.27.0.tar.gz", hash = "sha256:d525017dea0ccce9ba4e0245100ec46ecdc043f2d7b8315d56b19aff0904fa6f", size = 145019, upload-time = "2024-08-28T21:35:46.708Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/bd/a6602e71e315055d63b2ff07172bd2d012b4cba2d4e00735d74ba42fc4d6/opentelemetry_sdk-1.27.0-py3-none-any.whl", hash = "sha256:365f5e32f920faf0fd9e14fdfd92c086e317eaa5f860edba9cdc17a380d9197d", size = 110505, upload-time = "2024-08-28T21:35:24.769Z" },
-]
-
-[[package]]
-name = "opentelemetry-semantic-conventions"
-version = "0.48b0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "deprecated" },
-    { name = "opentelemetry-api" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0a/89/1724ad69f7411772446067cdfa73b598694c8c91f7f8c922e344d96d81f9/opentelemetry_semantic_conventions-0.48b0.tar.gz", hash = "sha256:12d74983783b6878162208be57c9effcb89dc88691c64992d70bb89dc00daa1a", size = 89445, upload-time = "2024-08-28T21:35:47.673Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b7/7a/4f0063dbb0b6c971568291a8bc19a4ca70d3c185db2d956230dd67429dfc/opentelemetry_semantic_conventions-0.48b0-py3-none-any.whl", hash = "sha256:a0de9f45c413a8669788a38569c7e0a11ce6ce97861a628cca785deecdc32a1f", size = 149685, upload-time = "2024-08-28T21:35:25.983Z" },
-]
-
-[[package]]
-name = "opentelemetry-semantic-conventions-ai"
-version = "0.4.12"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/2e/e3/8d9eb40475a8626accba9afb615183bad64f1da8ca0cec29333d566c4d7f/opentelemetry_semantic_conventions_ai-0.4.12.tar.gz", hash = "sha256:d5285a16d9ac856163a27f9387e8c644b555f35370b50eb2b1d0676e5daad1b4", size = 5166, upload-time = "2025-07-28T11:27:39.908Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/4e/11/f6a71924081ee95691259c17fdafc4b8a52fe1072284809cb251c0de6f21/opentelemetry_semantic_conventions_ai-0.4.12-py3-none-any.whl", hash = "sha256:89a37ef99354f63c72d060d78343de426bb0df408f5795d325f0e34336f41e7e", size = 6030, upload-time = "2025-07-28T11:27:38.962Z" },
-]
-
-[[package]]
-name = "outlines"
-version = "0.1.11"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "airportsdata" },
-    { name = "cloudpickle" },
-    { name = "diskcache" },
-    { name = "interegular" },
-    { name = "jinja2" },
-    { name = "jsonschema" },
-    { name = "lark" },
-    { name = "nest-asyncio" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "outlines-core" },
-    { name = "pycountry" },
-    { name = "pydantic" },
-    { name = "referencing" },
-    { name = "requests" },
-    { name = "torch", version = "2.7.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "tqdm" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ac/d0/d59ae830bf7026425942899e3d48e77b58a713cff946a695e5405808da1b/outlines-0.1.11.tar.gz", hash = "sha256:0997bd9da1cc050e430bd08995dc7d4bd855918bafa4531e49d3f37110a23aba", size = 2488858, upload-time = "2024-12-13T07:24:08.426Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/b4/99ea4a122bef60e3fd6402d19665aff1f928e0daf8fac3044d0b73f72003/outlines-0.1.11-py3-none-any.whl", hash = "sha256:f5a5f2242ed9802d3aab7a92789bf4008d734c576be9258cc0a297f690124727", size = 87623, upload-time = "2024-12-13T07:24:05.817Z" },
-]
-
-[[package]]
 name = "outlines-core"
-version = "0.1.26"
+version = "0.2.10"
 source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "interegular" },
-    { name = "jsonschema" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d3/f3/274d07f4702728b43581235a77e545ec602b25f9b0098b288a0f3052521d/outlines_core-0.1.26.tar.gz", hash = "sha256:481c4301341e77cc8f1832d616784adb4d461b4fec65878e7c0d2cba7163a189", size = 75139, upload-time = "2024-12-12T23:38:50.703Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/13/e2/de74a5fd00299215270a750f356ba7cb427ba5d3e495cab07cfc3110ca86/outlines_core-0.2.10.tar.gz", hash = "sha256:c9ee7be195ac18dda5acce41d8805c2fb550a4affd525414511662cfa7097dfe", size = 197140, upload-time = "2025-05-12T18:20:27.301Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e2/df/e9ff00f1dcf671cb8c4c20abcfd53406328b344cafa689a2832e8059c0b4/outlines_core-0.1.26-cp310-cp310-macosx_10_12_x86_64.whl", hash = "sha256:6a962a7452e7ac170fa04d405342cadae2d28fafa5b1830cef7aa610257ed32f", size = 322602, upload-time = "2024-12-12T23:38:00.589Z" },
-    { url = "https://files.pythonhosted.org/packages/3c/f1/e9064f18c462a61f4abbe73b24f25e36d8abef19c593416fa69dce6a83c0/outlines_core-0.1.26-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:15a3684fa29564da2db03934cf0097bef3e871f70d3af0ef2b52fdb886da2e09", size = 301929, upload-time = "2024-12-12T23:38:03.063Z" },
-    { url = "https://files.pythonhosted.org/packages/76/c3/6bc82db40b4818421e573237f43d4026c40a3305fa2558eb0aa1a7aa08f7/outlines_core-0.1.26-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:64e01c0cfa9ba371634d7c3f6ea1862397cef98e4509fe98e3f57faa721a72d6", size = 321355, upload-time = "2024-12-12T23:38:05.282Z" },
-    { url = "https://files.pythonhosted.org/packages/c9/c2/1d85bfeaee3a83327e0d162bee4bdc7d7889bea5998e44fcc66c924dc1fd/outlines_core-0.1.26-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a3c4196148e47f455f1ace78e329d5b97e531cbc406456d681592952adae7e17", size = 343552, upload-time = "2024-12-12T23:38:07.627Z" },
-    { url = "https://files.pythonhosted.org/packages/45/da/1e61d3d997ba1858fb8e71c3127f24a95c30575559da012ea5b45b147ad3/outlines_core-0.1.26-cp310-cp310-win32.whl", hash = "sha256:f38d290a7f6e5e12cbfcaee03269dfc0dbda49b360024b4279d1aba251fdc346", size = 234750, upload-time = "2024-12-12T23:38:10.194Z" },
-    { url = "https://files.pythonhosted.org/packages/1c/04/6d7968019a81df235ad6bc7405eefe32be8da4c4153792655e7490d06c8d/outlines_core-0.1.26-cp310-cp310-win_amd64.whl", hash = "sha256:11ff56af56cb54c563b7f25d86cd9ee77f3fed825f1d4dccd9449bb1e4e89538", size = 243713, upload-time = "2024-12-12T23:38:12.373Z" },
+    { url = "https://files.pythonhosted.org/packages/31/cb/c5e8dfd1de4b3933d3b49a06bbded8c12c8eaf1e7869cc84530799aafa70/outlines_core-0.2.10-cp310-cp310-macosx_14_0_arm64.whl", hash = "sha256:b984c932bdf2843e3d5a8e57e09830d52c4237ac394f39542c4e543378b94ffb", size = 1950128, upload-time = "2025-05-12T18:19:07.174Z" },
+    { url = "https://files.pythonhosted.org/packages/c1/de/338a2c89434034e861de75a530234af269300fb8d3e751569da09bdf25b9/outlines_core-0.2.10-cp310-cp310-macosx_14_0_x86_64.whl", hash = "sha256:65b2dba48d0f98b0145eb50494985f026e3c10df3fde94ced40e9c2aa6ea32ca", size = 2124575, upload-time = "2025-05-12T18:19:09.727Z" },
+    { url = "https://files.pythonhosted.org/packages/0a/d9/f6dabd7ef45ee0c53afa193db59b1cc857b96cad52eba71185ece31e619f/outlines_core-0.2.10-cp310-cp310-macosx_15_0_arm64.whl", hash = "sha256:ac23b028da10e6914b762f36a7096e793a0e37b6c03f19963ef7875c05b67890", size = 1948695, upload-time = "2025-05-12T18:19:11.927Z" },
+    { url = "https://files.pythonhosted.org/packages/06/99/1f058276cfedc731dc25e9dafa0f5664597c3546fd1dc68d7925513db6a1/outlines_core-0.2.10-cp310-cp310-macosx_15_0_x86_64.whl", hash = "sha256:9c5b9a3f7e658949a3dd07b8a28134277a047ed7d73f6e3b4ca8209346bbff54", size = 2120479, upload-time = "2025-05-12T18:19:13.711Z" },
+    { url = "https://files.pythonhosted.org/packages/7a/94/5c40f424039f969c9766000b39cfee0e11c3b00a42fc3d6cf43a83568ca0/outlines_core-0.2.10-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:70d99dd37a826b4d85a5dcb39ae3b557e986c9bb1c4566bbb26f589531369a53", size = 2274970, upload-time = "2025-05-12T18:19:15.533Z" },
+    { url = "https://files.pythonhosted.org/packages/59/54/e5001070c1f67c0284caf1371ed5d6e1fff4bdb8aa06cd50f6c440ff4726/outlines_core-0.2.10-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:207309a1d4fcf3100e3bbdc31b4d65f2b4f5d809d600c1509e28b6dca028a892", size = 2103127, upload-time = "2025-05-12T18:19:17.251Z" },
+    { url = "https://files.pythonhosted.org/packages/70/59/0388ccb03bc82d7696fbf21bd1f608e56d339f43157791a93c3870fb5802/outlines_core-0.2.10-cp310-cp310-win32.whl", hash = "sha256:534fafab18e2962b9973cae852f47476307dc217dd0708d53cbf54809d8b304e", size = 1764213, upload-time = "2025-05-12T18:19:19.334Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/d2/43bbef4fff12c6414d6daadfa841e39605347e0331cc68dfe3d6d29f1c98/outlines_core-0.2.10-cp310-cp310-win_amd64.whl", hash = "sha256:a29e261ab57fd992b236854fd19b46b17ad8c8b7fdc6d95a97ae83480e634cff", size = 2054688, upload-time = "2025-05-12T18:19:23.769Z" },
 ]
 
 [[package]]
@@ -2829,6 +2602,30 @@ wheels = [
 ]
 
 [[package]]
+name = "setproctitle"
+version = "1.3.6"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/af/56efe21c53ac81ac87e000b15e60b3d8104224b4313b6eacac3597bd183d/setproctitle-1.3.6.tar.gz", hash = "sha256:c9f32b96c700bb384f33f7cf07954bb609d35dd82752cef57fb2ee0968409169", size = 26889, upload-time = "2025-04-29T13:35:00.184Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7d/db/8214810cae49e2e474ea741aaa7d6111486f27377e864f0eb6d297c9be56/setproctitle-1.3.6-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:ebcf34b69df4ca0eabaaaf4a3d890f637f355fed00ba806f7ebdd2d040658c26", size = 17412, upload-time = "2025-04-29T13:32:38.795Z" },
+    { url = "https://files.pythonhosted.org/packages/a4/45/909b0dcd68b16d2e58de0e861c0c0b67748ccc87ff9b59136e9710b528b1/setproctitle-1.3.6-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:1aa1935aa2195b76f377e5cb018290376b7bf085f0b53f5a95c0c21011b74367", size = 11966, upload-time = "2025-04-29T13:32:41.289Z" },
+    { url = "https://files.pythonhosted.org/packages/8a/f4/f1cd54fedae1cdacf1d1db833dc096bfb1f029451f60e68563e4c26ed2f7/setproctitle-1.3.6-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:13624d9925bb481bc0ccfbc7f533da38bfbfe6e80652314f789abc78c2e513bd", size = 31350, upload-time = "2025-04-29T13:32:43.013Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/5f/f159b22d286a349633d4090090b8e6632fb84575a64f189b68e70a613c65/setproctitle-1.3.6-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:97a138fa875c6f281df7720dac742259e85518135cd0e3551aba1c628103d853", size = 32704, upload-time = "2025-04-29T13:32:44.215Z" },
+    { url = "https://files.pythonhosted.org/packages/9c/25/e5ea2673d951dafc04b6544d7b33dd9283733d715c8f40e93d39ae35d6a0/setproctitle-1.3.6-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c86e9e82bfab579327dbe9b82c71475165fbc8b2134d24f9a3b2edaf200a5c3d", size = 29833, upload-time = "2025-04-29T13:32:45.882Z" },
+    { url = "https://files.pythonhosted.org/packages/67/2b/c3cbd4a4462c1143465d8c151f1d51bbfb418e60a96a754329d28d416575/setproctitle-1.3.6-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6af330ddc2ec05a99c3933ab3cba9365357c0b8470a7f2fa054ee4b0984f57d1", size = 30884, upload-time = "2025-04-29T13:32:47.515Z" },
+    { url = "https://files.pythonhosted.org/packages/27/04/b43a622a9fbf0f216a50b523067d3b07739ede2106a7226223e33abf6659/setproctitle-1.3.6-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:109fc07b1cd6cef9c245b2028e3e98e038283342b220def311d0239179810dbe", size = 30798, upload-time = "2025-04-29T13:32:48.717Z" },
+    { url = "https://files.pythonhosted.org/packages/41/60/8eb197b56b0a3110eef2a1d2ddb61b3f5809dbab9d975aa40c86e5d4b312/setproctitle-1.3.6-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:7df5fcc48588f82b6cc8073db069609ddd48a49b1e9734a20d0efb32464753c4", size = 29758, upload-time = "2025-04-29T13:32:50.3Z" },
+    { url = "https://files.pythonhosted.org/packages/db/1d/c394322a5425c12f4ada0696eb6d194768752d4e3acaca0c9d593025feb4/setproctitle-1.3.6-cp310-cp310-musllinux_1_2_ppc64le.whl", hash = "sha256:2407955dc359d735a20ac6e797ad160feb33d529a2ac50695c11a1ec680eafab", size = 32157, upload-time = "2025-04-29T13:32:52.026Z" },
+    { url = "https://files.pythonhosted.org/packages/e7/24/ce080682b144f057814efbe95daac09149e90f7689e2515897817a941686/setproctitle-1.3.6-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:38ca045626af693da042ac35d7332e7b9dbd52e6351d6973b310612e3acee6d6", size = 30291, upload-time = "2025-04-29T13:32:53.737Z" },
+    { url = "https://files.pythonhosted.org/packages/a7/4f/4db265493567865428dcec376f8142a9c65d27c10c3ac915d173b4053afb/setproctitle-1.3.6-cp310-cp310-win32.whl", hash = "sha256:9483aa336687463f5497dd37a070094f3dff55e2c888994f8440fcf426a1a844", size = 11492, upload-time = "2025-04-29T13:32:55.271Z" },
+    { url = "https://files.pythonhosted.org/packages/38/b0/64c3948f7957db44b4c5edfe9c197de493144dc915ddf95cf36aeca0dc52/setproctitle-1.3.6-cp310-cp310-win_amd64.whl", hash = "sha256:4efc91b437f6ff2578e89e3f17d010c0a0ff01736606473d082913ecaf7859ba", size = 12204, upload-time = "2025-04-29T13:32:56.711Z" },
+    { url = "https://files.pythonhosted.org/packages/d0/2b/f19977b646b64c1440dade2c385c89c39f74ce5254defa102dfd9c163e0b/setproctitle-1.3.6-pp310-pypy310_pp73-macosx_11_0_arm64.whl", hash = "sha256:3cde5b83ec4915cd5e6ae271937fd60d14113c8f7769b4a20d51769fe70d8717", size = 11471, upload-time = "2025-04-29T13:34:42.665Z" },
+    { url = "https://files.pythonhosted.org/packages/78/46/db58cf700f1408cf0f63d3f939f7b077bd450da8e037310f70e74c41262f/setproctitle-1.3.6-pp310-pypy310_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:797f2846b546a8741413c57d9fb930ad5aa939d925c9c0fa6186d77580035af7", size = 13520, upload-time = "2025-04-29T13:34:44.287Z" },
+    { url = "https://files.pythonhosted.org/packages/5c/46/0b89e7ebe77543e721c67077ad93fc8c7c3c31a8db3b12e00d02950f6adc/setproctitle-1.3.6-pp310-pypy310_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4ac3eb04bcf0119aadc6235a2c162bae5ed5f740e3d42273a7228b915722de20", size = 13094, upload-time = "2025-04-29T13:34:45.605Z" },
+    { url = "https://files.pythonhosted.org/packages/f7/78/03f2e42eb83bce6f853d7751ae95f8a3ae7408145a0b6cdd717be01497d7/setproctitle-1.3.6-pp310-pypy310_pp73-win_amd64.whl", hash = "sha256:0e6b5633c94c5111f7137f875e8f1ff48f53b991d5d5b90932f27dc8c1fa9ae4", size = 12241, upload-time = "2025-04-29T13:34:46.996Z" },
+]
+
+[[package]]
 name = "setuptools"
 version = "80.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2874,12 +2671,54 @@ wheels = [
 ]
 
 [[package]]
+name = "soundfile"
+version = "0.13.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cffi" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e1/41/9b873a8c055582859b239be17902a85339bec6a30ad162f98c9b0288a2cc/soundfile-0.13.1.tar.gz", hash = "sha256:b2c68dab1e30297317080a5b43df57e302584c49e2942defdde0acccc53f0e5b", size = 46156, upload-time = "2025-01-25T09:17:04.831Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/64/28/e2a36573ccbcf3d57c00626a21fe51989380636e821b341d36ccca0c1c3a/soundfile-0.13.1-py2.py3-none-any.whl", hash = "sha256:a23c717560da2cf4c7b5ae1142514e0fd82d6bbd9dfc93a50423447142f2c445", size = 25751, upload-time = "2025-01-25T09:16:44.235Z" },
+    { url = "https://files.pythonhosted.org/packages/ea/ab/73e97a5b3cc46bba7ff8650a1504348fa1863a6f9d57d7001c6b67c5f20e/soundfile-0.13.1-py2.py3-none-macosx_10_9_x86_64.whl", hash = "sha256:82dc664d19831933fe59adad199bf3945ad06d84bc111a5b4c0d3089a5b9ec33", size = 1142250, upload-time = "2025-01-25T09:16:47.583Z" },
+    { url = "https://files.pythonhosted.org/packages/a0/e5/58fd1a8d7b26fc113af244f966ee3aecf03cb9293cb935daaddc1e455e18/soundfile-0.13.1-py2.py3-none-macosx_11_0_arm64.whl", hash = "sha256:743f12c12c4054921e15736c6be09ac26b3b3d603aef6fd69f9dde68748f2593", size = 1101406, upload-time = "2025-01-25T09:16:49.662Z" },
+    { url = "https://files.pythonhosted.org/packages/58/ae/c0e4a53d77cf6e9a04179535766b3321b0b9ced5f70522e4caf9329f0046/soundfile-0.13.1-py2.py3-none-manylinux_2_28_aarch64.whl", hash = "sha256:9c9e855f5a4d06ce4213f31918653ab7de0c5a8d8107cd2427e44b42df547deb", size = 1235729, upload-time = "2025-01-25T09:16:53.018Z" },
+    { url = "https://files.pythonhosted.org/packages/57/5e/70bdd9579b35003a489fc850b5047beeda26328053ebadc1fb60f320f7db/soundfile-0.13.1-py2.py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:03267c4e493315294834a0870f31dbb3b28a95561b80b134f0bd3cf2d5f0e618", size = 1313646, upload-time = "2025-01-25T09:16:54.872Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/df/8c11dc4dfceda14e3003bb81a0d0edcaaf0796dd7b4f826ea3e532146bba/soundfile-0.13.1-py2.py3-none-win32.whl", hash = "sha256:c734564fab7c5ddf8e9be5bf70bab68042cd17e9c214c06e365e20d64f9a69d5", size = 899881, upload-time = "2025-01-25T09:16:56.663Z" },
+    { url = "https://files.pythonhosted.org/packages/14/e9/6b761de83277f2f02ded7e7ea6f07828ec78e4b229b80e4ca55dd205b9dc/soundfile-0.13.1-py2.py3-none-win_amd64.whl", hash = "sha256:1e70a05a0626524a69e9f0f4dd2ec174b4e9567f4d8b6c11d38b5c289be36ee9", size = 1019162, upload-time = "2025-01-25T09:16:59.573Z" },
+]
+
+[[package]]
 name = "soupsieve"
 version = "2.7"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/3f/f4/4a80cd6ef364b2e8b65b15816a843c0980f7a5a2b4dc701fc574952aa19f/soupsieve-2.7.tar.gz", hash = "sha256:ad282f9b6926286d2ead4750552c8a6142bc4c783fd66b0293547c8fe6ae126a", size = 103418, upload-time = "2025-04-20T18:50:08.518Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e7/9c/0e6afc12c269578be5c0c1c9f4b49a8d32770a080260c333ac04cc1c832d/soupsieve-2.7-py3-none-any.whl", hash = "sha256:6e60cc5c1ffaf1cebcc12e8188320b72071e922c2e897f737cadce79ad5d30c4", size = 36677, upload-time = "2025-04-20T18:50:07.196Z" },
+]
+
+[[package]]
+name = "soxr"
+version = "0.5.0.post1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/02/c0/4429bf9b3be10e749149e286aa5c53775399ec62891c6b970456c6dca325/soxr-0.5.0.post1.tar.gz", hash = "sha256:7092b9f3e8a416044e1fa138c8172520757179763b85dc53aa9504f4813cff73", size = 170853, upload-time = "2024-08-31T03:43:33.058Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7d/96/bee1eb69d66fc28c3b219ba9b8674b49d3dcc6cd2f9b3e5114ff28cf88b5/soxr-0.5.0.post1-cp310-cp310-macosx_10_14_x86_64.whl", hash = "sha256:7406d782d85f8cf64e66b65e6b7721973de8a1dc50b9e88bc2288c343a987484", size = 203841, upload-time = "2024-08-31T03:42:59.186Z" },
+    { url = "https://files.pythonhosted.org/packages/1f/5d/56ad3d181d30d103128f65cc44f4c4e24c199e6d5723e562704e47c89f78/soxr-0.5.0.post1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:fa0a382fb8d8e2afed2c1642723b2d2d1b9a6728ff89f77f3524034c8885b8c9", size = 160192, upload-time = "2024-08-31T03:43:01.128Z" },
+    { url = "https://files.pythonhosted.org/packages/7f/09/e43c39390e26b4c1b8d46f8a1c252a5077fa9f81cc2326b03c3d2b85744e/soxr-0.5.0.post1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8b01d3efb95a2851f78414bcd00738b0253eec3f5a1e5482838e965ffef84969", size = 221176, upload-time = "2024-08-31T03:43:02.663Z" },
+    { url = "https://files.pythonhosted.org/packages/ba/e6/059070b4cdb7fdd8ffbb67c5087c1da9716577127fb0540cd11dbf77923b/soxr-0.5.0.post1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fcc049b0a151a65aa75b92f0ac64bb2dba785d16b78c31c2b94e68c141751d6d", size = 252779, upload-time = "2024-08-31T03:43:04.582Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/64/86082b6372e5ff807dfa79b857da9f50e94e155706000daa43fdc3b59851/soxr-0.5.0.post1-cp310-cp310-win_amd64.whl", hash = "sha256:97f269bc26937c267a2ace43a77167d0c5c8bba5a2b45863bb6042b5b50c474e", size = 166881, upload-time = "2024-08-31T03:43:06.255Z" },
+    { url = "https://files.pythonhosted.org/packages/5d/e3/d422d279e51e6932e7b64f1170a4f61a7ee768e0f84c9233a5b62cd2c832/soxr-0.5.0.post1-cp312-abi3-macosx_10_14_x86_64.whl", hash = "sha256:fef509466c9c25f65eae0ce1e4b9ac9705d22c6038c914160ddaf459589c6e31", size = 199993, upload-time = "2024-08-31T03:43:17.24Z" },
+    { url = "https://files.pythonhosted.org/packages/20/f1/88adaca3c52e03bcb66b63d295df2e2d35bf355d19598c6ce84b20be7fca/soxr-0.5.0.post1-cp312-abi3-macosx_11_0_arm64.whl", hash = "sha256:4704ba6b13a3f1e41d12acf192878384c1c31f71ce606829c64abdf64a8d7d32", size = 156373, upload-time = "2024-08-31T03:43:18.633Z" },
+    { url = "https://files.pythonhosted.org/packages/b8/38/bad15a9e615215c8219652ca554b601663ac3b7ac82a284aca53ec2ff48c/soxr-0.5.0.post1-cp312-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:bd052a66471a7335b22a6208601a9d0df7b46b8d087dce4ff6e13eed6a33a2a1", size = 216564, upload-time = "2024-08-31T03:43:20.789Z" },
+    { url = "https://files.pythonhosted.org/packages/e1/1a/569ea0420a0c4801c2c8dd40d8d544989522f6014d51def689125f3f2935/soxr-0.5.0.post1-cp312-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a3f16810dd649ab1f433991d2a9661e9e6a116c2b4101039b53b3c3e90a094fc", size = 248455, upload-time = "2024-08-31T03:43:22.165Z" },
+    { url = "https://files.pythonhosted.org/packages/bc/10/440f1ba3d4955e0dc740bbe4ce8968c254a3d644d013eb75eea729becdb8/soxr-0.5.0.post1-cp312-abi3-win_amd64.whl", hash = "sha256:b1be9fee90afb38546bdbd7bde714d1d9a8c5a45137f97478a83b65e7f3146f6", size = 164937, upload-time = "2024-08-31T03:43:23.671Z" },
 ]
 
 [[package]]
@@ -2907,33 +2746,33 @@ aggregate-results = [
 auto-detector = [
     { name = "protobuf", version = "6.31.1", source = { registry = "https://pypi.org/simple" } },
     { name = "sentencepiece" },
-    { name = "transformers", version = "4.55.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "transformers" },
 ]
 lighteval = [
     { name = "datasets" },
     { name = "lighteval", extra = ["extended-tasks", "litellm", "math", "vllm"], marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "litellm" },
-    { name = "openai", version = "1.99.7", source = { registry = "https://pypi.org/simple" } },
-    { name = "transformers", version = "4.52.4", source = { registry = "https://pypi.org/simple" } },
+    { name = "openai" },
+    { name = "transformers" },
 ]
 vllm = [
-    { name = "transformers", version = "4.53.3", source = { registry = "https://pypi.org/simple" } },
-    { name = "vllm", version = "0.9.2", source = { registry = "https://pypi.org/simple" } },
+    { name = "transformers" },
+    { name = "vllm" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "datasets", marker = "extra == 'lighteval'", specifier = "<4.0.0" },
     { name = "lighteval", extras = ["math", "extended-tasks", "litellm", "vllm"], marker = "extra == 'lighteval'", editable = "lighteval" },
-    { name = "litellm", marker = "extra == 'lighteval'", specifier = ">1.75.4" },
+    { name = "litellm", marker = "extra == 'lighteval'", specifier = ">=1.75.8" },
     { name = "openai", marker = "extra == 'lighteval'", specifier = ">=1.40.0" },
     { name = "pandas", marker = "extra == 'aggregate-results'", specifier = ">=2.2.3" },
     { name = "protobuf", marker = "extra == 'auto-detector'" },
     { name = "sentencepiece", marker = "extra == 'auto-detector'" },
     { name = "transformers", marker = "extra == 'auto-detector'" },
-    { name = "transformers", marker = "extra == 'lighteval'", specifier = ">=4.51.0,<4.53.0" },
-    { name = "transformers", marker = "extra == 'vllm'", specifier = ">=4.53.2,<4.54" },
-    { name = "vllm", marker = "extra == 'vllm'", specifier = ">=0.9,<0.10.0" },
+    { name = "transformers", marker = "extra == 'lighteval'", specifier = ">=4.51.0" },
+    { name = "transformers", marker = "extra == 'vllm'", specifier = ">=4.55.0" },
+    { name = "vllm", marker = "extra == 'vllm'", specifier = ">=0.10.1" },
 ]
 provides-extras = ["auto-detector", "aggregate-results", "lighteval", "vllm"]
 
@@ -3043,7 +2882,7 @@ wheels = [
 
 [[package]]
 name = "torch"
-version = "2.7.0"
+version = "2.7.1"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "sys_platform == 'darwin'",
@@ -3058,15 +2897,15 @@ dependencies = [
     { name = "typing-extensions", marker = "sys_platform == 'darwin'" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/46/c2/3fb87940fa160d956ee94d644d37b99a24b9c05a4222bf34f94c71880e28/torch-2.7.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:c9afea41b11e1a1ab1b258a5c31afbd646d6319042bfe4f231b408034b51128b", size = 99158447, upload-time = "2025-04-23T14:35:10.557Z" },
-    { url = "https://files.pythonhosted.org/packages/cc/2c/91d1de65573fce563f5284e69d9c56b57289625cffbbb6d533d5d56c36a5/torch-2.7.0-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:0b9960183b6e5b71239a3e6c883d8852c304e691c0b2955f7045e8a6d05b9183", size = 865164221, upload-time = "2025-04-23T14:33:27.864Z" },
-    { url = "https://files.pythonhosted.org/packages/7f/7e/1b1cc4e0e7cc2666cceb3d250eef47a205f0821c330392cf45eb08156ce5/torch-2.7.0-cp310-cp310-win_amd64.whl", hash = "sha256:2ad79d0d8c2a20a37c5df6052ec67c2078a2c4e9a96dd3a8b55daaff6d28ea29", size = 212521189, upload-time = "2025-04-23T14:34:53.898Z" },
-    { url = "https://files.pythonhosted.org/packages/dc/0b/b2b83f30b8e84a51bf4f96aa3f5f65fdf7c31c591cc519310942339977e2/torch-2.7.0-cp310-none-macosx_11_0_arm64.whl", hash = "sha256:34e0168ed6de99121612d72224e59b2a58a83dae64999990eada7260c5dd582d", size = 68559462, upload-time = "2025-04-23T14:35:39.889Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/27/2e06cb52adf89fe6e020963529d17ed51532fc73c1e6d1b18420ef03338c/torch-2.7.1-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:a103b5d782af5bd119b81dbcc7ffc6fa09904c423ff8db397a1e6ea8fd71508f", size = 99089441, upload-time = "2025-06-04T17:38:48.268Z" },
+    { url = "https://files.pythonhosted.org/packages/0a/7c/0a5b3aee977596459ec45be2220370fde8e017f651fecc40522fd478cb1e/torch-2.7.1-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:fe955951bdf32d182ee8ead6c3186ad54781492bf03d547d31771a01b3d6fb7d", size = 821154516, upload-time = "2025-06-04T17:36:28.556Z" },
+    { url = "https://files.pythonhosted.org/packages/f9/91/3d709cfc5e15995fb3fe7a6b564ce42280d3a55676dad672205e94f34ac9/torch-2.7.1-cp310-cp310-win_amd64.whl", hash = "sha256:885453d6fba67d9991132143bf7fa06b79b24352f4506fd4d10b309f53454162", size = 216093147, upload-time = "2025-06-04T17:39:38.132Z" },
+    { url = "https://files.pythonhosted.org/packages/92/f6/5da3918414e07da9866ecb9330fe6ffdebe15cb9a4c5ada7d4b6e0a6654d/torch-2.7.1-cp310-none-macosx_11_0_arm64.whl", hash = "sha256:d72acfdb86cee2a32c0ce0101606f3758f0d8bb5f8f31e7920dc2809e963aa7c", size = 68630914, upload-time = "2025-06-04T17:39:31.162Z" },
 ]
 
 [[package]]
 name = "torch"
-version = "2.7.0+cu128"
+version = "2.7.1+cu128"
 source = { registry = "https://download.pytorch.org/whl/cu128" }
 resolution-markers = [
     "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
@@ -3097,45 +2936,45 @@ dependencies = [
     { name = "typing-extensions", marker = "sys_platform != 'darwin'" },
 ]
 wheels = [
-    { url = "https://download.pytorch.org/whl/cu128/torch-2.7.0%2Bcu128-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:b1f0cdd0720ad60536deb5baa427b782fd920dd4fcf72e244d32974caafa3b9e" },
-    { url = "https://download.pytorch.org/whl/cu128/torch-2.7.0%2Bcu128-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:ac1849553ee673dfafb44c610c60cb60a2890f0e117f43599a526cf777eb8b8c" },
-    { url = "https://download.pytorch.org/whl/cu128/torch-2.7.0%2Bcu128-cp310-cp310-win_amd64.whl", hash = "sha256:c52c4b869742f00b12cb34521d1381be6119fa46244791704b00cc4a3cb06850" },
+    { url = "https://download.pytorch.org/whl/cu128/torch-2.7.1%2Bcu128-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:aca3472608e3c92df5166537595687b53a6c997082478b372427b043dbed98d0" },
+    { url = "https://download.pytorch.org/whl/cu128/torch-2.7.1%2Bcu128-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:d6c3cba198dc93f93422a8545f48a6697890366e4b9701f54351fc27e2304bd3" },
+    { url = "https://download.pytorch.org/whl/cu128/torch-2.7.1%2Bcu128-cp310-cp310-win_amd64.whl", hash = "sha256:5174f02de8ca14df87c8e333c4c39cf3ce93a323c9d470d690301d110a053b3c" },
 ]
 
 [[package]]
 name = "torchaudio"
-version = "2.7.0"
+version = "2.7.1"
 source = { registry = "https://download.pytorch.org/whl/cu128" }
 resolution-markers = [
     "platform_machine == 'aarch64' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
+    { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
 ]
 wheels = [
-    { url = "https://download.pytorch.org/whl/cu128/torchaudio-2.7.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:dba5b20318d6f39753fc49b6b7267d7adb2c748997f716ef7838d5f048798f06" },
+    { url = "https://download.pytorch.org/whl/cu128/torchaudio-2.7.1-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:80f199f643d7f8e5435c1c88e7fa8c6b08eab6ebc1ec915c9b69e83a1503dc91" },
 ]
 
 [[package]]
 name = "torchaudio"
-version = "2.7.0+cu128"
+version = "2.7.1+cu128"
 source = { registry = "https://download.pytorch.org/whl/cu128" }
 resolution-markers = [
     "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
     "sys_platform == 'darwin'",
 ]
 dependencies = [
-    { name = "torch", version = "2.7.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
 ]
 wheels = [
-    { url = "https://download.pytorch.org/whl/cu128/torchaudio-2.7.0%2Bcu128-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:d62b6e9b792ad37af6d1289ba283e1029e71b4ff9cd3c6cf7f0e7776f23254b2" },
-    { url = "https://download.pytorch.org/whl/cu128/torchaudio-2.7.0%2Bcu128-cp310-cp310-win_amd64.whl", hash = "sha256:f96c2be8aff6c827e76fd3a85e69a54ba5b9a37090853ed886f056ddfbca09a4" },
+    { url = "https://download.pytorch.org/whl/cu128/torchaudio-2.7.1%2Bcu128-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:2ba0816eee659e343851a9c5dc60c8e1eb819a3969b29268fab27d3143273d78" },
+    { url = "https://download.pytorch.org/whl/cu128/torchaudio-2.7.1%2Bcu128-cp310-cp310-win_amd64.whl", hash = "sha256:b1e56a999a06a5deaebfb991dc676aaa60d98139907d99badbc6dca6456637ee" },
 ]
 
 [[package]]
 name = "torchvision"
-version = "0.22.0"
+version = "0.22.1"
 source = { registry = "https://download.pytorch.org/whl/cu128" }
 resolution-markers = [
     "platform_machine == 'aarch64' and sys_platform == 'linux'",
@@ -3144,15 +2983,15 @@ dependencies = [
     { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "pillow", marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
+    { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
 ]
 wheels = [
-    { url = "https://download.pytorch.org/whl/cu128/torchvision-0.22.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:566224d7b4f00bc6366bed1d62f834ca80f8e57fe41e10e4a5636bfa3ffb984e" },
+    { url = "https://download.pytorch.org/whl/cu128/torchvision-0.22.1-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:3a41b87628c0d6095839c43a1dd706670e7e5a56edc5860e700e1ba22c3ef8af" },
 ]
 
 [[package]]
 name = "torchvision"
-version = "0.22.0+cu128"
+version = "0.22.1+cu128"
 source = { registry = "https://download.pytorch.org/whl/cu128" }
 resolution-markers = [
     "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
@@ -3162,12 +3001,12 @@ dependencies = [
     { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "pillow", marker = "platform_machine != 'aarch64' or sys_platform != 'linux'" },
-    { name = "torch", version = "2.7.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
 ]
 wheels = [
-    { url = "https://download.pytorch.org/whl/cu128/torchvision-0.22.0%2Bcu128-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:59df5a550113a80ce523047066eaaedb168c69482da88c3ab246716ab45ba092" },
-    { url = "https://download.pytorch.org/whl/cu128/torchvision-0.22.0%2Bcu128-cp310-cp310-win_amd64.whl", hash = "sha256:cdd90b768b01b0d638cb06a6c211b550b275c0c207b5210b7cbb5cea8dde11db" },
+    { url = "https://download.pytorch.org/whl/cu128/torchvision-0.22.1%2Bcu128-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:538f4db667286d939b4eee0a66d31ed21b51186668006b0e0ffe20338ecc7e00" },
+    { url = "https://download.pytorch.org/whl/cu128/torchvision-0.22.1%2Bcu128-cp310-cp310-win_amd64.whl", hash = "sha256:ad48ba3c3ffd48027e3a8de42fcea131a53a524ee9416ca4efb22f9ac6b7328d" },
 ]
 
 [[package]]
@@ -3184,64 +3023,13 @@ wheels = [
 
 [[package]]
 name = "transformers"
-version = "4.52.4"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
-    "platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "filelock", marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "huggingface-hub", marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "packaging", marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "pyyaml", marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "regex", marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "requests", marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "safetensors", marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "tokenizers", marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "tqdm", marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/da/a9/275037087f9d846580b02f2d7cae0e0a6955d46f84583d0151d6227bd416/transformers-4.52.4.tar.gz", hash = "sha256:aff3764441c1adc192a08dba49740d3cbbcb72d850586075aed6bd89b98203e6", size = 8945376, upload-time = "2025-05-30T09:17:17.947Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/96/f2/25b27b396af03d5b64e61976b14f7209e2939e9e806c10749b6d277c273e/transformers-4.52.4-py3-none-any.whl", hash = "sha256:203f5c19416d5877e36e88633943761719538a25d9775977a24fe77a1e5adfc7", size = 10460375, upload-time = "2025-05-30T09:17:14.477Z" },
-]
-
-[[package]]
-name = "transformers"
-version = "4.53.3"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
-    "platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "filelock", marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "huggingface-hub", marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "packaging", marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "pyyaml", marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "regex", marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "requests", marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "safetensors", marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "tokenizers", marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "tqdm", marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f1/5c/49182918b58eaa0b4c954fd0e37c79fc299e5643e69d70089d0b0eb0cd9b/transformers-4.53.3.tar.gz", hash = "sha256:b2eda1a261de79b78b97f7888fe2005fc0c3fabf5dad33d52cc02983f9f675d8", size = 9197478, upload-time = "2025-07-22T07:30:51.51Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/41/b1/d7520cc5cb69c825599042eb3a7c986fa9baa8a8d2dea9acd78e152c81e2/transformers-4.53.3-py3-none-any.whl", hash = "sha256:5aba81c92095806b6baf12df35d756cf23b66c356975fb2a7fa9e536138d7c75", size = 10826382, upload-time = "2025-07-22T07:30:48.458Z" },
-]
-
-[[package]]
-name = "transformers"
 version = "4.55.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
     { name = "huggingface-hub" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" } },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "packaging" },
     { name = "pyyaml" },
     { name = "regex" },
@@ -3257,14 +3045,14 @@ wheels = [
 
 [[package]]
 name = "triton"
-version = "3.3.0"
+version = "3.3.1"
 source = { registry = "https://download.pytorch.org/whl/cu128" }
 dependencies = [
     { name = "setuptools", marker = "sys_platform != 'darwin'" },
 ]
 wheels = [
-    { url = "https://download.pytorch.org/whl/triton-3.3.0-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl" },
-    { url = "https://download.pytorch.org/whl/triton-3.3.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
+    { url = "https://download.pytorch.org/whl/triton-3.3.1-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl" },
+    { url = "https://download.pytorch.org/whl/triton-3.3.1-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
 ]
 
 [[package]]
@@ -3407,113 +3195,41 @@ wheels = [
 
 [[package]]
 name = "vllm"
-version = "0.9.1"
+version = "0.10.1.1"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
-    "platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "sys_platform == 'darwin'",
-]
 dependencies = [
     { name = "aiohttp" },
     { name = "blake3" },
     { name = "cachetools" },
+    { name = "cbor2" },
     { name = "cloudpickle" },
-    { name = "compressed-tensors", version = "0.10.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "compressed-tensors" },
     { name = "depyf" },
+    { name = "diskcache" },
     { name = "einops" },
-    { name = "fastapi", extra = ["standard"], marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "fastapi", extra = ["standard"], marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "filelock" },
     { name = "gguf" },
-    { name = "huggingface-hub", extra = ["hf-xet"], marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "lark" },
     { name = "llguidance", marker = "platform_machine == 'aarch64' or platform_machine == 'arm64' or platform_machine == 'x86_64'" },
     { name = "lm-format-enforcer" },
-    { name = "mistral-common", extra = ["opencv"], marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "mistral-common", extra = ["audio", "image"], marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "msgspec" },
     { name = "ninja" },
     { name = "numba" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" } },
-    { name = "openai", version = "1.99.7", source = { registry = "https://pypi.org/simple" } },
-    { name = "opencv-python-headless", version = "4.11.0.86", source = { registry = "https://pypi.org/simple" } },
-    { name = "opentelemetry-api" },
-    { name = "opentelemetry-exporter-otlp" },
-    { name = "opentelemetry-sdk" },
-    { name = "opentelemetry-semantic-conventions-ai" },
-    { name = "outlines" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "openai" },
+    { name = "openai-harmony" },
+    { name = "opencv-python-headless", version = "4.11.0.86", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "opencv-python-headless", version = "4.12.0.88", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "outlines-core" },
     { name = "partial-json-parser" },
     { name = "pillow" },
     { name = "prometheus-client" },
     { name = "prometheus-fastapi-instrumentator" },
-    { name = "protobuf", version = "3.20.3", source = { registry = "https://pypi.org/simple" } },
-    { name = "psutil" },
-    { name = "py-cpuinfo" },
-    { name = "pydantic" },
-    { name = "python-json-logger" },
-    { name = "pyyaml" },
-    { name = "pyzmq" },
-    { name = "ray", extra = ["cgraph"], marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "regex" },
-    { name = "requests" },
-    { name = "scipy" },
-    { name = "sentencepiece" },
-    { name = "tiktoken" },
-    { name = "tokenizers" },
-    { name = "torch", version = "2.7.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torchaudio", version = "2.7.0", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torchaudio", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torchvision", version = "0.22.0", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torchvision", version = "0.22.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "tqdm" },
-    { name = "transformers", version = "4.52.4", source = { registry = "https://pypi.org/simple" } },
-    { name = "typing-extensions" },
-    { name = "watchfiles" },
-    { name = "xformers", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "xgrammar", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c5/5b/5f42b41d045c01821be62162fc6b1cfb14db1674027c7b623adb3a66dccf/vllm-0.9.1.tar.gz", hash = "sha256:c5ad11603f49a1fad05c88debabb8b839780403ce1b51751ec4da4e8a838082c", size = 8670972, upload-time = "2025-06-10T21:46:12.114Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b5/56/ffcf6215a571cf9aa58ded06a9640bff21b4918e27344677cd33290ab9da/vllm-0.9.1-cp38-abi3-manylinux1_x86_64.whl", hash = "sha256:28b99e8df39c7aaeda04f7e5353b18564a1a9d1c579691945523fc4777a1a8c8", size = 394637693, upload-time = "2025-06-10T21:46:01.784Z" },
-]
-
-[[package]]
-name = "vllm"
-version = "0.9.2"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
-    "platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "aiohttp" },
-    { name = "blake3" },
-    { name = "cachetools" },
-    { name = "cloudpickle" },
-    { name = "compressed-tensors", version = "0.10.2", source = { registry = "https://pypi.org/simple" } },
-    { name = "depyf" },
-    { name = "einops" },
-    { name = "fastapi", extra = ["standard"], marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "filelock" },
-    { name = "gguf" },
-    { name = "huggingface-hub", extra = ["hf-xet"], marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "lark" },
-    { name = "llguidance", marker = "platform_machine == 'aarch64' or platform_machine == 'arm64' or platform_machine == 'x86_64'" },
-    { name = "lm-format-enforcer" },
-    { name = "mistral-common", extra = ["opencv"], marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "msgspec" },
-    { name = "ninja" },
-    { name = "numba" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" } },
-    { name = "openai", version = "1.90.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "opencv-python-headless", version = "4.12.0.88", source = { registry = "https://pypi.org/simple" } },
-    { name = "outlines" },
-    { name = "partial-json-parser" },
-    { name = "pillow" },
-    { name = "prometheus-client" },
-    { name = "prometheus-fastapi-instrumentator" },
-    { name = "protobuf", version = "6.31.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "protobuf", version = "3.20.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "protobuf", version = "6.31.1", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "psutil" },
     { name = "py-cpuinfo" },
     { name = "pybase64" },
@@ -3521,29 +3237,30 @@ dependencies = [
     { name = "python-json-logger" },
     { name = "pyyaml" },
     { name = "pyzmq" },
-    { name = "ray", extra = ["cgraph"], marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "ray", extra = ["cgraph"], marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "regex" },
     { name = "requests" },
     { name = "scipy" },
     { name = "sentencepiece" },
+    { name = "setproctitle" },
     { name = "tiktoken" },
     { name = "tokenizers" },
-    { name = "torch", version = "2.7.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torchaudio", version = "2.7.0", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torchaudio", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torchvision", version = "0.22.0", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torchvision", version = "0.22.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torchaudio", version = "2.7.1", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torchaudio", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torchvision", version = "0.22.1", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torchvision", version = "0.22.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (platform_machine != 'aarch64' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'linux' and extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "tqdm" },
-    { name = "transformers", version = "4.53.3", source = { registry = "https://pypi.org/simple" } },
+    { name = "transformers" },
     { name = "typing-extensions" },
     { name = "watchfiles" },
     { name = "xformers", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
     { name = "xgrammar", marker = "platform_machine == 'aarch64' or platform_machine == 'arm64' or platform_machine == 'x86_64'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/35/89/2fbf95d398b5751b44c7256bd80e57c589142f1bfcc15f5dc76438b8853a/vllm-0.9.2.tar.gz", hash = "sha256:6b0d855ea8ba18d76364c9b82ea94bfcaa9c9e724055438b5733e4716ed104e1", size = 8997087, upload-time = "2025-07-08T04:49:01.722Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ae/a8/b53e7950c05bf8e6ef4438603a70c8992e7bc90fcad5a7a4f360c7d748a6/vllm-0.10.1.1.tar.gz", hash = "sha256:3099824ee4bdaa14c4c4f7178a092101a0ec206d4c9371edf295849b2b730a39", size = 10510801, upload-time = "2025-08-20T23:17:16.776Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f4/72/c14ff1acac64294f45782769b9c8144a1c3e8d4f2228d4648197511b015a/vllm-0.9.2-cp38-abi3-manylinux1_x86_64.whl", hash = "sha256:f3c5da29a286f4933b480a5b4749fab226564f35c96928eeef547f88d385cd34", size = 383350132, upload-time = "2025-07-08T04:48:54.133Z" },
+    { url = "https://files.pythonhosted.org/packages/3b/14/6fac6c3f6be5657a70911c8c48062c4749925dc5e24d254b1ec493add7a0/vllm-0.10.1.1-cp38-abi3-manylinux1_x86_64.whl", hash = "sha256:8ca0dd985e1ceac8540e7719c654f1553b3ba8a43c685ac8d3fa1366ffb6443a", size = 414400912, upload-time = "2025-08-20T23:17:09.179Z" },
 ]
 
 [[package]]
@@ -3609,62 +3326,39 @@ wheels = [
 ]
 
 [[package]]
-name = "wrapt"
-version = "1.17.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c3/fc/e91cc220803d7bc4db93fb02facd8461c37364151b8494762cc88b0fbcef/wrapt-1.17.2.tar.gz", hash = "sha256:41388e9d4d1522446fe79d3213196bd9e3b301a336965b9e27ca2788ebd122f3", size = 55531, upload-time = "2025-01-14T10:35:45.465Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/5a/d1/1daec934997e8b160040c78d7b31789f19b122110a75eca3d4e8da0049e1/wrapt-1.17.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:3d57c572081fed831ad2d26fd430d565b76aa277ed1d30ff4d40670b1c0dd984", size = 53307, upload-time = "2025-01-14T10:33:13.616Z" },
-    { url = "https://files.pythonhosted.org/packages/1b/7b/13369d42651b809389c1a7153baa01d9700430576c81a2f5c5e460df0ed9/wrapt-1.17.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:b5e251054542ae57ac7f3fba5d10bfff615b6c2fb09abeb37d2f1463f841ae22", size = 38486, upload-time = "2025-01-14T10:33:15.947Z" },
-    { url = "https://files.pythonhosted.org/packages/62/bf/e0105016f907c30b4bd9e377867c48c34dc9c6c0c104556c9c9126bd89ed/wrapt-1.17.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:80dd7db6a7cb57ffbc279c4394246414ec99537ae81ffd702443335a61dbf3a7", size = 38777, upload-time = "2025-01-14T10:33:17.462Z" },
-    { url = "https://files.pythonhosted.org/packages/27/70/0f6e0679845cbf8b165e027d43402a55494779295c4b08414097b258ac87/wrapt-1.17.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0a6e821770cf99cc586d33833b2ff32faebdbe886bd6322395606cf55153246c", size = 83314, upload-time = "2025-01-14T10:33:21.282Z" },
-    { url = "https://files.pythonhosted.org/packages/0f/77/0576d841bf84af8579124a93d216f55d6f74374e4445264cb378a6ed33eb/wrapt-1.17.2-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:b60fb58b90c6d63779cb0c0c54eeb38941bae3ecf7a73c764c52c88c2dcb9d72", size = 74947, upload-time = "2025-01-14T10:33:24.414Z" },
-    { url = "https://files.pythonhosted.org/packages/90/ec/00759565518f268ed707dcc40f7eeec38637d46b098a1f5143bff488fe97/wrapt-1.17.2-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b870b5df5b71d8c3359d21be8f0d6c485fa0ebdb6477dda51a1ea54a9b558061", size = 82778, upload-time = "2025-01-14T10:33:26.152Z" },
-    { url = "https://files.pythonhosted.org/packages/f8/5a/7cffd26b1c607b0b0c8a9ca9d75757ad7620c9c0a9b4a25d3f8a1480fafc/wrapt-1.17.2-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:4011d137b9955791f9084749cba9a367c68d50ab8d11d64c50ba1688c9b457f2", size = 81716, upload-time = "2025-01-14T10:33:27.372Z" },
-    { url = "https://files.pythonhosted.org/packages/7e/09/dccf68fa98e862df7e6a60a61d43d644b7d095a5fc36dbb591bbd4a1c7b2/wrapt-1.17.2-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:1473400e5b2733e58b396a04eb7f35f541e1fb976d0c0724d0223dd607e0f74c", size = 74548, upload-time = "2025-01-14T10:33:28.52Z" },
-    { url = "https://files.pythonhosted.org/packages/b7/8e/067021fa3c8814952c5e228d916963c1115b983e21393289de15128e867e/wrapt-1.17.2-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:3cedbfa9c940fdad3e6e941db7138e26ce8aad38ab5fe9dcfadfed9db7a54e62", size = 81334, upload-time = "2025-01-14T10:33:29.643Z" },
-    { url = "https://files.pythonhosted.org/packages/4b/0d/9d4b5219ae4393f718699ca1c05f5ebc0c40d076f7e65fd48f5f693294fb/wrapt-1.17.2-cp310-cp310-win32.whl", hash = "sha256:582530701bff1dec6779efa00c516496968edd851fba224fbd86e46cc6b73563", size = 36427, upload-time = "2025-01-14T10:33:30.832Z" },
-    { url = "https://files.pythonhosted.org/packages/72/6a/c5a83e8f61aec1e1aeef939807602fb880e5872371e95df2137142f5c58e/wrapt-1.17.2-cp310-cp310-win_amd64.whl", hash = "sha256:58705da316756681ad3c9c73fd15499aa4d8c69f9fd38dc8a35e06c12468582f", size = 38774, upload-time = "2025-01-14T10:33:32.897Z" },
-    { url = "https://files.pythonhosted.org/packages/2d/82/f56956041adef78f849db6b289b282e72b55ab8045a75abad81898c28d19/wrapt-1.17.2-py3-none-any.whl", hash = "sha256:b18f2d1533a71f069c7f82d524a52599053d4c7166e9dd374ae2136b7f40f7c8", size = 23594, upload-time = "2025-01-14T10:35:44.018Z" },
-]
-
-[[package]]
 name = "xformers"
-version = "0.0.30"
+version = "0.0.31"
 source = { registry = "https://download.pytorch.org/whl/cu128" }
 dependencies = [
     { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (sys_platform == 'linux' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')" },
+    { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')" },
 ]
 wheels = [
-    { url = "https://download.pytorch.org/whl/cu128/xformers-0.0.30-cp310-cp310-manylinux_2_28_x86_64.whl" },
-    { url = "https://download.pytorch.org/whl/cu128/xformers-0.0.30-cp310-cp310-win_amd64.whl" },
+    { url = "https://download.pytorch.org/whl/cu128/xformers-0.0.31-cp39-abi3-manylinux_2_28_x86_64.whl" },
+    { url = "https://download.pytorch.org/whl/cu128/xformers-0.0.31-cp39-abi3-win_amd64.whl" },
 ]
 
 [[package]]
 name = "xgrammar"
-version = "0.1.19"
+version = "0.1.21"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "mlx-lm", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
     { name = "ninja" },
     { name = "pydantic" },
-    { name = "sentencepiece" },
-    { name = "tiktoken" },
-    { name = "torch", version = "2.7.0", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "torch", version = "2.7.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "transformers", version = "4.52.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
-    { name = "transformers", version = "4.53.3", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra != 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra != 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra != 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform == 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "(sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (sys_platform != 'darwin' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-aggregate-results' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-lighteval') or (extra == 'extra-35-swallow-evaluation-instruct-private-auto-detector' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm') or (extra == 'extra-35-swallow-evaluation-instruct-private-lighteval' and extra == 'extra-35-swallow-evaluation-instruct-private-vllm')" },
+    { name = "transformers" },
     { name = "triton", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b5/55/73e1e4f918ade656c4fa7f3a5fcfb3d521a429fe305d2cb8ca58bfb201d4/xgrammar-0.1.19.tar.gz", hash = "sha256:75bf3e814283b1cbaee9252234c5d4081f0058d29b26d8984f1cdf031c99b775", size = 1714056, upload-time = "2025-05-08T07:13:46.05Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e3/52/ea664a56674f21c401b45f124c207a16ca4b2318364687172edbcf255375/xgrammar-0.1.21.tar.gz", hash = "sha256:2ce1e81417ff46aa7ef26d8c0627275cb20dd1f2e8ead5bb261aecde1cc8ba57", size = 2242013, upload-time = "2025-07-10T19:34:14.336Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/36/b4/aa9fd3ff607fcaafa11a70c8486f59cedd2e011432f4a72364a4a149059e/xgrammar-0.1.19-cp310-cp310-macosx_10_14_x86_64.whl", hash = "sha256:b9e770afe040969d4d2be1b4a8086927c12c89f3145e3601433467bb940d3ef3", size = 505167, upload-time = "2025-05-08T07:13:07.232Z" },
-    { url = "https://files.pythonhosted.org/packages/5f/0c/058d0f98049a43ad0de2376e7d4226af3eb4022bb819c6716df2a5beb245/xgrammar-0.1.19-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:a393827a63bb85e2e53ad5994db7e93359041ca5a46fa7e71e7a90312029969f", size = 458955, upload-time = "2025-05-08T07:13:09.005Z" },
-    { url = "https://files.pythonhosted.org/packages/5a/cb/38cd04149742349a46bce5839c4f794751ad8b1aa9522c8dd8173c6a14d9/xgrammar-0.1.19-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7c071a28e00409a4b098b80fca5a6459fddefd3911fabd8e590564ce7c4b45ec", size = 5716766, upload-time = "2025-05-08T07:13:10.631Z" },
-    { url = "https://files.pythonhosted.org/packages/1e/b2/ff4ab2473d060a1b407e97409dd6d3d8fd1346d1d314c1621968ca64d847/xgrammar-0.1.19-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f493cb36275fefd66c7aac799d7c2aaf629b9c8968c29db5aa895fcfde4e092d", size = 5833332, upload-time = "2025-05-08T07:13:12.615Z" },
-    { url = "https://files.pythonhosted.org/packages/1b/68/8b63fc009b1eb67d70fc777c498adf011746eb902c1391a332dc145481bf/xgrammar-0.1.19-cp310-cp310-win_amd64.whl", hash = "sha256:d15680fed6b7a776e1323bc06d493e6c2730092187b6c4d9d3c22fbb220226bb", size = 528402, upload-time = "2025-05-08T07:13:14.172Z" },
+    { url = "https://files.pythonhosted.org/packages/53/df/a077f0c1210ee5cdbb06c8a04f3e94d4053c18704f837120badd374591d9/xgrammar-0.1.21-cp310-cp310-macosx_10_14_x86_64.whl", hash = "sha256:77af5e5487992489131047e38e7136733a24f9c1aa73ef80665a85effd835f77", size = 4398913, upload-time = "2025-07-10T19:33:32.332Z" },
+    { url = "https://files.pythonhosted.org/packages/ef/42/209977e5c868f269bb587a41b21c80a07c989b40c981482498c53bd15b37/xgrammar-0.1.21-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:ae38de964a1d56437bc84c0aedf1b0a5a48ff2e805a0ec454b0caaa25b3c7f84", size = 4534144, upload-time = "2025-07-10T19:33:34.419Z" },
+    { url = "https://files.pythonhosted.org/packages/e8/63/25e04927a3f947b31f577744774aa6e67c2ba63a0675795ed85397f597ac/xgrammar-0.1.21-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ce25b17690d6abebf79d287330578203a361819058f6e893aefa69049f173ad8", size = 11636098, upload-time = "2025-07-10T19:33:36.22Z" },
+    { url = "https://files.pythonhosted.org/packages/d0/d7/2d15637d1bdded7dbde4742eb8be856370e6b9cf73c7bbdb1ce87f77db79/xgrammar-0.1.21-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b181f45bbba8563fcaf20a6338ebcbb663d804ab22d160b446c810c6fc397477", size = 11808795, upload-time = "2025-07-10T19:33:38.581Z" },
+    { url = "https://files.pythonhosted.org/packages/ac/fb/fd45754a490307084f6d090b6834cedf7b4a81023bf758d162e0b7c69efb/xgrammar-0.1.21-cp310-cp310-win_amd64.whl", hash = "sha256:55625383b506f1dd64a510605df5d852cfcadbfc5fcd962f400656b67542ad8e", size = 4251280, upload-time = "2025-07-10T19:33:40.723Z" },
 ]
 
 [[package]]

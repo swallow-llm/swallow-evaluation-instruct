@@ -47,6 +47,22 @@ Swallowチームが実装したベンチマークの一覧は `lighteval tasks l
 * CoTプロンプト：あり
 * 評価尺度：正解率
 
+### JGPQA
+博士課程レベルの科学問題を集めたベンチマーク GPQA の，LLM-jpにより開発された邦訳版です．
+
+* タスク分類：科学知識に基づく質問応答
+* 出典：[Tamakoshi et al. (2025)](https://huggingface.co/datasets/llm-jp/jgpqa)
+* lightevalタスクID：`swallow|jgpqa:diamond`
+* データセット：[llm-jp/jgpqa](https://huggingface.co/datasets/llm-jp/jgpqa/)
+* ライセンス：CC BY 4.0
+* 設問数：198問
+* CoTプロンプト：あり
+* 評価尺度：正解率
+* 派生版：`swallow|jgpqa:{diamond,main,extended}` を指定することで評価するサブセットを変更できます．  
+    * extended：論文著者らが収集した全設問（564問）
+    * main：専門家2名が正解に合意した高品質な設問（448問）
+    * diamond：高品質かつ非専門家の正答率が低い設問（198問）   
+
 ### M-IFEval Japaneseサブセット
 「箇条書きにせよ」のような検証可能な指示を用いて対話における指示追従性を評価するベンチマーク IFEval [Zeng et al. (2024)](https://openreview.net/forum?id=tr0KidwPLc) の日本語ローカライズ版です．  
 単なる邦訳ではなく「漢字にふりがなをつけよ」のような日本語の表記に特有の指示が含まれています．

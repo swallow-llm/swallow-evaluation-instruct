@@ -96,8 +96,8 @@ mt_bench_prompt = make_mt_bench_prompt(8192)
 mt_bench_prompt_truncate_6144 = make_mt_bench_prompt(6144)
 
 def process_judge_response_gpt(x):
-    score_pattern = re.compile("\[\[(\d+\.?\d*)\]\]")
-    score_pattern_backup = re.compile("\[(\d+\.?\d*)\]")
+    score_pattern = re.compile(r"\[\[(\d+\.?\d*)\]\]")
+    score_pattern_backup = re.compile(r"\[(\d+\.?\d*)\]")
     match = re.search(score_pattern, x)
     if not match:
         match = re.search(score_pattern_backup, x)

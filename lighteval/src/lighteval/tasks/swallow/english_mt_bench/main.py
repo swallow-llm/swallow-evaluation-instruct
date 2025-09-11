@@ -78,8 +78,8 @@ def mt_bench_prompt(line, task_name: str = ""):
 
 
 def process_judge_response_gpt(x):
-    score_pattern = re.compile("\[\[(\d+\.?\d*)\]\]")
-    score_pattern_backup = re.compile("\[(\d+\.?\d*)\]")
+    score_pattern = re.compile(r"\[\[(\d+\.?\d*)\]\]")
+    score_pattern_backup = re.compile(r"\[(\d+\.?\d*)\]")
     match = re.search(score_pattern, x)
     if not match:
         match = re.search(score_pattern_backup, x)
