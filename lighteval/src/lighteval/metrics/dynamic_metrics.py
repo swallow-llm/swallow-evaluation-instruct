@@ -243,7 +243,12 @@ def multilingual_extractive_match_metric(
         ]
         formatted_doc.specific["extracted_golds"] = [str(gold) for golds in extracted_golds for gold in golds]
 
-    def sample_level_fn(golds: list[str], predictions: list[str], formatted_doc: Doc) -> float:
+    def sample_level_fn(
+        golds: list[str],
+        predictions: list[str],
+        formatted_doc: Doc,
+        return_extracted_predictions: bool = False,
+    ):
         gold_extraction_regexes = get_extraction_regexes(formatted_doc, gold_extraction_target, language)
         pred_extraction_regexes = get_extraction_regexes(formatted_doc, pred_extraction_target, language)
 
@@ -272,7 +277,7 @@ def multilingual_extractive_match_metric(
         except Exception:  # noqa: E722
             logger.warning("Timeout when adding extracted predictions and golds to specific")
 
-        return aggregation_function(
+        score = aggregation_function(
             [
                 (
                     1.0
@@ -286,6 +291,11 @@ def multilingual_extractive_match_metric(
             ]
         )
 
+        flattened_extractions = [str(pred) for preds in extracted_predictions for pred in preds]
+        if return_extracted_predictions:
+            return score, flattened_extractions
+        return score
+
     return SampleLevelMetric(
         metric_name="extractive_match",
         sample_level_fn=sample_level_fn,
@@ -293,4 +303,5 @@ def multilingual_extractive_match_metric(
         use_case=MetricUseCase.ACCURACY,
         corpus_level_fn=np.mean,
         higher_is_better=True,
+        supports_return_extracted_predictions=True,
     )

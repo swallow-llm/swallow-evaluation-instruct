@@ -1,0 +1,91 @@
+# Maj@K の計算式
+
+開示：この文書で説明する計算式の導出および文書化にはChatGPTを活用しています．
+
+## 目的
+N回試行により $M$ 通りの回答が生成され，それぞれの頻度は $N_m$ 回だったとする．また各回答の正誤は既知とする．  
+このときMaj@Nは多数決法で容易に計算できる．  
+ではN個のサンプルがあるときに，Nよりも少ない $K \le N$ 回の試行とみなしてMaj@Kを計算するにはどうしたらよいだろうか？　この文書ではその場合の計算式を説明する．  
+具体的には，  
+* 抽出ベクトル $\boldsymbol j=(j_1,\dots,j_M)$ ($\sum j_m=K$, $0\le j_m\le N_m$) で非復元抽出するとき，最多得票が正解になる確率をMaj@Kと定義する．  
+* ただし同点は等確率：最大値 $\max_m j_m$ に並ぶクラスが $t$ 個、そのうち正解クラスが $c_w$ 個なら重み $c_w/t$ とする．  
+という定義のもとでの Maj@K の計算式を説明する．  
+また，抽出ベクトルの異なり数は指数オーダーで増加するため，実装 [majK_exact_dp_scipy](./lighteval/src/lighteval/metrics/maj_at_k_utils.py) が使っている動的計画法による効率的な解法も説明する．
+
+## 設定
+* クラス数 $M$，頻度 $\boldsymbol N=(N_1,\dots,N_M)$，合計 $N=\sum_m N_m$．
+* うち，正解クラス集合 $C \subseteq \{1,\dots,M\}$．
+* サンプルサイズ $K$ を満たす $\boldsymbol j$ のすべての異なりを計算．
+
+## 計算式
+
+N回試行からK回試行を非復元抽出する場合の Maj@K の計算式は以下の通り．
+
+$$
+\boxed{
+\mathrm{Maj@K} =
+\sum_{\substack{\sum j_m=K \wedge 0 \le j_m \le N_m}}
+\underbrace{\frac{\prod_{m=1}^M \binom{N_m}{j_m}}{\binom{N}{K}}}_{\text{抽出ベクトルjの確率密度関数（多変量超幾何分布）}}
+\cdot
+\underbrace{\frac{c_w(\boldsymbol j)}{t(\boldsymbol j)}}_{\text{Tieを考慮した"最多得票が正解か否か"の指示関数}}
+}
+$$
+
+ただし $c_w(\boldsymbol j)=|\{m\in C : j_m=\max_\ell j_\ell\}|$ , $t(\boldsymbol j)=|\{m : j_m=\max_\ell j_\ell\}|$ である．
+
+## 動的計画法による解法
+
+抽出ベクトルの確率密度関数からわかるように，Maj@Kの計算量は O(N^K) である．  
+そこで動的計画法（DP: Dynamic Programming）によって計算量を O(NK) に減らすことを考える．  
+
+具体的には，部分和を集約するDPを構築する．
+異なる回答を「クラス」と呼ぶことにして「先頭 $i < M$ クラスまでから抽出したとき」の状態を
+
+$$
+F_i(k, m, t, c_w) = 
+\sum_{\text{先頭 }i\text{までの } \boldsymbol j}
+\left(\prod_{\ell=1}^{i}\binom{N_\ell}{j_\ell}\right)
+$$
+
+として状態テーブルに保持する．
+
+* $k=\sum_{\ell=1}^{i} j_\ell$（使った回答の合計）
+* $m = \max_{\ell\le i} j_\ell$（これまでの最多クラス）
+* $t = |\{\ell\le i : j_\ell = m\}|$（Tieを含む最多クラス数）
+* $c_w = |\{\ell\le i : j_\ell = m \land \ell \in C\}|$（最多クラスの中で正解のクラス数）
+
+### 初期化
+状態 $F_i$ は以下のように初期化する．
+
+$$
+F_0(0,-1,0,0) = 1
+$$
+
+### 状態遷移
+
+クラス $i$ から $j \in [0, \min(N_i, K-k)]$ を割り当てると，確率質量（重み）は $\binom{N_i}{j}$ 倍される．
+
+また状態 $(m,t,c_w)$ は次のように更新される．
+
+* 最初（初期化直後）のクラスならば： $(m',t',c_w')=(j, 1, \mathbf{1}_{i\in C})$
+* 2番目以降のクラスならば：
+    * $j>m$： $(m',t',c_w')=(j,1, \mathbf{1}_{i\in C})$
+    * $j=m$： $(m',t',c_w')=(m,t+1, c_w+\mathbf{1}_{i\in C})$
+    * $j<m$： $(m',t',c_w')=(m,t, c_w)$
+
+したがって，状態テーブルは次のように更新される．  
+
+$$
+F_{i+1}(k+j, m', t', c_w') = F_{i+1}(k+j, m', t', c_w') + F_i(k,m,t,c_w)\cdot \binom{N_i}{j}.
+$$
+
+### 出力
+
+最後のクラス $i=M$ まで状態テーブル $F_M$ を更新したところで $k=K$ を満たす状態の確率質量と指示関数を合計して，最後に非復元抽出の異なり数 $\binom{N}{K}$ で割ればよい．これがMaj@Kとなる．  
+
+$$
+\mathrm{Maj@K} =
+\frac{1}{\binom{N}{K}} \sum_{\substack{k=K \wedge t>0}} F_M(k,m,t,c_w)\cdot \frac{c_w}{t}.
+$$
+
+以上

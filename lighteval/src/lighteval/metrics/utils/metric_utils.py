@@ -97,7 +97,7 @@ class CorpusLevelMetric(Metric):
 class SampleLevelMetric(Metric):
     """Metric computed per sample, then aggregated over the corpus"""
 
-    pass
+    supports_return_extracted_predictions: bool = False
 
 
 @dataclass

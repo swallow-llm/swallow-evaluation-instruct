@@ -1766,6 +1766,27 @@ AGGREGATE_CONF = [
             'task_key': 'swallow|jgpqa:diamond|0'
         }
     },
+    # JamC-QA
+    {
+        "display_name": "jamcqa",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'extractive_match'
+        }, 
+        'target': {
+            'task_key': 'swallow|jamcqa|0'
+        }
+    },
+    {
+        "display_name": "jamcqa_cot",
+        "func": pick,
+        "func_args": {
+            'metric_key': 'extractive_match'
+        }, 
+        'target': {
+            'task_key': 'swallow|jamcqa_cot|0'
+        }
+    },
 ]
 
 ## 集計関数 ##############################################################################################################

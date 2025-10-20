@@ -186,3 +186,4 @@ results/
 lighteval/outputs/
 scripts/qsub/utils/qstat_history.out
 scripts/qsub/utils/abci/qstat_history.json
+scripts/qsub/utils/overall_scores.csv

@@ -6,14 +6,14 @@
 
 # 以上の設定を行うと lighteval 実行時引数で `swallow|{ベンチマーク名}` が使えるようになります． `--custom-tasks` の指定は不要です．
 
-from .mclm_MATH_100_japanese import math_100_japanese
+from .mclm_MATH_100_japanese import math_100_japanese, lst_math_100_japanese_passk_majk
 from .jmmlu import JMMLU_SUBSET_TASKS
 from .japanese_mt_bench.main import mt_bench_japanese_swallow_gpt4o, mt_bench_japanese_swallow_gpt4o_truncate_6144
 from .jhumaneval import jhumaneval
 
 from .hellaswag import hellaswag_generative
 from .jemhopqa import jemhopqa, jemhopqa_cot
-from .gpqa_ja import gpqa_ja_instruct_lighteval
+from .gpqa_ja import gpqa_ja_instruct_lighteval, lst_gpqa_ja_instruct_passk_majk
 from .wmt20 import wmt20_enja_swallow, wmt20_jaen_swallow
 from .mmlu_prox_japanese import mmlu_prox_japanese_tasks
 from .mmlu_prox_english import mmlu_prox_english_tasks
@@ -21,12 +21,13 @@ from .mmlu_pro_english import mmlu_pro_english_tasks
 from .mmlu_english import mmlu_english_tasks
 from .english_mt_bench.main import mt_bench_english_swallow_gpt4o
 from .mifeval_ja.main import mifeval_ja
-from .gpqa import gpqa_diamond_instruct_swallow
-from .aime import aime_24_swallow, aime_25_swallow
-from .math_500 import math_500_swallow
+from .gpqa import gpqa_diamond_instruct_swallow, lst_gpqa_diamond_instruct_swallow_passk_majk
+from .aime import aime_24_swallow, aime_25_swallow, lst_aime_swallow_passk_majk
+from .math_500 import math_500_swallow, lst_math_500_swallow_passk_majk
 from .lcb_swallow import lcb_swallow_tasks
 from .humaneval_series import humaneval, humanevalplus
-from .jgpqa import lst_jgpqa_tasks
+from .jgpqa import lst_jgpqa_tasks, lst_jgpqa_passk_majk
+from .jamcqa import jamcqa_task, jamcqa_cot_task
 
 TASKS_TABLE = [
     math_100_japanese,
@@ -47,6 +48,8 @@ TASKS_TABLE = [
     aime_25_swallow,
     humaneval,
     humanevalplus,
+    jamcqa_task,
+    jamcqa_cot_task,
 ]
 TASKS_TABLE.extend(JMMLU_SUBSET_TASKS)
 TASKS_TABLE.extend(mmlu_prox_japanese_tasks)
@@ -55,3 +58,11 @@ TASKS_TABLE.extend(mmlu_pro_english_tasks)
 TASKS_TABLE.extend(mmlu_english_tasks)
 TASKS_TABLE.extend(lcb_swallow_tasks)
 TASKS_TABLE.extend(lst_jgpqa_tasks)
+
+# Pass@K and Maj@K variants
+TASKS_TABLE.extend(lst_gpqa_diamond_instruct_swallow_passk_majk)
+TASKS_TABLE.extend(lst_math_500_swallow_passk_majk)
+TASKS_TABLE.extend(lst_aime_swallow_passk_majk)
+TASKS_TABLE.extend(lst_gpqa_ja_instruct_passk_majk)
+TASKS_TABLE.extend(lst_math_100_japanese_passk_majk)
+TASKS_TABLE.extend(lst_jgpqa_passk_majk)
