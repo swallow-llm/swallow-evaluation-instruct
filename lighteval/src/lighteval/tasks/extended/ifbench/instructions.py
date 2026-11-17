@@ -60,6 +60,12 @@ _NUM_CONJUNCTIONS = 6
 RESOURCES_DOWNLOADED: bool = False
 
 
+
+def _word_tokens_without_punctuation(text):
+    """Tokenize text while excluding standalone punctuation tokens (allenai/IFBench@4889186)."""
+    return [token for token in instructions_util.nltk.word_tokenize(text) if any(ch.isalnum() for ch in token)]
+
+
 class Instruction:
     """An instruction template."""
 
@@ -419,8 +425,9 @@ class NGramOverlapChecker(Instruction):
     def check_following(self, value):
         """Checks if the response maintains a trigram overlap with the reference text within 2% of {percent}."""
         n = 3
-        ngrams = set(nltk.ngrams(value, n))
-        ref_ngrams = set(nltk.ngrams(self._reference_text, n))
+        # allenai/IFBench@4889186: word trigrams (nltk.ngrams on the raw string gave character trigrams)
+        ngrams = set(nltk.ngrams(nltk.word_tokenize(value), n))
+        ref_ngrams = set(nltk.ngrams(nltk.word_tokenize(self._reference_text), n))
         if not ngrams:
             return False
         overlap = len(ngrams.intersection(ref_ngrams)) / len(ngrams)
@@ -1100,44 +1107,30 @@ class PronounCountChecker(Instruction):
 
     def check_following(self, value):
         """Checks if the response includes at least {N} pronouns."""
+        # allenai/IFBench@4889186: the full pronoun classes (demonstrative, interrogative, relative, indefinite)
+        # and nltk word tokenization
         pronouns = set([
-            "i",
-            "me",
-            "my",
-            "mine",
-            "myself",
-            "we",
-            "us",
-            "our",
-            "ours",
-            "ourselves",
-            "you",
-            "your",
-            "yours",
-            "yourself",
-            "yourselves",
-            "he",
-            "him",
-            "his",
-            "himself",
-            "she",
-            "her",
-            "hers",
-            "herself",
-            "it",
-            "its",
-            "itself",
-            "they",
-            "them",
-            "their",
-            "theirs",
-            "themselves",
+            # Personal (subject / object)
+            "i", "me", "we", "us", "you", "he", "him", "she", "her", "it", "they", "them",
+            # Possessive (determiner + independent)
+            "my", "mine", "our", "ours", "your", "yours", "his", "her", "hers", "its", "their", "theirs",
+            # Reflexive
+            "myself", "ourselves", "yourself", "yourselves", "himself", "herself", "itself", "themselves",
+            # Demonstrative
+            "this", "that", "these", "those",
+            # Interrogative
+            "who", "whom", "whose", "which", "what",
+            # Relative / compound interrogative
+            "whoever", "whomever", "whatever", "whichever",
+            # Indefinite
+            "anybody", "anyone", "anything", "everybody", "everyone", "everything",
+            "nobody", "nothing", "somebody", "someone", "something",
+            "each", "either", "neither", "both", "all", "some", "any", "none",
         ])
         value = value.replace(
             "/", " "
         )  # to correctly count pronoun sets like she/her/hers, a common use case of pronouns
-        value = value.lower().translate(str.maketrans("", "", string.punctuation))
-        words = value.split()
+        words = nltk.word_tokenize(value.lower())
         pronoun_count = sum(1 for word in words if word in pronouns)
         return pronoun_count >= self._num_pronouns
 
@@ -1726,6 +1719,7 @@ class EuropeanCapitalsSortChecker(Instruction):
             "Warsaw",
             "London",
             "Brussels",
+            "Kyiv",  # allenai/IFBench@4889186: Kyiv (50.45N) was missing
             "Prague",
             "Luxembourg",
             "Paris",
@@ -2023,10 +2017,11 @@ class KeywordSpecificPositionChecker(Instruction):
         sentences = instructions_util.split_into_sentences(value)
         if len(sentences) < self._n:
             return False
-        words = instructions_util.nltk.word_tokenize(sentences[self._n - 1])
+        # allenai/IFBench@4889186: punctuation tokens are not words; case-insensitive
+        words = _word_tokens_without_punctuation(sentences[self._n - 1])
         if len(words) < self._m:
             return False
-        if words[self._m - 1] == self._keyword:
+        if words[self._m - 1].lower() == self._keyword.lower():
             return True
         else:
             return False
@@ -2065,13 +2060,11 @@ class WordsPositionChecker(Instruction):
           True if the second word and the second to last word are the same;
           otherwise, False.
         """
-        words = instructions_util.nltk.word_tokenize(value)
+        # allenai/IFBench@4889186: punctuation tokens are not words; case-insensitive
+        words = _word_tokens_without_punctuation(value)
         if len(words) < 2:
             return False
-        if words[1] == words[-2] == self._keyword:
-            return True
-        else:
-            return False
+        return words[1].lower() == words[-2].lower() == self._keyword.lower()
 
 
 class RepeatChangeChecker(Instruction):
@@ -2108,12 +2101,12 @@ class RepeatChangeChecker(Instruction):
           True if the repeated request is found in the response;
           otherwise, False.
         """
-        if self._prompt_to_repeat == value:
+        # allenai/IFBench@4889186: compare words, not characters (value[1:] only skipped the first character)
+        prompt_words = self._prompt_to_repeat.split()
+        response_words = value.split()
+        if not prompt_words or not response_words:
             return False
-        if self._prompt_to_repeat[1:] == value[1:]:
-            return True
-        else:
-            return False
+        return prompt_words[0] != response_words[0] and prompt_words[1:] == response_words[1:]
 
 
 class RepeatSimpleChecker(Instruction):
@@ -2157,11 +2150,12 @@ class RepeatSpanChecker(Instruction):
             raise ValueError("prompt_to_repeat must be set.")
         else:
             self._prompt_to_repeat = prompt_to_repeat
-        if not n_start:
+        # allenai/IFBench@4889186: `if not n_start` re-drew a random start for the valid index 0
+        if n_start is None:
             self._n_start = random.randint(0, len(self._prompt_to_repeat.split()) - 2)
         else:
             self._n_start = n_start
-        if not n_end:
+        if n_end is None:
             self._n_end = random.randint(self._n_start + 1, len(self._prompt_to_repeat.split()) - 1)
         else:
             self._n_end = n_end
@@ -2180,10 +2174,8 @@ class RepeatSpanChecker(Instruction):
 
     def check_following(self, value):
         """Checks if the response contains the expected number of phrases with the correct modifications."""
-        if (
-            value.strip().lower().split()
-            == self._prompt_to_repeat.strip().lower().split()[self._n_start : self._n_end]
-        ):
+        # allenai/IFBench@4889186: the span is inclusive of n_end ("between (and including) index X and Y")
+        if value.strip().lower().split() == self._prompt_to_repeat.strip().lower().split()[self._n_start : self._n_end + 1]:
             return True
         return False
 
