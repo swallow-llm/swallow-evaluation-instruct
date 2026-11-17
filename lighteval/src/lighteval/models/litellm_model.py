@@ -307,7 +307,8 @@ class LiteLLMClient(LightevalModel):
         ), f"Length of prompts, return_logitss, max_new_tokenss, num_sampless, stop_sequences, system_prompts should be the same but are {len(prompts)}, {len(return_logitss)}, {len(max_new_tokenss)}, {len(num_sampless)}, {len(stop_sequencess)}"
 
         results = []
-        n_concurrency = math.ceil(self.CONCURENT_CALLS / num_samples)
+        # one in-flight request generates n=num_samples completions; size the pool by the largest n in this batch
+        n_concurrency = math.ceil(self.CONCURENT_CALLS / max(num_sampless))
         with ThreadPoolExecutor(n_concurrency) as executor:
             for entry in tqdm(
                 executor.map(
@@ -356,9 +357,11 @@ class LiteLLMClient(LightevalModel):
             disable=False,  # self.disable_tqdm,
         ):
             contexts = [c.context for c in dataset]
-            max_new_tokens = dataset[0].generation_size  # could be none
-            return_logits = dataset[0].use_logits
-            num_samples = dataset[0].num_samples
+            # per request: requests of tasks with different N (e.g. aime_N32 and lcb with n=10) can share a split,
+            # since the split's sort key does not include num_samples; dataset[0] would impose one N on all of them
+            max_new_tokens = [c.generation_size for c in dataset]  # could be none
+            return_logits = [c.use_logits for c in dataset]
+            num_samples = [c.num_samples for c in dataset]
             stop_sequence = requests[0].stop_sequence
 
             responses = self.__call_api_parallel(contexts, return_logits, max_new_tokens, num_samples, stop_sequence)
@@ -412,11 +415,12 @@ class LiteLLMClient(LightevalModel):
             # ただ、入力によってtemperatureが異なる場合に対応できないため、現状はself._call_apiを使用している。
             # したがって、並列化を実現するには、まず入力単位でtemperatureを指定できるように実装を変更する必要がある。
             contexts = [c.context for c in dataset]
-            max_new_tokens = dataset[0].generation_size  # could be none
-            return_logits = dataset[0].use_logits
-            num_samples = dataset[0].num_samples
             stop_sequence = requests[0].stop_sequence
             for idx in tqdm(range(len(contexts))):
+                # per request (see greedy_until): dataset[0] would impose one N on every request of the split
+                max_new_tokens = dataset[idx].generation_size  # could be none
+                return_logits = dataset[idx].use_logits
+                num_samples = dataset[idx].num_samples
                 turn_results = []
                 multi_turn_context_all = contexts[idx]
                 for turn in range(len(multi_turn_context_all)):
