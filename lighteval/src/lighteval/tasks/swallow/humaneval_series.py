@@ -33,8 +33,29 @@ def swallow_humaneval_prompt_fn(line, task_name: str = "humaneval") -> Doc:
         },
     )
 
+# HumanEval+ の test フィールドの誤りを evalplus 本体の判定に合わせて修正する．
+# HumanEval/32 (find_zero): test フィールドの `_poly(*candidate(*inp), inp)` は引数が逆で，
+# 根 (float) を * で展開しようとして TypeError になるため，canonical solution を含むすべての解答が不合格になる．
+# evalplus 本体の評価器は find_zero について `abs(_poly(*inp, out)) <= atol` を判定するので，それに置き換える．
+# データセット側で修正された場合は置換対象の文字列が見つからず，何もしない．
+HUMANEVALPLUS_TEST_FIXES = {
+    "HumanEval/32": (
+        "assert _poly(*candidate(*inp), inp) <= 0.0001",
+        "assert abs(_poly(*inp, candidate(*inp))) <= 0.0001",
+    ),
+}
+
+
+def fix_humanevalplus_test(task_id: str, test: str) -> str:
+    if task_id not in HUMANEVALPLUS_TEST_FIXES:
+        return test
+    wrong, fixed = HUMANEVALPLUS_TEST_FIXES[task_id]
+    return test.replace(wrong, fixed)
+
+
 def swallow_humanevalplus_prompt_fn(line, task_name: str = "humaneval") -> Doc:
     doc = swallow_humaneval_prompt_fn(line=line, task_name=task_name)
+    doc.specific["check_fn"] = fix_humanevalplus_test(line["task_id"], doc.specific["check_fn"])
     # HumanEval+はHumanEvalの約100倍のunittestがあるので，default timeout (=6 sec.)の20倍 = 120 sec.にする．
     # 600 sec. にすると時間がかかりすぎる
     doc.specific["timeout"] = 120
