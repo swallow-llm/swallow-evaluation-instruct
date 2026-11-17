@@ -83,6 +83,11 @@ def compare_strings(
         ("D", "The answer: D, doesn't makese nsense for answer to be A or B", 1),
         # Test minimal answer format
         ("D", "D. it can't be A or B", 1),
+        # "Answer: $LETTER" as the GPQA prompt asks, after text with a lone capital letter (e.g. in LaTeX)
+        ("D", "The resolvent is $R(\\Delta t A) = \\sum_j w_j/(\\Delta t A - r_j I)$.\n\nAnswer: $D$", 1),
+        ("D", "The resolvent is $R(\\Delta t A) = \\sum_j w_j/(\\Delta t A - r_j I)$.\n\nAnswer: $D", 1),
+        ("C", "Hence A is the alcohol and B is the diol.\n\nAnswer: (C)", 1),
+        ("A", "so the frequency is $\\gamma B/2$.\n\n**Answer:** A) $\\gamma B/2$", 1),
     ],
 )
 def test_extraction_abc(gold, pred, expected):

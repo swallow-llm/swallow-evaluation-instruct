@@ -298,6 +298,10 @@ def lazy_indices_regex(
     answer_suffix_re = rf"(?:\*\*)?(?:{full_stop_re}|{comma_re}|{colon_re}|{space_re}|$)"
     answer_re = f"{answer_prefix_re}{indice_str_re}{answer_suffix_re}"
     answer_re_start = rf"^(?:\*\*)?{indice_str_re}{answer_suffix_re}"
+    # After an answer word, also accept the letter wrapped in $...$ or (...): prompts ask for "Answer: $LETTER"
+    # (e.g. GPQA), and models that follow it literally write "Answer: $D$", which answer_re does not match (it needs
+    # a space right before the letter), so extraction fell back to any capital letter in the text.
+    answer_wrapped_re = rf"{answer_prefix_re}\$?\(?{indice_str_re}\)?\$?{answer_suffix_re}"
 
     answer_word = f"(?i:{translation_literal.answer})"
 
@@ -317,9 +321,9 @@ def lazy_indices_regex(
     regexes.extend(
         [
             # Most specific patterns first
-            (f"{answer_word}{colon_re}.{{0,50}}?{answer_re}", 100),
+            (f"{answer_word}{colon_re}.{{0,50}}?{answer_wrapped_re}", 100),
             # Answer word patterns
-            (f"{answer_word}.{{0,50}}?{answer_re}", 150),
+            (f"{answer_word}.{{0,50}}?{answer_wrapped_re}", 150),
             # Start of line patterns
             (answer_re_start, 200),
         ]
